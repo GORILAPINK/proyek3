@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DROPZONE — Galeri & Program Tebar Cinta ADHIV</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Custom Font: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Hubungkan File CSS Eksternal -->
+    <link rel="stylesheet" href="main.css">
+
+    <!-- Konfigurasi Tailwind Palet Pink & Slate Grey -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        neonLime: 'darkred',      // Pink Utama Menyala
+                        electricViolet: '#4B5563',// Slate Grey Elegan
+                        hotPink: 'darkgrey',       // Soft Hot Pink
+                        cyberYellow: '#F3F4F6',   // Soft Light Grey
+                        neoBlack: '#0F0F11',      // Hitam Pekat Neo-Brutalism
+                    },
+                    boxShadow: {
+                        'neo': '4px 4px 0px 0px #0F0F11',
+                        'neo-lg': '6px 6px 0px 0px #0F0F11',
+                        'neo-xl': '8px 8px 0px 0px #0F0F11',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .neo-border { border: 3px solid #0F0F11; }
+        .neo-btn {
+            border: 3px solid #0F0F11;
+            box-shadow: 4px 4px 0px 0px #0F0F11;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .neo-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0F0F11;
+        }
+        .neo-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px 0px #0F0F11;
+        }
+        .neo-card {
+            border: 3px solid #0F0F11;
+            box-shadow: 8px 8px 0px 0px #0F0F11;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: inline-flex;
+            width: max-content;
+            animation: marquee 18s linear infinite;
+        }
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+    </style>
+</head>
+<body class="bg-[#FAF8F5] text-neoBlack font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-neonLime selection:text-white overflow-x-hidden">
+
+    <!-- TOP MARQUEE BANNER -->
+    <div class="bg-neonLime text-white neo-border border-t-0 border-x-0 py-2.5 overflow-hidden whitespace-nowrap font-extrabold text-xs sm:text-sm tracking-wider uppercase">
+        <div class="animate-marquee flex items-center gap-8">
+            <span>⚡ GALERI KEGIATAN TEBAR CINTA ADHIV ⚡</span>
+            <span>✦ BERSAMA WUJUDKAN SENYUM MEREKA ✦</span>
+            <span>🔥 AKSI NYATA UNTUK BALITA ADHIV 🔥</span>
+            <span>⚡ GALERI KEGIATAN TEBAR CINTA ADHIV ⚡</span>
+            <span>✦ BERSAMA WUJUDKAN SENYUM MEREKA ✦</span>
+            <span>🔥 AKSI NYATA UNTUK BALITA ADHIV 🔥</span>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md neo-border border-x-0 border-t-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+            <!-- Logo -->
+                <div class="w-11 h-11 bg-neonLime text-white neo-border neo-btn rounded-xl flex items-center justify-center font-black text-2xl -rotate-3 group-hover:rotate-6 transition-transform">
+                    ❤️
+                </div>
+                <span class="font-black text-2xl sm:text-3xl tracking-tighter uppercase">
+                    TEBAR<span class="text-neonLime">CINTA</span>
+                </span>
+            </a>
+
+            <!-- Action Right (Mengarahkan ke login.html) -->
+            <a href="login.html" class="px-5 py-2.5 bg-neonLime text-white font-black neo-btn rounded-2xl text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 inline-flex">
+                <span>MASUK SEKARANG</span>
+                <i data-lucide="log-in" class="w-4 h-4"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT: GALERI EKSTRA BESAR -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-8 flex-1 w-full">
+        
+        <!-- CAROUSEL AUTO-SLIDE -->
+        <div class="relative w-full h-[60vh] sm:h-[75vh] neo-card rounded-3xl overflow-hidden bg-neoBlack group" id="carousel-container">
+            
+            <div id="slider-track" class="w-full h-full flex transition-transform duration-500 ease-out">
+                <!-- Slide 1 -->
+                <div class="w-full h-full flex-shrink-0 relative">
+                    <img src="https://images.unsplash.com/photo-1594608661623-aa0bd3a69d98?auto=format&fit=crop&w=1600&q=80" alt="Pendampingan Balita ADHIV" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-neoBlack/80 via-transparent to-transparent flex items-end p-6 sm:p-10">
+                        <div class="bg-white/90 backdrop-blur-md p-4 sm:p-6 rounded-2xl neo-border max-w-lg space-y-1">
+                            <span class="bg-neonLime text-white text-[10px] sm:text-xs font-black px-2.5 py-1 rounded-md neo-border uppercase">Aksi Lapangan</span>
+                            <h3 class="font-black text-lg sm:text-2xl uppercase tracking-tight">Pendampingan Gizi Balita</h3>
+                            <p class="text-xs sm:text-sm font-bold text-slate-700">Penyaluran formula nutrisi & suplemen imun bagi balita penyandang ADHIV.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="w-full h-full flex-shrink-0 relative">
+                    <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1600&q=80" alt="Senyum Kasih Sayang" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-neoBlack/80 via-transparent to-transparent flex items-end p-6 sm:p-10">
+                        <div class="bg-white/90 backdrop-blur-md p-4 sm:p-6 rounded-2xl neo-border max-w-lg space-y-1">
+                            <span class="bg-cyberYellow text-neoBlack text-[10px] sm:text-xs font-black px-2.5 py-1 rounded-md neo-border uppercase">Dukungan Moral</span>
+                            <h3 class="font-black text-lg sm:text-2xl uppercase tracking-tight">Ruang Tumbuh Ceria</h3>
+                            <p class="text-xs sm:text-sm font-bold text-slate-700">Menciptakan lingkungan yang aman dan bebas stigma untuk masa depan mereka.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 3 -->
+                <div class="w-full h-full flex-shrink-0 relative">
+                    <img src="https://images.unsplash.com/photo-1532629345422-7515fe926fb8?auto=format&fit=crop&w=1600&q=80" alt="Transparansi Penyaluran" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-neoBlack/80 via-transparent to-transparent flex items-end p-6 sm:p-10">
+                        <div class="bg-white/90 backdrop-blur-md p-4 sm:p-6 rounded-2xl neo-border max-w-lg space-y-1">
+                            <span class="bg-neonLime text-white text-[10px] sm:text-xs font-black px-2.5 py-1 rounded-md neo-border uppercase">Transparansi</span>
+                            <h3 class="font-black text-lg sm:text-2xl uppercase tracking-tight">Penyaluran Bantuan Medis</h3>
+                            <p class="text-xs sm:text-sm font-bold text-slate-700">Dukungan pemeriksaan rutin & obat-obatan gratis bagi keluarga balita.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tombol Navigasi Prev/Next -->
+            <button onclick="prevSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white text-neoBlack p-3.5 sm:p-4 neo-btn rounded-2xl z-20 hover:bg-cyberYellow">
+                <i data-lucide="chevron-left" class="w-6 h-6"></i>
+            </button>
+            <button onclick="nextSlide()" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white text-neoBlack p-3.5 sm:p-4 neo-btn rounded-2xl z-20 hover:bg-cyberYellow">
+                <i data-lucide="chevron-right" class="w-6 h-6"></i>
+            </button>
+
+            <!-- Tombol Zoom Fullscreen -->
+            <button onclick="openZoomModal()" class="absolute top-4 right-4 bg-white text-neoBlack p-3 neo-btn rounded-xl z-20 hover:bg-cyberYellow">
+                <i data-lucide="maximize-2" class="w-5 h-5"></i>
+            </button>
+
+            <!-- Indikator Dots -->
+            <div id="slider-dots" class="absolute bottom-4 right-6 sm:right-10 flex gap-2 z-20"></div>
+        </div>
+
+    <!-- BOTTOM MARQUEE BANNER -->
+    <div class="bg-cyberYellow text-neoBlack neo-border border-x-0 py-2.5 overflow-hidden whitespace-nowrap font-extrabold text-xs sm:text-sm tracking-wider uppercase mt-auto">
+        <div class="animate-marquee flex items-center gap-8">
+            <span>💖 100% HASIL PENJUALAN DIDONASIKAN 💖</span>
+            <span>⚡ YAYASAN PEDULI KASIH SESAMA ⚡</span>
+            <span>🌟 BERSAMA KITA BISA WUJUDKAN SENYUM MEREKA 🌟</span>
+            <span>🚀 JOIN MOVEMENT SEKARANG 🚀</span>
+            <span>💖 100% HASIL PENJUALAN DIDONASIKAN 💖</span>
+            <span>⚡ YAYASAN PEDULI KASIH SESAMA ⚡</span>
+            <span>🌟 BERSAMA KITA BISA WUJUDKAN SENYUM MEREKA 🌟</span>
+            <span>🚀 JOIN MOVEMENT SEKARANG 🚀</span>
+        </div>
+    </div>
+
+    <!-- MODAL ZOOM FULLSCREEN -->
+    <div id="zoom-modal-overlay" onclick="closeZoomModal()" class="fixed inset-0 bg-neoBlack/90 backdrop-blur-md z-50 opacity-0 pointer-events-none transition-opacity duration-300 flex items-center justify-center p-4">
+        <button onclick="closeZoomModal()" class="absolute top-6 right-6 p-3 bg-neonLime text-white neo-border rounded-xl">
+            <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+        <img id="zoom-image" src="" class="max-w-full max-h-[85vh] object-contain neo-border rounded-2xl">
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-neoBlack text-white neo-border border-x-0 border-b-0 py-6 text-center text-xs font-bold text-slate-400">
+        <p>&copy; 2026 DROPZONE. Program Tebar Cinta ADHIV.</p>
+    </footer>
