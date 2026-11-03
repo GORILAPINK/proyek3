@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masuk Sekarang — DROPZONE & Program Tebar Cinta</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Custom Font: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Konfigurasi Tailwind Palet Pink & Slate Grey -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        neonLime: 'darkgrey',      // Pink Utama Menyala
+                        electricViolet: '#4B5563',// Slate Grey Elegan
+                        hotPink: '#FF69B4',       // Soft Hot Pink
+                        cyberYellow: '#F3F4F6',   // Soft Light Grey
+                        neoBlack: '#0F0F11',      // Hitam Pekat Neo-Brutalism
+                    },
+                    boxShadow: {
+                        'neo': '4px 4px 0px 0px #0F0F11',
+                        'neo-lg': '6px 6px 0px 0px #0F0F11',
+                        'neo-xl': '8px 8px 0px 0px #0F0F11',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .neo-border { border: 3px solid #0F0F11; }
+        .neo-btn {
+            border: 3px solid #0F0F11;
+            box-shadow: 4px 4px 0px 0px #0F0F11;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .neo-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0F0F11;
+        }
+        .neo-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px 0px #0F0F11;
+        }
+        .neo-card {
+            border: 3px solid #0F0F11;
+            box-shadow: 8px 8px 0px 0px #0F0F11;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: inline-flex;
+            width: max-content;
+            animation: marquee 18s linear infinite;
+        }
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+    </style>
+</head>
+<body class="bg-[#FAF8F5] text-neoBlack font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-neonLime selection:text-white overflow-x-hidden">
+
+    <!-- 1. TOP MARQUEE BANNER -->
+    <div class="bg-neonLime text-white neo-border border-t-0 border-x-0 py-2.5 overflow-hidden whitespace-nowrap font-extrabold text-xs sm:text-sm tracking-wider uppercase">
+        <div class="animate-marquee flex items-center gap-8">
+            <span>⚡ PROGRAM TEBAR CINTA: BANTUAN BALITA ADHIV ⚡</span>
+            <span>✦ WUJUDKAN MASA DEPAN MEREKA ✦</span>
+            <span>🔥 BERBAGI KASIH UNTUK SESAMA 🔥</span>
+            <span>✦ MASUK SEKARANG UNTUK BERAKSI ✦</span>
+            <span>⚡ PROGRAM TEBAR CINTA: BANTUAN BALITA ADHIV ⚡</span>
+            <span>✦ WUJUDKAN MASA DEPAN MEREKA ✦</span>
+            <span>🔥 BERBAGI KASIH UNTUK SESAMA 🔥</span>
+            <span>✦ MASUK SEKARANG UNTUK BERAKSI ✦</span>
+        </div>
+    </div>
+
+    <!-- HEADER / NAVBAR SEDERHANA -->
+    <header class="w-full bg-white/80 backdrop-blur-md neo-border border-x-0 border-t-0 p-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            
+            <!-- Logo Sisi Kiri -->
+            <a href="index.html" class="flex items-center gap-2 group">
+                <div class="w-10 h-10 bg-neonLime text-white neo-border neo-btn rounded-xl flex items-center justify-center font-black text-xl -rotate-3 group-hover:rotate-6 transition-transform">
+                    ❤️
+                </div>
+                <span class="font-black text-xl tracking-tighter uppercase">
+                    TEBAR<span class="text-neonLime">CINTA</span>
+                </span>
+            </a>
+
+            <!-- Tombol BACK & Tombol Masuk Google Berdampingan -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Tombol BACK -->
+                <a href="landing.html" class="px-3 sm:px-4 py-2 bg-cyberYellow text-neoBlack font-black neo-btn rounded-xl text-xs uppercase tracking-wider flex items-center gap-1">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    <span>BACK</span>
+                </a>
+
+                <!-- Tombol Masuk Google di Sebelah Tombol Back -->
+                <button onclick="handleGoogleLogin()" class="px-3 sm:px-4 py-2 bg-white text-neoBlack font-black neo-btn rounded-xl text-xs uppercase tracking-wider flex items-center gap-2 hover:bg-slate-50 transition-colors">
+                    <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                    </svg>
+                    <span>MASUK GOOGLE</span>
+                </button>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- KONTEN UTAMA: KARTU LOGIN GOOGLE -->
+    <main class="max-w-md w-full mx-auto px-4 py-12 flex-1 flex items-center justify-center">
+        <div class="w-full bg-white neo-card rounded-3xl p-8 sm:p-10 text-center space-y-6 relative overflow-hidden">
+            
+            <div class="space-y-3">
+                <div class="w-20 h-20 bg-cyberYellow neo-border rounded-2xl flex items-center justify-center mx-auto shadow-neo">
+                    <!-- Logo Google SVG Besar -->
+                    <svg class="w-10 h-10" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                    </svg>
+                </div>
+                <h1 class="font-black text-2xl sm:text-3xl uppercase tracking-tight">MASUK DENGAN GOOGLE</h1>
+                <p class="text-xs sm:text-sm font-bold text-slate-500 leading-relaxed">
+                    Masuk menggunakan akun Google kamu untuk mulai berbagi kebaikan di program Tebar Cinta ADHIV, bestie! ✨
+                </p>
+            </div>
+
+            <!-- Tombol Masuk Google Utama di Bawah Kartu dengan Subtitle -->
+            <div class="pt-2 space-y-2">
+                <button onclick="handleGoogleLogin()" class="w-full py-4 bg-white text-neoBlack neo-btn rounded-2xl font-black text-sm sm:text-base uppercase tracking-wide flex flex-col items-center justify-center gap-1 hover:bg-slate-50 transition-all shadow-neo-lg group">
+                    <div class="flex items-center gap-3">
+                        <svg class="w-6 h-6 group-hover:scale-110 transition-transform flex-shrink-0" viewBox="0 0 24 24">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                        </svg>
+                        <span>MASUK DENGAN GOOGLE</span>
+                    </div>
+                    <span class="text-[10px] font-bold text-slate-400 lowercase font-mono">Klik untuk melanjutkan dengan akun Google</span>
+                </button>
+            </div>
+
+            <div class="pt-4 border-t border-slate-100">
+                <p class="text-xs font-bold text-slate-400">
+                    Dengan masuk, kamu menyetujui syarat & ketentuan gerakan sosial kami.
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <!-- 2. BOTTOM MARQUEE BANNER -->
+    <div class="bg-cyberYellow text-neoBlack neo-border border-x-0 py-2.5 overflow-hidden whitespace-nowrap font-extrabold text-xs sm:text-sm tracking-wider uppercase mt-auto">
+        <div class="animate-marquee flex items-center gap-8">
+            <span>💖 100% HASIL PENJUALAN DIDONASIKAN 💖</span>
+            <span>⚡ YAYASAN PEDULI KASIH SESAMA ⚡</span>
+            <span>🌟 BERSAMA KITA BISA WUJUDKAN SENYUM MEREKA 🌟</span>
+            <span>🚀 JOIN MOVEMENT SEKARANG 🚀</span>
+            <span>💖 100% HASIL PENJUALAN DIDONASIKAN 💖</span>
+            <span>⚡ YAYASAN PEDULI KASIH SESAMA ⚡</span>
+            <span>🌟 BERSAMA KITA BISA WUJUDKAN SENYUM MEREKA 🌟</span>
+            <span>🚀 JOIN MOVEMENT SEKARANG 🚀</span>
+        </div>
+    </div>
+
+    <!-- GEN Z TOAST CONTAINER -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 pointer-events-none"></div>
+    <!-- FOOTER -->
+    <footer class="bg-neoBlack text-white neo-border border-x-0 border-b-0 py-6 text-center text-xs font-bold text-slate-400">
+        <p>&copy; 2026 DROPZONE. Program Tebar Cinta ADHIV.</p>
+    </footer>
+</body>
+</html>

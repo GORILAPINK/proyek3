@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin — Kelola Pesanan | DROPZONE & Tebar Cinta</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Supabase JS Client CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Custom Font: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Konfigurasi Tailwind Palet Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+    theme: {
+        extend: {
+            fontFamily: {
+                sans: ['Plus Jakarta Sans', 'sans-serif'],
+            },
+            colors: {
+                neonLime: '#8B0000',      // Pink Utama Menyala
+                electricViolet: '#4B5563',// Slate Grey Elegan
+                hotPink: '#FF69B4',       // Soft Hot Pink
+                cyberYellow: '#F3F4F6',   // Soft Light Grey
+                neoBlack: '#0F0F11',      // Hitam Pekat Neo-Brutalism
+                ecomBlue: '#3B82F6',      // Biru Khusus E-Commerce
+                waGreen: '#25D366',       // Hijau WhatsApp
+                darkred: '#8B0000',       // Merah Gelap (Dark Red)
+                abuabu: {
+                    DEFAULT: '#9CA3AF',   // Abu-abu Standar
+                    light: '#E5E7EB',     // Abu-abu Terang
+                    dark: '#374151',      // Abu-abu Gelap
+                }
+            },
+            boxShadow: {
+                'neo': '4px 4px 0px 0px #0F0F11',
+                'neo-lg': '6px 6px 0px 0px #0F0F11',
+                'neo-xl': '8px 8px 0px 0px #0F0F11',
+            }
+        }
+    }
+}
+    </script>
+    <style>
+        .neo-border { border: 3px solid #0F0F11; }
+        .neo-btn {
+            border: 3px solid #0F0F11;
+            box-shadow: 4px 4px 0px 0px #0F0F11;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .neo-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0F0F11;
+        }
+        .neo-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px 0px #0F0F11;
+        }
+        .neo-card {
+            border: 3px solid #0F0F11;
+            box-shadow: 8px 8px 0px 0px #0F0F11;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: inline-flex;
+            width: max-content;
+            animation: marquee 18s linear infinite;
+        }
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+    </style>
+</head>
+<body class="bg-[#FAF8F5] text-neoBlack font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-neonLime selection:text-white overflow-x-hidden">
+
+    <!-- TOP MARQUEE BANNER -->
+    <div class="bg-neoBlack text-white neo-border border-t-0 border-x-0 py-2 overflow-hidden whitespace-nowrap font-extrabold text-[11px] sm:text-sm tracking-wider uppercase">
+        <div class="animate-marquee flex items-center gap-6 sm:gap-8">
+            <span>🛡️ PANEL ADMIN TEBAR CINTA ADHIV 🛡️</span>
+            <span>⚡ KELOLA PESANAN, PROSES PENGIRIMAN & VERIFIKASI DITERIMA ⚡</span>
+            <span>📊 DASHBOARD REKAP MASUK REAL-TIME 📊</span>
+        </div>
+    </div>
+
+    <!-- NAVBAR ADMIN -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md neo-border border-x-0 border-t-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3">
+            <a href="admin.html" class="flex items-center gap-2 group">
+                <div class="w-9 h-9 sm:w-11 sm:h-11 bg-neonLime text-white neo-border neo-btn rounded-xl flex items-center justify-center font-black text-xl sm:text-2xl -rotate-3 group-hover:rotate-6 transition-transform">
+                    👑
+                </div>
+                <span class="font-black text-xl sm:text-3xl tracking-tighter uppercase">
+                    ADMIN<span class="text-neonLime">PANEL</span>
+                </span>
+            </a>
+            <div class="flex items-center gap-2">
+                <!-- TOMBOL KEMBALI / LOGOUT -->
+                <button onclick="handleLogout()" class="px-3 sm:px-4 py-2 bg-neonLime text-white font-black neo-btn rounded-xl text-xs sm:text-sm uppercase tracking-wider flex items-center gap-1.5 hover:bg-rose-600">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">KEMBALI / LOGOUT</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- KONTEN UTAMA DASHBOARD ADMIN -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex-1 w-full space-y-8">
+        
+        <!-- Header Dashboard -->
+        <div class="border-b-4 border-neoBlack pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+                <span class="bg-neonLime text-white text-[10px] sm:text-xs font-black px-3 py-1 rounded-md neo-border uppercase">ADMINISTRATOR AREA</span>
+                <h1 class="text-3xl sm:text-5xl font-black uppercase tracking-tight mt-2">DAFTAR PESANAN MASUK 📦</h1>
+                <p class="text-xs sm:text-sm font-bold text-slate-500 mt-1">Pantau status pesanan mulai dari pengemasan, proses pengiriman, hingga diterima pembeli.</p>
+            </div>
+
+            <div class="bg-white neo-card rounded-2xl p-3.5 flex items-center gap-3">
+                <div class="w-10 h-10 bg-cyberYellow neo-border rounded-xl flex items-center justify-center text-xl font-black">
+                    👤
+                </div>
+                <div>
+                    <p class="text-[10px] font-black uppercase text-slate-500">Login Sebagai:</p>
+                    <p class="text-xs font-black text-neoBlack">Admin Tebar Cinta</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- STATISTIK RINGKAS -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+            <div class="bg-white neo-card rounded-2xl p-4 space-y-1">
+                <p class="text-[10px] font-black uppercase text-slate-500">Total Pesanan</p>
+                <p id="stat-total" class="text-2xl font-black text-neoBlack">0</p>
+            </div>
+            <div class="bg-amber-50 neo-card rounded-2xl p-4 space-y-1">
+                <p class="text-[10px] font-black uppercase text-amber-900">Sedang Dikemas</p>
+                <p id="stat-packing" class="text-2xl font-black text-amber-600">0</p>
+            </div>
+            <div class="bg-blue-50 neo-card rounded-2xl p-4 space-y-1">
+                <p class="text-[10px] font-black uppercase text-blue-900">Proses Pengiriman</p>
+                <p id="stat-shipping" class="text-2xl font-black text-ecomBlue">0</p>
+            </div>
+            <div class="bg-emerald-50 neo-card rounded-2xl p-4 space-y-1">
+                <p class="text-[10px] font-black uppercase text-emerald-900">Pesanan Diterima</p>
+                <p id="stat-received" class="text-2xl font-black text-emerald-600">0</p>
+            </div>
+            <div class="bg-red-50 neo-card rounded-2xl p-4 space-y-1 col-span-2 sm:col-span-1">
+                <p class="text-[10px] font-black uppercase text-red-900">Auto Cancel (>24Jam)</p>
+                <p id="stat-cancelled" class="text-2xl font-black text-rose-600">0</p>
+            </div>
+        </div>
+
+        <!-- FILTER & PENCARIAN -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white neo-card p-4 rounded-2xl">
+            <div class="relative w-full sm:w-80">
+                <input type="text" id="admin-search" onkeyup="filterOrders()" placeholder="Cari nama, no. HP, atau invoice..." class="w-full pl-10 pr-4 py-2.5 bg-cyberYellow neo-border rounded-xl font-bold text-xs sm:text-sm focus:outline-none">
+                <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
+            </div>
+
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+                <select id="status-filter" onchange="filterOrders()" class="w-full sm:w-auto px-4 py-2.5 bg-cyberYellow neo-border rounded-xl font-bold text-xs sm:text-sm focus:outline-none cursor-pointer">
+                    <option value="all">Semua Status</option>
+                    <option value="Sedang Dikemas">Sedang Dikemas</option>
+                    <option value="Proses Pengiriman">Proses Pengiriman</option>
+                    <option value="Pesanan Diterima">Pesanan Diterima</option>
+                    <option value="Dibatalkan">Dibatalkan</option>
+                </select>
+                <button onclick="checkAutoCancellation(); loadOrders();" class="px-4 py-2.5 bg-cyberYellow text-neoBlack font-black neo-btn rounded-xl text-xs uppercase flex items-center gap-1" title="Cek & Refresh">
+                    <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- TABEL PESANAN -->
+        <div class="bg-white neo-card rounded-3xl overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-cyberYellow border-b-4 border-neoBlack text-[11px] font-black uppercase text-slate-700">
+                            <th class="p-4">Invoice & Waktu</th>
+                            <th class="p-4">Pembeli</th>
+                            <th class="p-4">Metode Pengiriman</th>
+                            <th class="p-4">Total Tagihan</th>
+                            <th class="p-4">Status Pesanan</th>
+                            <th class="p-4 text-center">Aksi Admin</th>
+                        </tr>
+                    </thead>
+                    <tbody id="order-table-body" class="divide-y-2 divide-slate-100 text-xs font-bold">
+                        <!-- Data pesanan dirender di sini via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL POPUP CEK DETAIL & ITEM PRODUK -->
+    <div id="detail-modal" class="fixed inset-0 bg-neoBlack/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white neo-card rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 relative max-h-[90vh] overflow-y-auto">
+            
+            <div class="flex items-center justify-between border-b-2 border-slate-100 pb-3">
+                <div>
+                    <span class="bg-ecomBlue text-white text-[9px] font-black px-2 py-0.5 rounded uppercase">RINCIAN PESANAN PRODUK</span>
+                    <h2 id="modal-invoice" class="font-black text-xl text-neoBlack uppercase tracking-tight mt-1">#TC-2026-ADHIV</h2>
+                </div>
+                <button onclick="closeDetailModal()" class="w-8 h-8 bg-cyberYellow neo-border rounded-xl font-black text-sm flex items-center justify-center hover:bg-rose-500 hover:text-white transition-colors">
+                    ✕
+                </button>
+            </div>
+
+            <div class="space-y-4 text-xs font-bold text-slate-700">
+                
+                <!-- DETAIL ITEM PRODUK YANG DIPESAN -->
+                <div class="bg-cyberYellow p-4 rounded-2xl neo-border space-y-3">
+                    <p class="text-[10px] font-black uppercase text-slate-500">👕 Produk yang Dipesan:</p>
+                    <div class="flex items-center gap-3 bg-white neo-border p-3 rounded-xl">
+                        <img id="modal-product-img" src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600&auto=format&fit=crop&q=80" alt="Produk" class="w-14 h-14 object-cover neo-border rounded-lg">
+                        <div class="space-y-0.5 flex-1">
+                            <p id="modal-product-name" class="font-black text-neoBlack text-xs uppercase line-clamp-1">Kaos Eksklusif Tebar Cinta ADHIV</p>
+                            <p id="modal-product-variant" class="text-[10px] text-slate-500 font-bold">Ukuran: L | Warna: Hitam Pekat</p>
+                            <p id="modal-product-price" class="text-[11px] font-black text-neonLime">Rp 120.000 (1x)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info Pemesan -->
+                <div class="bg-slate-50 p-4 rounded-2xl neo-border space-y-1.5">
+                    <p class="text-[10px] font-black uppercase text-slate-500">Informasi Pemesan:</p>
+                    <p id="modal-buyer-name" class="font-black text-neoBlack text-sm">-</p>
+                    <p id="modal-buyer-phone" class="text-slate-600">-</p>
+                    <p id="modal-created-at" class="text-[10px] text-slate-400">-</p>
+                </div>
+
+                <!-- Info Pengiriman / Pengambilan -->
+                <div id="modal-delivery-box" class="p-4 rounded-2xl neo-border space-y-1">
+                    <!-- Dinamis via JS -->
+                </div>
+
+                <!-- Ringkasan Biaya -->
+                <div class="bg-white p-4 rounded-2xl neo-border space-y-2">
+                    <p class="text-[10px] font-black uppercase text-slate-500">Ringkasan Biaya & Donasi:</p>
+                    <div class="space-y-1">
+                        <div class="flex justify-between">
+                            <span>Harga Barang</span>
+                            <span class="font-black">Rp 120.000</span>
+                        </div>
+                        <div class="flex justify-between text-neonLime">
+                            <span>Donasi Kasih ADHIV</span>
+                            <span class="font-black">Rp 50.000</span>
+                        </div>
+                    </div>
+                    <div class="border-t-2 border-slate-200 pt-2 flex justify-between items-center text-sm font-black text-neoBlack">
+                        <span>Metode: <span id="modal-payment-method" class="text-ecomBlue">QRIS</span></span>
+                        <span>Total: <span id="modal-total-amount" class="text-neonLime">Rp 170.000</span></span>
+                    </div>
+                </div>
+
+                <!-- Catatan Pemesan -->
+                <div class="bg-amber-50 p-3 rounded-xl neo-border space-y-0.5">
+                    <p class="text-[10px] font-black uppercase text-amber-900">💬 Catatan Pemesan / Alasan Batal:</p>
+                    <p id="modal-buyer-note" class="text-xs text-amber-800 italic">-</p>
+                </div>
+            </div>
+
+            <!-- Tombol Aksi Modal -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2">
+                <button onclick="sendWAFromModal()" class="py-3 bg-waGreen text-white neo-btn rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 hover:bg-emerald-600">
+                    <i data-lucide="message-circle" class="w-4 h-4"></i>
+                    <span>CHAT WA</span>
+                </button>
+                <button onclick="cancelActiveOrder()" class="py-3 bg-rose-600 text-white neo-btn rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 hover:bg-rose-700">
+                    <i data-lucide="x-circle" class="w-4 h-4"></i>
+                    <span>BATALKAN</span>
+                </button>
+                <button onclick="closeDetailModal()" class="py-3 bg-cyberYellow text-neoBlack neo-btn rounded-xl font-black text-xs uppercase tracking-wider hover:bg-slate-200">
+                    TUTUP
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- BOTTOM MARQUEE BANNER -->
+    <div class="bg-cyberYellow text-neoBlack neo-border border-x-0 py-2 overflow-hidden whitespace-nowrap font-extrabold text-[11px] sm:text-sm tracking-wider uppercase mt-auto">
+        <div class="animate-marquee flex items-center gap-6 sm:gap-8">
+            <span>💖 100% HASIL PENJUALAN DIDONASIKAN 💖</span>
+            <span>⚡ YAYASAN PEDULI KASIH SESAMA ⚡</span>
+            <span>🌟 PANEL ADMIN VERIFIKASI SECEPATNYA 🌟</span>
+        </div>
+    </div>
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-container" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col gap-2.5 pointer-events-none"></div>
+
+    <!-- FOOTER -->
+    <footer class="bg-neoBlack text-white neo-border border-x-0 border-b-0 py-5 text-center text-xs font-bold text-slate-400">
+        <p>&copy; 2026 DROPZONE. Program Tebar Cinta ADHIV Admin Panel.</p>
+    </footer>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesanan Sedang Dikemas — DROPZONE & Tebar Cinta</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Custom Font: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Konfigurasi Tailwind Palet Neo-Brutalism -->
+    <script>
+      tailwind.config = {
+    theme: {
+        extend: {
+            fontFamily: {
+                sans: ['Plus Jakarta Sans', 'sans-serif'],
+            },
+            colors: {
+                neonLime: '#8B0000',       // Merah Gelap Murni (Dark Red)
+                electricViolet: '#4B5563',// Slate Grey Elegan
+                cyberYellow: '#F3F4F6',   // Soft Light Grey
+                neoBlack: '#0F0F11',      // Hitam Pekat Neo-Brutalism
+                waGreen: '#25D366',       // Hijau WhatsApp
+                abuabu: {
+                    DEFAULT: '#9CA3AF',   // Abu-abu Standar
+                    light: '#E5E7EB',     // Abu-abu Terang
+                    dark: '#374151',      // Abu-abu Gelap
+                }
+            },
+            boxShadow: {
+                'neo': '4px 4px 0px 0px #0F0F11',
+                'neo-lg': '6px 6px 0px 0px #0F0F11',
+                'neo-xl': '8px 8px 0px 0px #0F0F11',
+            }
+        }
+    }
+}
+    </script>
+    <style>
+        .neo-border { border: 3px solid #0F0F11; }
+        .neo-btn {
+            border: 3px solid #0F0F11;
+            box-shadow: 4px 4px 0px 0px #0F0F11;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .neo-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0F0F11;
+        }
+        .neo-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px 0px #0F0F11;
+        }
+        .neo-card {
+            border: 3px solid #0F0F11;
+            box-shadow: 8px 8px 0px 0px #0F0F11;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: inline-flex;
+            width: max-content;
+            animation: marquee 18s linear infinite;
+        }
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+        @keyframes pulse-slow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .animate-pulse-slow {
+            animation: pulse-slow 2.5s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-[#FAF8F5] text-neoBlack font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-neonLime selection:text-white overflow-x-hidden">
+
+    <!-- TOP MARQUEE BANNER -->
+    <div class="bg-neonLime text-white neo-border border-t-0 border-x-0 py-2 overflow-hidden whitespace-nowrap font-extrabold text-[11px] sm:text-sm tracking-wider uppercase">
+        <div class="animate-marquee flex items-center gap-6 sm:gap-8">
+            <span>📦 PAYMENT SEDANG DI PROSES SEGERA KONFIRMASI KE ADMIN 📦</span>
+            <span>✦ 100% HASIL PENJUALAN DIDONASIKAN ✦</span>
+            <span>🔥 KONFIRMASI KE WHATSAPP ADMIN SEKARANG 🔥</span>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md neo-border border-x-0 border-t-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3">
+            <a href="index.html" class="flex items-center gap-2 group">
+                <div class="w-9 h-9 sm:w-11 sm:h-11 bg-neonLime text-white neo-border neo-btn rounded-xl flex items-center justify-center font-black text-xl sm:text-2xl -rotate-3 group-hover:rotate-6 transition-transform">
+                    ❤️
+                </div>
+                <span class="font-black text-xl sm:text-3xl tracking-tighter uppercase">
+                    TEBAR<span class="text-neonLime">CINTA</span>
+                </span>
+            </a>
+            <div class="flex items-center gap-2">
+                <a href="checkout.html" class="px-3 sm:px-4 py-2 bg-cyberYellow text-neoBlack font-black neo-btn rounded-xl text-xs sm:text-sm uppercase tracking-wider flex items-center gap-1.5">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    <span>KEMBALI KE CHECKOUT</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- KONTEN UTAMA STATUS PESANAN -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 flex-1 w-full space-y-8">
+        
+        <!-- CARD UTAMA STATUS -->
+        <div class="bg-white neo-card rounded-3xl p-6 sm:p-10 space-y-8 text-center relative overflow-hidden">
+            
+            <!-- Icon Animasi Kotak Paket Sedang Dikemas -->
+            <div class="flex justify-center">
+                <div class="w-20 h-20 sm:w-24 sm:h-24 bg-cyberYellow text-neoBlack neo-border rounded-3xl flex items-center justify-center text-4xl sm:text-5xl animate-pulse-slow shadow-neo">
+                    📦
+                </div>
+            </div>
+
+            <!-- Judul Status -->
+            <div class="space-y-2">
+                <span class="bg-amber-400 text-neoBlack text-xs font-black px-3.5 py-1.5 rounded-full neo-border uppercase tracking-widest inline-block">STATUS: SEDANG DIKEMAS</span>
+                <h1 class="text-3xl sm:text-5xl font-black uppercase tracking-tight">PESANANMU LAGI PROSES! 🚀</h1>
+                <p class="text-xs sm:text-sm font-bold text-slate-500 max-w-lg mx-auto">
+                    Terima kasih! kawan Pembayaran sedang di proses dan. Segera konfirmasi ke WhatsApp admin agar pesananmu langsung diproses & dikirim.
+            </div>
+
+            <!-- RINCIAN INVOICE RINGKAS -->
+            <div class="bg-cyberYellow neo-border rounded-2xl p-5 text-left space-y-4">
+                <div class="flex items-center justify-between border-b-2 border-slate-200 pb-3">
+                    <div>
+                        <p class="text-[10px] font-black uppercase text-slate-500">Nomor Invoice</p>
+                        <p class="font-black text-sm sm:text-base text-neoBlack">#TC-2026-ADHIV</p>
+                    </div>
+                    <span class="bg-emerald-500 text-white text-[10px] font-black px-2.5 py-1 rounded-md neo-border"> proses </span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-bold">
+                    <div class="space-y-1">
+                        <p class="text-[10px] uppercase text-slate-500 font-black">Item Pesanan:</p>
+                        <p class="text-neoBlack">Kaos Eksklusif Tebar Cinta (1x)</p>
+                        <p class="text-neonLime">Donasi Kasih ADHIV (Rp 50.000)</p>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="text-[10px] uppercase text-slate-500 font-black">Total Pembayaran:</p>
+                        <p class="text-base font-black text-neoBlack">Rp 170.000</p>
+                        <p class="text-[10px] text-slate-500">100% Didonasikan untuk Sesama ❤️</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOMBOL KONFIRMASI KE WHATSAPP DENGAN PESAN OTOMATIS -->
+            <div class="space-y-3 pt-2">
+                <button onclick="sendWhatsAppConfirmation()" class="w-full py-4 bg-waGreen text-white neo-btn rounded-2xl font-black text-sm sm:text-base uppercase tracking-wider flex items-center justify-center gap-3 hover:bg-emerald-600 shadow-neo-lg active:scale-95">
+                    <i data-lucide="message-circle" class="w-6 h-6"></i>
+                    <span>KONFIRMASI KE WHATSAPP ADMIN</span>
+                </button>
+                <p class="text-[11px] font-bold text-slate-500">
+                    Klik tombol di atas untuk mengirim pesan otomatis berisi rincian pesanan ke WhatsApp admin agar langsung diproses & dikirim.
+                </p>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- BOTTOM MARQUEE BANNER -->
+    <div class="bg-cyberYellow text-neoBlack neo-border border-x-0 py-2 overflow-hidden whitespace-nowrap font-extrabold text-[11px] sm:text-sm tracking-wider uppercase mt-auto">
+        <div class="animate-marquee flex items-center gap-6 sm:gap-8">
+            <span>💖 100% HASIL PENJUALAN DIDONASIKAN 💖</span>
+            <span>⚡ YAYASAN PEDULI KASIH SESAMA ⚡</span>
+            <span>🌟 BERSAMA KITA BISA WUJUDKAN SENYUM MEREKA 🌟</span>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-container" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col gap-2.5 pointer-events-none"></div>
+
+    <!-- FOOTER -->
+    <footer class="bg-neoBlack text-white neo-border border-x-0 border-b-0 py-5 text-center text-xs font-bold text-slate-400">
+        <p>&copy; 2026 DROPZONE. Program Tebar Cinta ADHIV.</p>
+    </footer>

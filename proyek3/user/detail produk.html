@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katalog Produk — DROPZONE & Tebar Cinta</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Supabase JS Client CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Custom Font: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Konfigurasi Tailwind Palet Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        neonLime: 'darkred',      // Pink Utama Menyala
+                        electricViolet: '#4B5563',// Slate Grey Elegan
+                        hotPink: 'darkgrey',       // Soft Hot Pink
+                        cyberYellow: '#F3F4F6',   // Soft Light Grey
+                        neoBlack: '#0F0F11',      // Hitam Pekat Neo-Brutalism
+                        ecomBlue: '#3B82F6',      // Biru Khusus E-Commerce
+                    },
+                    boxShadow: {
+                        'neo': '4px 4px 0px 0px #0F0F11',
+                        'neo-lg': '6px 6px 0px 0px #0F0F11',
+                        'neo-xl': '8px 8px 0px 0px #0F0F11',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .neo-border { border: 3px solid #0F0F11; }
+        .neo-btn {
+            border: 3px solid #0F0F11;
+            box-shadow: 4px 4px 0px 0px #0F0F11;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .neo-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0F0F11;
+        }
+        .neo-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px 0px #0F0F11;
+        }
+        .neo-card {
+            border: 3px solid #0F0F11;
+            box-shadow: 8px 8px 0px 0px #0F0F11;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: inline-flex;
+            width: max-content;
+            animation: marquee 18s linear infinite;
+        }
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+    </style>
+</head>
+<body class="bg-[#FAF8F5] text-neoBlack font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-neonLime selection:text-white overflow-x-hidden">
+
+    <!-- TOP MARQUEE BANNER -->
+    <div class="bg-neonLime text-white neo-border border-t-0 border-x-0 py-2 overflow-hidden whitespace-nowrap font-extrabold text-[11px] sm:text-sm tracking-wider uppercase">
+        <div class="animate-marquee flex items-center gap-6 sm:gap-8">
+            <span>👕 KATALOG PRODUK TEBAR CINTA ADHIV 👕</span>
+            <span>✦ 100% HASIL PENJUALAN DIDONASIKAN ✦</span>
+            <span>🔥 BELI SEKALIGUS BERDONASI UNTUK SESAMA 🔥</span>
+            <span>👕 KATALOG PRODUK TEBAR CINTA ADHIV 👕</span>
+            <span>✦ 100% HASIL PENJUALAN DIDONASIKAN ✦</span>
+            <span>🔥 BELI SEKALIGUS BERDONASI UNTUK SESAMA 🔥</span>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md neo-border border-x-0 border-t-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3">
+            <a href="index.html" class="flex items-center gap-2 group">
+                <div class="w-9 h-9 sm:w-11 sm:h-11 bg-neonLime text-white neo-border neo-btn rounded-xl flex items-center justify-center font-black text-xl sm:text-2xl -rotate-3 group-hover:rotate-6 transition-transform">
+                    ❤️
+                </div>
+                <span class="font-black text-xl sm:text-3xl tracking-tighter uppercase">
+                    TEBAR<span class="text-neonLime">CINTA</span>
+                </span>
+            </a>
+            <div class="flex items-center gap-2">
+                <a href="cart.html" class="px-3 sm:px-4 py-2 bg-cyberYellow text-neoBlack font-black neo-btn rounded-xl text-xs sm:text-sm uppercase tracking-wider flex items-center gap-1.5">
+                    <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">KERANJANG</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- KONTEN UTAMA KATALOG -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex-1 w-full space-y-8">
+        
+        <!-- Header Judul & PENCARIAN -->
+        <div class="border-b-4 border-neoBlack pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div> 
+                <h1 class="text-3xl sm:text-5xl font-black uppercase tracking-tight mt-2">PILIH PRODUK & DONASI 🛍️</h1>
+                <p class="text-xs sm:text-sm font-bold text-slate-500 mt-1">Setiap produk yang kamu beli berdampak nyata bagi mereka yang membutuhkan.</p>
+            </div>
+
+            <!-- Fitur Cari & Filter -->
+            <div class="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto">
+                <div class="relative w-full sm:w-64">
+                    <input type="text" id="search-input" onkeyup="filterProducts()" placeholder="Cari produk..." class="w-full pl-10 pr-4 py-2.5 bg-white neo-border rounded-xl font-bold text-xs sm:text-sm focus:outline-none">
+                    <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
+                </div>
+        
+            </div>
+        </div>
+
+        <!-- GRID PRODUK DINAMIS (SUPABASE) -->
+        <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Loading State -->
+            <div class="col-span-full py-16 text-center space-y-3">
+                <div class="inline-block p-4 bg-cyberYellow neo-border rounded-2xl animate-spin text-2xl">⏳</div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- BOTTOM MARQUEE BANNER -->
+    <div class="bg-cyberYellow text-neoBlack neo-border border-x-0 py-2 overflow-hidden whitespace-nowrap font-extrabold text-[11px] sm:text-sm tracking-wider uppercase mt-auto">
+        <div class="animate-marquee flex items-center gap-6 sm:gap-8">
+            <span>💖 100% HASIL PENJUALAN DIDONASIKAN 💖</span>
+            <span>⚡ YAYASAN PEDULI KASIH SESAMA ⚡</span>
+            <span>🌟 BERSAMA KITA BISA WUJUDKAN SENYUM MEREKA 🌟</span>
+        </div>
+    </div>
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-container" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col gap-2.5 pointer-events-none"></div>
+
+    <!-- FOOTER -->
+    <footer class="bg-neoBlack text-white neo-border border-x-0 border-b-0 py-5 text-center text-xs font-bold text-slate-400">
+        <p>&copy; 2026 DROPZONE. Program Tebar Cinta ADHIV.</p>
+    </footer>

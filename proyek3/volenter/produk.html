@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unggah Produk — DROPZONE & Tebar Cinta</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Custom Font: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Konfigurasi Tailwind Palet Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        neonLime: 'darkred ',      // Pink Utama Menyala
+                        electricViolet: '#4B5563',// Slate Grey Elegan
+                        hotPink: 'darkgrey',       // Soft Hot Pink
+                        cyberYellow: '#F3F4F6',   // Soft Light Grey
+                        neoBlack: '#0F0F11',      // Hitam Pekat Neo-Brutalism
+                        ecomBlue: '#3B82F6',      // Biru Khusus E-Commerce
+                        accentGreen: '#10B981',   // Hijau Aksi
+                    },
+                    boxShadow: {
+                        'neo': '4px 4px 0px 0px #0F0F11',
+                        'neo-lg': '6px 6px 0px 0px #0F0F11',
+                        'neo-xl': '8px 8px 0px 0px #0F0F11',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .neo-border { border: 3px solid #0F0F11; }
+        .neo-btn {
+            border: 3px solid #0F0F11;
+            box-shadow: 4px 4px 0px 0px #0F0F11;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .neo-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0F0F11;
+        }
+        .neo-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px 0px #0F0F11;
+        }
+        .neo-card {
+            border: 3px solid #0F0F11;
+            box-shadow: 8px 8px 0px 0px #0F0F11;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: inline-flex;
+            width: max-content;
+            animation: marquee 18s linear infinite;
+        }
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+    </style>
+</head>
+<body class="bg-[#FAF8F5] text-neoBlack font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-neonLime selection:text-white overflow-x-hidden">
+
+    <!-- TOP MARQUEE BANNER -->
+    <div class="bg-neonLime text-white neo-border border-t-0 border-x-0 py-2 overflow-hidden whitespace-nowrap font-extrabold text-[11px] sm:text-sm tracking-wider uppercase">
+        <div class="animate-marquee flex items-center gap-6 sm:gap-8">
+            <span>🚀 UPLOAD PRODUK KAMU & BERDONASI BERSAMA 🚀</span>
+            <span>✦ 100% HASIL PENJUALAN DIDONASIKAN ✦</span>
+            <span>🔥 BAGIKAN KARYA & PRODUKMU DI TEBAR CINTA ADHIV 🔥</span>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md neo-border border-x-0 border-t-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3">
+            <a href="index.html" class="flex items-center gap-2 group">
+                <div class="w-9 h-9 sm:w-11 sm:h-11 bg-neonLime text-white neo-border neo-btn rounded-xl flex items-center justify-center font-black text-xl sm:text-2xl -rotate-3 group-hover:rotate-6 transition-transform">
+                    ❤️
+                </div>
+                <span class="font-black text-xl sm:text-3xl tracking-tighter uppercase">
+                    TEBAR<span class="text-neonLime">CINTA</span>
+                </span>
+            </a>
+            <div class="flex items-center gap-2">
+                <a href="profile.html" class="px-3 sm:px-4 py-2 bg-cyberYellow text-neoBlack font-black neo-btn rounded-xl text-xs sm:text-sm uppercase tracking-wider flex items-center gap-1.5">
+                    <i data-lucide="user" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">UBAH PROFIL</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- KONTEN UTAMA UPLOAD PRODUK MEMBER -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex-1 w-full space-y-8">
+
+        <!-- Header Judul -->
+        <div class="border-b-4 border-neoBlack pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+            <div>
+                <span class="bg-ecomBlue text-white text-[10px] sm:text-xs font-black px-3 py-1 rounded-md neo-border uppercase">DASHBOARD MEMBER</span>
+                <h1 class="text-3xl sm:text-4xl font-black uppercase tracking-tight mt-2">UNGGAH PRODUK BARU 📦</h1>
+            </div>
+            <p class="text-xs sm:text-sm font-bold text-slate-500">Jual produk atau karya amarmu.</p>
+        </div>
+
+        <!-- FORMULIR UPLOAD & PRATINJAU -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+            <!-- SISI KIRI: FORMULIR INPUT -->
+            <div class="lg:col-span-7 bg-white neo-card rounded-3xl p-6 sm:p-8 space-y-6">
+
+                <div class="flex items-center gap-3 border-b-2 border-slate-100 pb-3">
+                    <span class="p-2.5 bg-cyberYellow neo-border rounded-xl font-black">✍️</span>
+                    <h2 class="font-black text-lg uppercase tracking-tight">Informasi Detail Produk</h2>
+                </div>
+
+                <form id="upload-form" onsubmit="handleProductUpload(event)" class="space-y-4 text-xs font-bold text-slate-700">
+
+                    <div class="space-y-1.5">
+                        <label class="font-black uppercase text-[11px]">Nama Produk / Karya</label>
+                        <input type="text" id="p-name" required oninput="updatePreview()" placeholder="cth. Hoodie Neo-Brutalism Spesial" class="w-full px-4 py-3 bg-cyberYellow neo-border rounded-xl font-bold text-sm focus:outline-none">
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="font-black uppercase text-[11px]">Harga Jual (Rp)</label>
+                        <input type="number" id="p-price" required min="1000" oninput="updatePreview()" placeholder="cth. 150000" class="w-full px-4 py-3 bg-cyberYellow neo-border rounded-xl font-bold text-sm focus:outline-none">
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="font-black uppercase text-[11px]">Unggah Foto (File Gambar)</label>
+                        <input type="file" id="p-image-file" accept="image/*" required onchange="handleImageUpload(event)" class="w-full px-3 py-2 bg-cyberYellow neo-border rounded-xl font-bold text-xs focus:outline-none file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-black file:bg-neonLime file:text-white hover:file:bg-rose-600 cursor-pointer">
+                        <input type="hidden" id="p-image" oninput="updatePreview()">
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="font-black uppercase text-[11px]">Deskripsi Lengkap Produk</label>
+                        <textarea id="p-desc" rows="3" required placeholder="Jelaskan bahan, ukuran, atau keunggulan produkmu..." class="w-full px-4 py-3 bg-cyberYellow neo-border rounded-xl font-bold text-sm focus:outline-none"></textarea>
+                    </div>
+
+                    <div class="pt-3">
+                        <button type="submit" class="w-full py-4 bg-neonLime text-white neo-btn rounded-2xl font-black text-sm uppercase tracking-wider hover:bg-rose-600 shadow-neo">
+                            PUBLIKASIKAN PRODUK 🚀
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- SISI KANAN: PRATINJAU KARTU PRODUK (LIVE PREVIEW) -->
+            <div class="lg:col-span-5 space-y-4">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-black uppercase tracking-wider bg-cyberYellow px-3 py-1 neo-border rounded-lg">👀 Live Pratinjau Kartu</span>
+                </div>
+
+                <div class="bg-white neo-card rounded-3xl p-4 sm:p-5 space-y-4">
+                    <!-- Kartu Produk Preview -->
+                    <div class="neo-card rounded-2xl overflow-hidden bg-white group">
+                        <div class="relative h-48 sm:h-56 bg-slate-100 overflow-hidden neo-border border-t-0 border-x-0">
+                            <img id="preview-img" src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=600" alt="Pratinjau Produk" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        </div>
+                        <div class="p-4 sm:p-5 space-y-3">
+                            <h3 id="preview-name" class="font-black text-base sm:text-lg uppercase line-clamp-1 tracking-tight">Nama Produk Kamu</h3>
+                            <p id="preview-desc" class="text-xs font-bold text-slate-500 line-clamp-2">Deskripsi produk akan muncul di sini secara real-time saat kamu mengetiknya...</p>
+                            
+                            <div class="pt-2 border-t-2 border-slate-100 flex items-center justify-between">
+                                <div>
+                                    <span class="text-[10px] font-black uppercase text-slate-400 block">Harga Jual</span>
+                                    <span id="preview-price" class="font-black text-sm sm:text-base text-neonLime">Rp 0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-neoBlack text-white py-6 neo-border border-b-0 border-x-0 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs font-bold tracking-wider">
+            &copy; 2026 DROPZONE & TEBAR CINTA ADHIV. ALL RIGHTS RESERVED.
+        </div>
+    </footer>

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout & Invoice — DROPZONE & Tebar Cinta</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Custom Font: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Konfigurasi Tailwind Palet Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        neonLime: 'darkred',      // Pink Utama Menyala (Warna Tombol Pay)
+                        electricViolet: '#4B5563',// Slate Grey Elegan
+                        hotPink: 'darkgrey',       // Soft Hot Pink
+                        cyberYellow: '#F3F4F6',   // Soft Light Grey
+                        neoBlack: '#0F0F11',      // Hitam Pekat Neo-Brutalism
+                        ecomBlue: '#3B82F6',      // Biru Khusus E-Commerce
+                    },
+                    boxShadow: {
+                        'neo': '4px 4px 0px 0px #0F0F11',
+                        'neo-lg': '6px 6px 0px 0px #0F0F11',
+                        'neo-xl': '8px 8px 0px 0px #0F0F11',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .neo-border { border: 3px solid #0F0F11; }
+        .neo-btn {
+            border: 3px solid #0F0F11;
+            box-shadow: 4px 4px 0px 0px #0F0F11;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .neo-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0F0F11;
+        }
+        .neo-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px 0px #0F0F11;
+        }
+        .neo-card {
+            border: 3px solid #0F0F11;
+            box-shadow: 8px 8px 0px 0px #0F0F11;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: inline-flex;
+            width: max-content;
+            animation: marquee 18s linear infinite;
+        }
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+    </style>
+</head>
+<body class="bg-[#FAF8F5] text-neoBlack font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-neonLime selection:text-white overflow-x-hidden">
+
+    <!-- TOP MARQUEE BANNER -->
+    <div class="bg-neonLime text-white neo-border border-t-0 border-x-0 py-2 overflow-hidden whitespace-nowrap font-extrabold text-[11px] sm:text-sm tracking-wider uppercase">
+        <div class="animate-marquee flex items-center gap-6 sm:gap-8">
+            <span>⚡ INVOICE & CHECKOUT OTOMATIS (PAY) ⚡</span>
+            <span>✦ 100% HASIL PENJUALAN DIDONASIKAN ✦</span>
+            <span>🔥 KLIK PAY UNTUK PESANAN SEDANG DIKEMAS 🔥</span>
+            <span>⚡ INVOICE & CHECKOUT OTOMATIS (PAY) ⚡</span>
+            <span>✦ 100% HASIL PENJUALAN DIDONASIKAN ✦</span>
+            <span>🔥 KLIK PAY UNTUK PESANAN SEDANG DIKEMAS 🔥</span>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md neo-border border-x-0 border-t-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3">
+            <a href="index.html" class="flex items-center gap-2 group">
+                <div class="w-9 h-9 sm:w-11 sm:h-11 bg-neonLime text-white neo-border neo-btn rounded-xl flex items-center justify-center font-black text-xl sm:text-2xl -rotate-3 group-hover:rotate-6 transition-transform">
+                    ❤️
+                </div>
+                <span class="font-black text-xl sm:text-3xl tracking-tighter uppercase">
+                    TEBAR<span class="text-neonLime">CINTA</span>
+                </span>
+            </a>
+            <div class="flex items-center gap-2">
+                <a href="cart.html" class="px-3 sm:px-4 py-2 bg-cyberYellow text-neoBlack font-black neo-btn rounded-xl text-xs sm:text-sm uppercase tracking-wider flex items-center gap-1.5">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    <span>KEMBALI KE KERANJANG</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- KONTEN UTAMA CHECKOUT -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 flex-1 w-full space-y-8">
+        
+        <!-- Header Judul -->
+        <div class="border-b-4 border-neoBlack pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+            <div>
+                    <h1 class="text-3xl sm:text-5xl font-black uppercase tracking-tight mt-2">CHECKOUT & INVOICE </h1>
+            </div>
+            <p class="text-xs sm:text-sm font-bold text-slate-500">Lengkapi data, lihat invoice instan di sebelah kanan, lalu selesaikan pembayaran.</p>
+        </div>
+
+        <!-- GRID UTAMA FORM (KIRI) & INVOICE RINGKASAN (KANAN) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- SISI KIRI: FORMULIR DATA DIRI, PENGAMBILAN, & PEMBAYARAN -->
+            <div class="lg:col-span-8 space-y-6">
+                
+                <!-- CARD 1: INFORMASI PEMBELI -->
+                <div class="bg-white neo-card rounded-3xl p-5 sm:p-8 space-y-5">
+                    <div class="flex items-center gap-3 border-b-2 border-slate-100 pb-3">
+                        <span class="p-2.5 bg-cyberYellow neo-border rounded-xl font-black">👤</span>
+                        <h2 class="font-black text-lg sm:text-xl uppercase tracking-tight">1. Informasi Pemilik Pesanan</h2>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="space-y-1.5">
+                                <label class="font-black text-xs uppercase tracking-wider text-slate-700">Nama Lengkap</label>
+                                <input type="text" id="buyer-name" placeholder="cth. Aditya Firmansyah" oninput="updateInvoice()" class="w-full px-4 py-3 bg-cyberYellow neo-border rounded-xl font-bold text-sm focus:outline-none">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="font-black text-xs uppercase tracking-wider text-slate-700">Nomor WhatsApp (Aktif)</label>
+                                <input type="tel" id="buyer-phone" placeholder="cth. 081234567890" oninput="updateInvoice()" class="w-full px-4 py-3 bg-cyberYellow neo-border rounded-xl font-bold text-sm focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label class="font-black text-xs uppercase tracking-wider text-slate-700">Catatan Tambahan / Doa (Opsional)</label>
+                            <input type="text" id="buyer-note" placeholder="cth. Semoga berkah untuk balita ADHIV!" class="w-full px-4 py-3 bg-cyberYellow neo-border rounded-xl font-bold text-sm focus:outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 2: METODE PENGAMBILAN / PENGIRIMAN -->
+                <div class="bg-white neo-card rounded-3xl p-5 sm:p-8 space-y-5">
+                    <div class="flex items-center gap-3 border-b-2 border-slate-100 pb-3">
+                        <span class="p-2.5 bg-cyberYellow neo-border rounded-xl font-black">📦</span>
+                        <h2 class="font-black text-lg sm:text-xl uppercase tracking-tight">2. Pilih Metode Pengambilan / Pengiriman</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <!-- Opsi Ambil Sendiri -->
+                        <label class="cursor-pointer bg-white neo-card rounded-2xl p-4 flex flex-col justify-between gap-3 hover:bg-slate-50 transition-all has-[:checked]:bg-emerald-50 has-[:checked]:border-emerald-500">
+                            <div class="flex items-center justify-between">
+                                <span class="font-black text-sm uppercase">Ambil di Posko Bandung</span>
+                                <input type="radio" name="delivery-method" value="Ambil Langsung di Posko Bandung" checked onchange="toggleDeliveryOptions()" class="w-4 h-4 accent-emerald-600">
+                            </div>
+                            <p class="text-[11px] font-bold text-slate-500">Ambil langsung di basecamp / posko Tebar Cinta Bandung.</p>
+                        </label>
+
+                        <!-- Opsi Kirim Kurir -->
+                        <label class="cursor-pointer bg-white neo-card rounded-2xl p-4 flex flex-col justify-between gap-3 hover:bg-slate-50 transition-all has-[:checked]:bg-blue-50 has-[:checked]:border-ecomBlue">
+                            <div class="flex items-center justify-between">
+                                <span class="font-black text-sm uppercase">Kirim via Kurir Ekspedisi</span>
+                                <input type="radio" name="delivery-method" value="Kirim via Kurir Ekspedisi" onchange="toggleDeliveryOptions()" class="w-4 h-4 accent-ecomBlue">
+                            </div>
+                            <div class="space-y-1">
+                                <p class="text-[11px] font-bold text-slate-500">Kirim ke alamat tujuan menggunakan kurir pilihanmu sendiri.</p>
+                                <p class="text-[10px] font-black text-blue-900 bg-blue-100/70 p-1.5 rounded-lg border border-blue-200">
+                                    📌 Alamat untuk rute pengantaran kurir.
+                                </p>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- Input Alamat (Muncul otomatis saat klik card Ekspedisi) -->
+                    <div id="address-container" class="space-y-3 pt-2 hidden">
+                        <div class="space-y-1.5">
+                            <label class="font-black text-xs uppercase tracking-wider text-slate-700 flex items-center justify-between">
+                                <span>Alamat Lengkap Tujuan Pengiriman</span>
+                                <span class="text-[10px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md neo-border">Diperlukan Kurir</span>
+                            </label>
+                            <textarea id="buyer-address" rows="3" placeholder="Nama jalan, nomor rumah, RT/RW, kelurahan, kecamatan, kota..." oninput="updateInvoice()" class="w-full px-4 py-3 bg-cyberYellow neo-border rounded-xl font-bold text-sm focus:outline-none"></textarea>
+                        </div>
+
+                        <div class="bg-blue-50 p-4 rounded-xl neo-border space-y-1">
+                            <p class="text-xs font-black uppercase text-blue-900 flex items-center gap-1.5">
+                                <i data-lucide="truck" class="w-4 h-4"></i>
+                                <span>Panduan Pengantaran Kurir:</span>
+                            </p>
+                            <p class="text-xs font-bold text-blue-800 leading-relaxed">
+                                Mohon isi alamat selengkap mungkin. Data alamat dan nomor telepon ini digunakan untuk <strong>pemandu arah kurir saat pengantaran barang</strong> agar paket tepat sampai tujuan tanpa kendala.
+                            </p>
+                        </div>
+
+                        <div class="bg-amber-50 p-3.5 rounded-xl neo-border space-y-1">
+                            <p class="text-xs font-black uppercase text-amber-900">ℹ️ Catatan Ekspedisi:</p>
+                            <p class="text-xs font-bold text-amber-800 leading-relaxed">
+                                Pilihan ekspedisi (JNE, J&T, SiCepat, GoSend, dll.) tidak disediakan langsung di web Tebar Cinta. Pilihan ekspedisi dan ongkir disepakati mandiri via WhatsApp saat janjian dengan admin.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Pengaturan Jadwal Kunjungan Posko -->
+                    <div id="posko-schedule-container" class="space-y-3 pt-3 bg-emerald-50/60 p-4 rounded-2xl neo-border">
+                        <label class="font-black text-xs uppercase tracking-wider text-emerald-900 flex items-center gap-1.5">
+                            <i data-lucide="calendar" class="w-4 h-4"></i>
+                            <span>Atur Jadwal Tanggal & Jam Pengambilan di Posko:</span>
+                        </label>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="text-[11px] font-bold text-slate-600 block mb-1">Tanggal Kunjungan:</label>
+                                <input type="date" id="posko-pickup-date" onchange="updateInvoice()" class="w-full px-3 py-2.5 bg-white neo-border rounded-xl font-bold text-sm focus:outline-none cursor-pointer">
+                            </div>
+                            <div>
+                                <label class="text-[11px] font-bold text-slate-600 block mb-1">Jam Kedatangan:</label>
+                                <input type="time" id="posko-pickup-time" value="10:00" onchange="updateInvoice()" class="w-full px-3 py-2.5 bg-white neo-border rounded-xl font-bold text-sm focus:outline-none cursor-pointer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 3: PILIHAN METODE PEMBAYARAN -->
+                <div class="bg-white neo-card rounded-3xl p-5 sm:p-8 space-y-5">
+                    <div class="flex items-center gap-3 border-b-2 border-slate-100 pb-3">
+                        <span class="p-2.5 bg-cyberYellow neo-border rounded-xl font-black">💳</span>
+                        <h2 class="font-black text-lg sm:text-xl uppercase tracking-tight">3. Pilih Metode Pembayaran</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <!-- Opsi 1 -->
+                        <label class="cursor-pointer bg-white neo-card rounded-2xl p-4 flex flex-col justify-between gap-3 hover:bg-slate-50 transition-all has-[:checked]:bg-pink-50 has-[:checked]:border-neonLime">
+                            <div class="flex items-center justify-between">
+                                <span class="font-black text-sm uppercase">QRIS / E-Wallet</span>
+                                <input type="radio" name="payment-method" value="QRIS / E-Wallet (GoPay/DANA/OVO)" checked onchange="updateInvoice()" class="w-4 h-4 accent-neonLime">
+                            </div>
+                            <p class="text-[11px] font-bold text-slate-500">Scan QR pakai semua aplikasi e-wallet & m-banking.</p>
+                        </label>
+
+                        <!-- Opsi 2 -->
+                        <label class="cursor-pointer bg-white neo-card rounded-2xl p-4 flex flex-col justify-between gap-3 hover:bg-slate-50 transition-all has-[:checked]:bg-blue-50 has-[:checked]:border-ecomBlue">
+                            <div class="flex items-center justify-between">
+                                <span class="font-black text-sm uppercase">Transfer Bank</span>
+                                <input type="radio" name="payment-method" value="Transfer Bank (BCA / Mandiri / BNI)" onchange="updateInvoice()" class="w-4 h-4 accent-ecomBlue">
+                            </div>
+                            <p class="text-[11px] font-bold text-slate-500">BCA, Mandiri, atau BNI atas nama Yayasan Tebar Cinta.</p>
+                        </label>
+
+                        <!-- Opsi 3: Bayar di Posko (DINONAKTIFKAN) -->
+                        <label class="opacity-65 cursor-not-allowed bg-slate-100 neo-card rounded-2xl p-4 flex flex-col justify-between gap-3 border-dashed">
+                            <div class="flex items-center justify-between">
+                                <span class="font-black text-sm uppercase text-slate-400 line-through">Bayar di Posko</span>
+                                <input type="radio" name="payment-method" value="Bayar di Posko" disabled class="w-4 h-4 cursor-not-allowed">
+                            </div>
+                            <p class="text-[11px] font-black text-amber-700 italic bg-amber-100 px-2 py-1 rounded">🔒 Aktif saat ada workshop</p>
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- SISI KANAN: TAMPILAN INVOICE INTERAKTIF & TOMBOL PAY -->
+            <div class="lg:col-span-4 space-y-6">
+                <div class="bg-white neo-card rounded-3xl p-5 sm:p-6 space-y-5 sticky top-24">
+                    
+                    <!-- Header Invoice -->
+                    <div class="border-b-2 border-slate-100 pb-3 flex items-center justify-between">
+                        <div>
+                            <span class="bg-neoBlack text-white text-[9px] font-black px-2 py-0.5 rounded uppercase">INVOICE RESMI</span>
+                            <h2 class="font-black text-lg uppercase tracking-tight mt-1">#TC-2026-ADHIV</h2>
+                        </div>
+                        <span class="text-2xl">🧾</span>
+                    </div>
+
+                    <!-- Detail Data Invoice & Pesanan -->
+                    <div class="space-y-3 text-xs font-bold text-slate-700">
+                        <!-- Data Pembeli -->
+                        <div class="bg-cyberYellow p-3 rounded-xl neo-border space-y-1">
+                             <!-- Info Metode & Alamat/Jadwal di Invoice -->
+                        <div id="inv-method-box" class="p-3 rounded-xl neo-border space-y-1 transition-all">
+                            <!-- Dinamis via JS -->
+                        </div>
+
+                        <!-- Rincian Item Pesanan -->
+                        <div class="space-y-1.5 pt-1">
+                            <div class="flex justify-between items-center text-blue-900 bg-blue-50 p-2.5 rounded-xl neo-border">
+                                <span class="flex items-center gap-1.5"><i data-lucide="shopping-bag" class="w-4 h-4"></i> Kaos Tebar Cinta (1x):</span>
+                                <span class="font-black">Rp 120.000</span>
+                            </div>
+
+                            <div class="flex justify-between items-center text-pink-950 bg-pink-50 p-2.5 rounded-xl neo-border">
+                                <span class="flex items-center gap-1.5"><i data-lucide="heart" class="w-4 h-4"></i> Donasi Kasih:</span>
+                                <span class="font-black text-neonLime">Rp 50.000</span>
+                            </div>
+                        </div>
+
+                        <!-- Metode Pembayaran di Invoice -->
+                        <div class="flex justify-between items-center bg-slate-100 p-2.5 rounded-xl neo-border">
+                            <span class="text-[11px] uppercase text-slate-500">Metode Pembayaran:</span>
+                            <span id="inv-payment" class="font-black text-neoBlack text-[11px]">QRIS / E-Wallet</span>
+                        </div>
+
+                        <!-- Total Tagihan -->
+                        <div class="border-t-4 border-neoBlack pt-3 flex justify-between items-end">
+                            <div>
+                                <p class="text-[10px] font-black uppercase text-slate-500">Total Tagihan</p>
+                                <p class="text-2xl font-black text-neonLime tracking-tight">Rp 170.000</p>
+                            </div>
+                            <span class="text-2xl">🎉</span>
+                        </div>
+                    </div>
+
+                    <!-- TOMBOL PAY (Sistem Pembayaran Instan ke Packing) -->
+                    <button onclick="processPayment()" class="w-full py-4 bg-neonLime text-white neo-btn rounded-2xl font-black text-base uppercase tracking-wider flex items-center justify-center gap-2.5 hover:bg-rose-600 shadow-neo-lg active:scale-95">
+                        <i data-lucide="credit-card" class="w-5 h-5"></i>
+                        <span>PAY (BAYAR SEKARANG)</span>
+                    </button>
+
+                    <!-- PANDUAN STATUS -->
+                    <div class="bg-cyberYellow neo-border rounded-xl p-3 space-y-1 text-left">
+                        <p class="text-[10px] font-black uppercase text-slate-800">💡 Status Pesanan:</p>
+                        <p class="text-[10px] font-bold text-slate-700 leading-tight">
+                            Klik PAY untuk menyelesaikan pembayaran dan langsung melihat status barang sedang dikemas! 📦
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- BOTTOM MARQUEE BANNER -->
+    <div class="bg-cyberYellow text-neoBlack neo-border border-x-0 py-2 overflow-hidden whitespace-nowrap font-extrabold text-[11px] sm:text-sm tracking-wider uppercase mt-auto">
+        <div class="animate-marquee flex items-center gap-6 sm:gap-8">
+            <span>💖 100% HASIL PENJUALAN DIDONASIKAN 💖</span>
+            <span>⚡ YAYASAN PEDULI KASIH SESAMA ✦ INVOICE RESMI ⚡</span>
+            <span>🌟 BERSAMA KITA BISA WUJUDKAN SENYUM MEREKA 🌟</span>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-container" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col gap-2.5 pointer-events-none"></div>
+
+    <!-- FOOTER -->
+    <footer class="bg-neoBlack text-white neo-border border-x-0 border-b-0 py-5 text-center text-xs font-bold text-slate-400">
+        <p>&copy; 2026 DROPZONE. Program Tebar Cinta ADHIV.</p>
+    </footer>

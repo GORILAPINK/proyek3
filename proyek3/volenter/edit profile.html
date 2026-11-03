@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profil — DROPZONE & Tebar Cinta</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Custom Font: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Konfigurasi Tailwind Palet Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        neonLime: 'darkred ',      // Pink Utama Menyala
+                        electricViolet: '#4B5563',// Slate Grey Elegan
+                        hotPink: 'darkgrey',       // Soft Hot Pink
+                        cyberYellow: 'darkgrey',   // Soft Light Grey
+                        neoBlack: '#0F0F11',      // Hitam Pekat Neo-Brutalism
+                        ecomBlue: 'darkgrey',      // Biru Khusus E-Commerce
+                        accentGreen: '#10B981',   // Hijau Aksi
+                    },
+                    boxShadow: {
+                        'neo': '4px 4px 0px 0px #0F0F11',
+                        'neo-lg': '6px 6px 0px 0px #0F0F11',
+                        'neo-xl': '8px 8px 0px 0px #0F0F11',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .neo-border { border: 3px solid #0F0F11; }
+        .neo-btn {
+            border: 3px solid #0F0F11;
+            box-shadow: 4px 4px 0px 0px #0F0F11;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .neo-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0F0F11;
+        }
+        .neo-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px 0px #0F0F11;
+        }
+        .neo-card {
+            border: 3px solid #0F0F11;
+            box-shadow: 8px 8px 0px 0px #0F0F11;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: inline-flex;
+            width: max-content;
+            animation: marquee 18s linear infinite;
+        }
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+    </style>
+</head>
+<body class="bg-[#FAF8F5] text-neoBlack font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-neonLime selection:text-white overflow-x-hidden">
+
+    <!-- TOP MARQUEE BANNER -->
+    <div class="bg-neonLime text-white neo-border border-t-0 border-x-0 py-2 overflow-hidden whitespace-nowrap font-extrabold text-[11px] sm:text-sm tracking-wider uppercase">
+        <div class="animate-marquee flex items-center gap-6 sm:gap-8">
+            <span>🚀 PERBARUI INFORMASI PROFILMU DENGAN MUDAH 🚀</span>
+            <span>✦ KELOLA AKUN & IDENTITAS KREATOR ✦</span>
+            <span>🔥 DROPZONE & TEBAR CINTA ADHIV 🔥</span>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md neo-border border-x-0 border-t-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3">
+            <a href="index.html" class="flex items-center gap-2 group">
+                <div class="w-9 h-9 sm:w-11 sm:h-11 bg-neonLime text-white neo-border neo-btn rounded-xl flex items-center justify-center font-black text-xl sm:text-2xl -rotate-3 group-hover:rotate-6 transition-transform">
+                    ❤️
+                </div>
+                <span class="font-black text-xl sm:text-3xl tracking-tighter uppercase">
+                    TEBAR<span class="text-neonLime">CINTA</span>
+                </span>
+            </a>
+            
+            <div class="flex items-center gap-2 sm:gap-3">
+                <a href="products.html" class="px-3 sm:px-4 py-2 bg-cyberYellow text-neoBlack font-black neo-btn rounded-xl text-xs sm:text-sm uppercase tracking-wider flex items-center gap-1.5">
+                    <i data-lucide="store" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">KATALOG</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- KONTEN UTAMA EDIT PROFIL -->
+    <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex-1 w-full space-y-8">
+
+        <!-- Header Judul -->
+        <div class="border-b-4 border-neoBlack pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+            <div>
+                <span class="bg-ecomBlue text-white text-[10px] sm:text-xs font-black px-3 py-1 rounded-md neo-border uppercase">DASHBOARD AKUN</span>
+                <h1 class="text-3xl sm:text-4xl font-black uppercase tracking-tight mt-2">EDIT PROFIL ✏️</h1>
+            </div>
+            <p class="text-xs sm:text-sm font-bold text-slate-500">Perbarui informasi identitas profil kamu.</p>
+        </div>
+
+        <!-- FORMULIR EDIT PROFIL -->
+        <div class="bg-white neo-card rounded-3xl p-6 sm:p-8 space-y-6">
+
+            <div class="flex items-center gap-3 border-b-2 border-slate-100 pb-3">
+                <span class="p-2.5 bg-cyberYellow neo-border rounded-xl font-black">👤</span>
+                <h2 class="font-black text-lg uppercase tracking-tight">Informasi Akun Pengguna</h2>
+            </div>
+
+            <form id="edit-profile-page-form" onsubmit="handleProfileUpdate(event)" class="space-y-6 text-xs font-bold text-slate-700">
+
+                <!-- Pratinjau Foto Profil -->
+                <div class="flex flex-col sm:flex-row items-center gap-6 p-4 bg-cyberYellow/50 neo-border rounded-2xl">
+                    <div class="relative">
+                        <img id="preview-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400" alt="Pratinjau Foto Profil" class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-cover neo-border shadow-neo">
+                    </div>
+                    <div class="space-y-2 text-center sm:text-left flex-1">
+                        <label class="font-black uppercase text-[11px] block">Ganti Foto Profil (File Gambar)</label>
+                        <input type="file" id="avatar-file-input" accept="image/*" onchange="handleAvatarFile(event)" class="w-full px-3 py-2 bg-white neo-border rounded-xl font-bold text-xs focus:outline-none file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-black file:bg-neonLime file:text-white hover:file:bg-rose-600 cursor-pointer">
+                        <input type="hidden" id="p-avatar-url" value="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400">
+                        <p class="text-[10px] text-slate-500 font-bold">Format yang didukung: JPG, PNG, atau WEBP.</p>
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="font-black uppercase text-[11px]">Nama Lengkap</label>
+                    <input type="text" id="p-fullname" required value="Adhiv Arya" placeholder="cth. Adhiv Arya" class="w-full px-4 py-3 bg-cyberYellow neo-border rounded-xl font-bold text-sm focus:outline-none">
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="font-black uppercase text-[11px]">Bio Singkat / Profesi</label>
+                    <textarea id="p-biography" rows="3" required placeholder="Jelaskan sedikit tentang dirimu atau karya senimu..." class="w-full px-4 py-3 bg-cyberYellow neo-border rounded-xl font-bold text-sm focus:outline-none">Kreator & Penjual Karya Seni Neo-Brutalism</textarea>
+                </div>
+
+                <div class="pt-3 flex gap-3">
+                    <a href="profile.html" class="w-1/2 py-4 text-center bg-cyberYellow text-neoBlack neo-btn rounded-2xl font-black text-sm uppercase tracking-wider flex items-center justify-center">
+                        BATAL
+                    </a>
+                    <button type="submit" class="w-1/2 py-4 bg-neonLime text-white neo-btn rounded-2xl font-black text-sm uppercase tracking-wider hover:bg-rose-600 shadow-neo">
+                        SIMPAN PERUBAHAN ✨
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-neoBlack text-white py-6 neo-border border-b-0 border-x-0 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs font-bold tracking-wider">
+            &copy; 2026 DROPZONE & TEBAR CINTA ADHIV. ALL RIGHTS RESERVED.
+        </div>
+    </footer>
+
+</body>
+</html>
