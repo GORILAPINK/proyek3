@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keranjang Belanja & Donasi — YOUTH THRIFT</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Supabase JS Client CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Custom Font: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Konfigurasi Tailwind Palet Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        neonLime: '#8B0000',      // Dark Red utama
+                        electricViolet: '#4B5563',// Slate Grey Elegan
+                        hotPink: '#9CA3AF',       // Soft Cool Grey
+                        cyberYellow: '#F3F4F6',   // Soft Light Grey
+                        neoBlack: '#0F0F11',      // Hitam Pekat Neo-Brutalism
+                        ecomGrey: '#E5E7EB',      // Abu-abu elegan untuk Kartu Produk
+                        darkred: '#8B0000',       // Dark Red Donasi
+                    },
+                    boxShadow: {
+                        'neo-sm': '2px 2px 0px 0px #0F0F11',
+                        'neo': '4px 4px 0px 0px #0F0F11',
+                        'neo-lg': '6px 6px 0px 0px #0F0F11',
+                        'neo-xl': '8px 8px 0px 0px #0F0F11',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .neo-border { border: 3px solid #0F0F11; }
+        .neo-border-sm { border: 2px solid #0F0F11; }
+        .neo-btn {
+            border: 3px solid #0F0F11;
+            box-shadow: 4px 4px 0px 0px #0F0F11;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .neo-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0F0F11;
+        }
+        .neo-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px 0px #0F0F11;
+        }
+        .neo-card {
+            border: 3px solid #0F0F11;
+            box-shadow: 8px 8px 0px 0px #0F0F11;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: inline-flex;
+            width: max-content;
+            animation: marquee 18s linear infinite;
+        }
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+    </style>
+</head>
+<body class="bg-[#FAF8F5] text-neoBlack font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-darkred selection:text-white overflow-x-hidden">
+
+    <!-- TOP MARQUEE BANNER -->
+    <div class="bg-darkred text-white neo-border border-t-0 border-x-0 py-2 overflow-hidden whitespace-nowrap font-extrabold text-[11px] sm:text-sm tracking-wider uppercase">
+        <div class="animate-marquee flex items-center gap-6 sm:gap-8">
+            <span>⚡ COMITTHRIFT: E-COMMERCE & DONASI BALITA ADHIV ⚡</span>
+            <span>✦ BELANJA BERAMAL: 100% HASIL DIDONASIKAN ✦</span>
+            <span>🔥 DONASI KELIPATAN 1.000 MINIMAL 1.000 🔥</span>
+            <span>⚡ COMITTHRIFT: E-COMMERCE & DONASI BALITA ADHIV ⚡</span>
+            <span>✦ BELANJA BERAMAL: 100% HASIL DIDONASIKAN ✦</span>
+            <span>🔥 DONASI KELIPATAN 1.000 MINIMAL 1.000 🔥</span>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md neo-border border-x-0 border-t-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3">
+            <a href="index.html" class="flex items-center gap-2 group">
+                <div class="w-9 h-9 sm:w-11 sm:h-11 bg-darkred text-white neo-border neo-btn rounded-xl flex items-center justify-center font-black text-xl sm:text-2xl -rotate-3 group-hover:rotate-6 transition-transform">
+                    🔥
+                </div>
+                <span class="font-black text-xl sm:text-3xl tracking-tighter uppercase">
+                    COMIT<span class="text-darkred">THRIFT</span>
+                </span>
+            </a>
+            <div class="flex items-center gap-2">
+                <a href="index.html" class="px-3 sm:px-4 py-2 bg-cyberYellow text-neoBlack font-black neo-btn rounded-xl text-xs sm:text-sm uppercase tracking-wider flex items-center gap-1.5">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    <span>KEMBALI</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- KONTEN UTAMA -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 flex-1 w-full space-y-8">
+        
+        <!-- Header Judul -->
+        <div class="border-b-4 border-neoBlack pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+            <div>
+                <h1 class="text-3xl sm:text-5xl font-black uppercase tracking-tight mt-2">KERANJANG 🛒</h1>
+            </div>
+            <p class="text-xs sm:text-sm font-bold text-slate-500">Kombinasi belanja thrift & donasi kelipatan Rp 1.000 dalam 1 kali checkout.</p>
+        </div>
+
+        <!-- GRID UTAMA -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- SISI KIRI: PRODUK (CARD GREY) & DONASI (DARKRED) -->
+            <div class="lg:col-span-8 space-y-6">
+                
+                <!-- CARD 1: PRODUK E-COMMERCE (CARD NUANSA GREY) -->
+                <div class="bg-slate-100 neo-card rounded-3xl p-5 sm:p-6 space-y-4 border-t-8 border-slate-600">
+                    <div class="flex items-center justify-between border-b-2 border-slate-200 pb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="p-2 bg-slate-700 text-white rounded-xl neo-border"><i data-lucide="shopping-bag" class="w-5 h-5"></i></span>
+                            <h2 class="font-black text-lg sm:text-xl uppercase tracking-tight text-slate-900">1. Produk E-Commerce (Merchandise & Thrift)</h2>
+                        </div>
+                        <span class="text-[10px] sm:text-xs font-black bg-white px-2.5 py-1 rounded-lg neo-border">Barang Fisik</span>
+                    </div>
+
+                    <!-- Container Item Produk Dinamis -->
+                    <div class="space-y-3" id="ecom-items-container">
+                        <div class="p-8 text-center space-y-2 bg-white neo-border rounded-2xl">
+                            <div class="inline-block p-3 bg-cyberYellow neo-border rounded-xl animate-spin text-xl">⏳</div>
+                            <p class="font-black text-xs uppercase tracking-wider text-slate-500">load .</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 2: DONASI KASIH ADHIV (DARKRED) -->
+                <div class="bg-red-50/80 neo-card rounded-3xl p-5 sm:p-6 space-y-4 border-t-8 border-darkred">
+                    <div class="flex items-center justify-between border-b-2 border-red-200 pb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="p-2 bg-darkred text-white rounded-xl neo-border"><i data-lucide="heart" class="w-5 h-5"></i></span>
+                            <h2 class="font-black text-lg sm:text-xl uppercase tracking-tight text-red-950">2. Donasi Kasih ADHIV (Min. Rp 1.000, Kelipatan 1.000)</h2>
+                        </div>
+                        <span class="text-[10px] sm:text-xs font-black bg-white px-2.5 py-1 rounded-lg neo-border text-darkred">100% Penyaluran</span>
+                    </div>
+
+                    <!-- Input Nominal Donasi Murni Ketik -->
+                    <div class="space-y-3">
+                        <label class="font-black text-xs uppercase tracking-wider text-slate-700">Ketik Nominal Donasi (Kelipatan Rp 1.000)</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 font-black text-lg sm:text-xl text-neoBlack">Rp</span>
+                            <input type="number" id="donation-amount" value="50000" min="1000" step="1000" oninput="calculateTotals()" class="w-full pl-12 pr-4 py-3 bg-white neo-border rounded-2xl font-black text-lg sm:text-2xl text-darkred focus:outline-none shadow-neo">
+                        </div>
+                        <p class="text-[11px] font-bold text-slate-500 italic">* Nilai donasi otomatis tersimpan ke database saat tombol simpan diklik.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- SISI KANAN: RINGKASAN TOTAL & TOMBOL SIMPAN -->
+            <div class="lg:col-span-4 space-y-6">
+                <div class="bg-white neo-card rounded-3xl p-5 sm:p-6 space-y-5 sticky top-24">
+                    
+                    <div class="border-b-2 border-slate-100 pb-3">
+                        <h2 class="font-black text-lg sm:text-xl uppercase tracking-tight flex items-center gap-2">
+                            <span>RINGKASAN TOTAL</span>
+                            <i data-lucide="receipt" class="w-5 h-5 text-darkred"></i>
+                        </h2>
+                    </div>
+
+                    <!-- Detail Subtotal Pemisahan -->
+                    <div class="space-y-2.5 text-xs sm:text-sm font-bold">
+                        <div class="flex justify-between items-center text-slate-800 bg-slate-100 p-2.5 rounded-xl neo-border">
+                            <span class="flex items-center gap-1.5"><i data-lucide="shopping-bag" class="w-4 h-4"></i> Total E-Commerce:</span>
+                            <span id="ecom-subtotal" class="font-black">Rp 0</span>
+                        </div>
+
+                        <div class="flex justify-between items-center text-red-950 bg-red-50 p-2.5 rounded-xl neo-border">
+                            <span class="flex items-center gap-1.5"><i data-lucide="heart" class="w-4 h-4"></i> Nominal Donasi:</span>
+                            <span id="donate-subtotal" class="font-black text-darkred">Rp 50.000</span>
+                        </div>
+
+                        <div class="flex justify-between text-slate-500 pt-1 px-1">
+                            <span>Biaya Layanan:</span>
+                            <span class="font-black text-emerald-600">GRATIS</span>
+                        </div>
+                        
+                        <!-- Grand Total Hitungan -->
+                        <div class="border-t-4 border-neoBlack pt-3 flex justify-between items-end">
+                            <div>
+                                <p class="text-[10px] font-black uppercase text-slate-500">Total Pembayaran & Donasi</p>
+                                <p id="grand-total" class="text-2xl font-black text-darkred tracking-tight">Rp 50.000</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TOMBOL SIMPAN (DARKRED) -->
+                    <button onclick="saveCartAndDonation()" id="save-btn" class="w-full py-4 bg-darkred text-white neo-btn rounded-2xl font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2.5 hover:bg-red-700 shadow-neo-lg inline-flex active:scale-95 cursor-pointer">
+                        <i data-lucide="save" class="w-5 h-5"></i>
+                        <span>SIMPAN & LANJUTKAN</span>
+                    </button>
+
+                    <div class="bg-cyberYellow neo-border rounded-xl p-3 text-center space-y-1">
+                        <p class="text-[11px] font-black uppercase text-slate-600">💾 Tombol Simpan Aktif</p>
+                        <p class="text-[10px] font-bold text-slate-500 leading-tight">Data keranjang dan nominal donasi Anda akan disimpan langsung ke database.</p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- BOTTOM MARQUEE BANNER -->
+    <div class="bg-cyberYellow text-neoBlack neo-border border-x-0 py-2 overflow-hidden whitespace-nowrap font-extrabold text-[11px] sm:text-sm tracking-wider uppercase mt-auto">
+        <div class="animate-marquee flex items-center gap-6 sm:gap-8">
+            <span>💖 100% HASIL PENJUALAN DIDONASIKAN 💖</span>
+            <span>⚡ YAYASAN PEDULI KASIH SESAMA ⚡</span>
+            <span>🌟 BERSAMA KITA BISA WUJUDKAN SENYUM MEREKA 🌟</span>
+            <span>🚀 COMITTHRIFT FOR BETTER FUTURE 🚀</span>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-container" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col gap-2.5 pointer-events-none"></div>
+
+      <!-- FOOTER -->
+    <footer class="bg-neoBlack text-white py-5 sm:py-6 neo-border border-b-0 border-x-0 mt-10 sm:mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-[11px] sm:text-xs font-bold tracking-wider uppercase leading-relaxed">
+            &copy; 2026 DROPZONE &amp; YOUTH THRIFT ALL RIGHTS RESERVED.
+        </div>
+    </footer>
+</body>
+</html>
