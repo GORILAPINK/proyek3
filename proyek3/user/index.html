@@ -90,61 +90,72 @@
         </div>
     </div>
 
-    <!-- NAVBAR + COMPACT REAL-TIME TRACKER SUPABASE (DANA TERKUMPUL + PRODUK TERJUAL) -->
+    <!-- NAVBAR -->
     <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md neo-border border-x-0 border-t-0">
-        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 flex flex-col lg:flex-row items-center justify-between gap-3 lg:gap-4">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-3">
             
-            <!-- Logo & Brand + Tombol Keranjang Mobile -->
-            <div class="flex items-center justify-between w-full lg:w-auto">
-                <a href="#" class="flex items-center gap-2.5 group">
-                    <div class="w-9 h-9 sm:w-10 sm:h-10 bg-neonLime text-white neo-border neo-btn rounded-xl flex items-center justify-center font-black text-lg sm:text-xl -rotate-3 group-hover:rotate-6 transition-transform">
-                        🔥
+            <!-- Logo & Brand -->
+            <a href="#" class="flex items-center gap-2.5 group shrink-0">
+                <div class="w-9 h-9 sm:w-10 sm:h-10 bg-neonLime text-white neo-border neo-btn rounded-xl flex items-center justify-center font-black text-lg sm:text-xl -rotate-3 group-hover:rotate-6 transition-transform">
+                    🔥
+                </div>
+                <span class="font-black text-xl sm:text-2xl tracking-tighter uppercase">
+                    COMIT<span class="text-neonLime">THRIFT</span>
+                </span>
+            </a>
+
+            <!-- KANAN NAVBAR: DONASI TERKUMPUL, TOTAL PER TAHUN, BARANG TERJUAL & FILTER DI SEBELAH KERANJANG -->
+            <div class="flex flex-wrap items-center gap-2 sm:gap-2.5">
+                <!-- Hasil Donasi Terpilih + Total Per Tahun + Total Barang Terjual -->
+                <div class="bg-cyberYellow neo-border-sm rounded-xl px-3 py-2 flex flex-wrap items-center gap-2.5 sm:gap-3">
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping shrink-0"></span>
+                        <span class="text-[10px] sm:text-xs font-black uppercase tracking-tight text-slate-700">Donasi:</span>
+                        <span id="nav-donation-amount" class="text-darkred font-black text-xs sm:text-sm">Rp 0</span>
                     </div>
-                    <span class="font-black text-xl sm:text-2xl tracking-tighter uppercase">
-                        COMIT<span class="text-neonLime">THRIFT</span>
-                    </span>
-                </a>
 
-                <a href="cart.html" class="lg:hidden px-3 py-2 bg-darkred text-white font-black neo-btn rounded-xl text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-neo-sm">
-                    <i data-lucide="shopping-cart" class="w-4 h-4"></i>
-                    <span>KERANJANG</span>
-                </a>
-            </div>
+                    <span class="text-slate-400 font-bold text-xs">|</span>
 
-            <!-- COMPACT REAL-TIME TRACKER DI NAV (DANA TERKUMPUL + PRODUK TERJUAL + PROGRESS) -->
-            <div class="bg-cyberYellow neo-border-sm rounded-2xl p-2.5 sm:px-4 sm:py-2.5 flex flex-wrap sm:flex-nowrap items-center gap-3 sm:gap-4 w-full lg:w-auto justify-between">
-                
-                <!-- Dana Terkumpul -->
-                <div class="flex items-center gap-1.5 sm:gap-2">
-                    <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping shrink-0"></span>
-                    <span class="text-[11px] font-black uppercase tracking-tight">Dana Terkumpul:</span>
-                    <span id="current-amount" class="text-darkred font-black text-xs sm:text-sm">Rp 0</span>
-                    <span class="text-slate-400 font-bold text-xs">/</span>
-                    <span id="target-amount" class="text-slate-500 font-bold text-[11px]">Rp 0</span>
-                </div>
-
-                <!-- Pembatas Vertikal -->
-                <div class="hidden sm:block h-5 w-[2px] bg-neoBlack/20 shrink-0"></div>
-
-                <!-- Produk Terjual (Sebelah Dana Terkumpul) -->
-                <div class="flex items-center gap-1.5 bg-white neo-border-sm px-2.5 py-1 rounded-xl shrink-0">
-                    <i data-lucide="package-check" class="w-3.5 h-3.5 text-darkred shrink-0"></i>
-                    <span class="text-[10px] sm:text-[11px] font-black uppercase tracking-tight text-slate-600">Produk Terjual:</span>
-                    <span id="sold-count" class="text-darkred font-black text-xs sm:text-sm">0</span>
-                </div>
-
-                <!-- Progress Bar Navigasi -->
-                <div class="flex items-center gap-2 w-full sm:w-36 lg:w-44">
-                    <div class="w-full h-3.5 sm:h-4 bg-white neo-border-sm rounded-full overflow-hidden p-0.5">
-                        <div id="progress-bar" class="h-full bg-darkred rounded-full w-0 transition-all duration-700 ease-out"></div>
+                    <div class="flex items-center gap-1">
+                        <span id="nav-year-label" class="text-[10px] font-black uppercase text-slate-600">Tahun 2026:</span>
+                        <span id="nav-year-total" class="text-neoBlack font-black text-xs">Rp 0</span>
                     </div>
-                    <span id="progress-percentage" class="font-black text-xs sm:text-sm text-darkred shrink-0">0%</span>
-                </div>
-            </div>
 
-            <!-- Action Right Desktop -->
-            <div class="hidden lg:flex items-center gap-3 shrink-0">
-                <a href="cart.html" class="px-4 py-2 bg-darkred text-white font-black neo-btn rounded-xl text-xs uppercase tracking-wider flex items-center gap-2 shadow-neo-sm">
+                    <span class="text-slate-400 font-bold text-xs">|</span>
+
+                    <div class="flex items-center gap-1">
+                        <i data-lucide="package-check" class="w-3.5 h-3.5 text-darkred shrink-0"></i>
+                        <span class="text-[10px] font-black uppercase text-slate-600">Terjual:</span>
+                        <span id="nav-sold-count" class="text-darkred font-black text-xs">0 Produk</span>
+                    </div>
+                </div>
+
+                <!-- Pilih Tahun -->
+                <select id="nav-year-sort" onchange="updateNavDonation()" aria-label="Pilih Tahun Donasi" class="px-2.5 py-2 bg-white neo-border-sm rounded-xl font-black text-xs uppercase cursor-pointer focus:outline-none focus:ring-2 focus:ring-darkred">
+                    <option value="all">Semua Thn</option>
+                    <option value="2026" selected>2026</option>
+                    <option value="2025">2025</option>
+                </select>
+
+                <!-- Pilih Bulan -->
+                <select id="nav-month-sort" onchange="updateNavDonation()" aria-label="Pilih Bulan Donasi" class="px-2.5 py-2 bg-white neo-border-sm rounded-xl font-black text-xs uppercase cursor-pointer focus:outline-none focus:ring-2 focus:ring-darkred">
+                    <option value="all">Semua Bln</option>
+                    <option value="01">Jan</option>
+                    <option value="02">Feb</option>
+                    <option value="03">Mar</option>
+                    <option value="04">Apr</option>
+                    <option value="05">Mei</option>
+                    <option value="06">Jun</option>
+                    <option value="07">Jul</option>
+                    <option value="08">Agu</option>
+                    <option value="09">Sep</option>
+                    <option value="10">Okt</option>
+                    <option value="11" selected>Nov</option>
+                    <option value="12">Des</option>
+                </select>
+
+                <!-- Tombol Keranjang -->
+                <a href="cart.html" class="px-3.5 sm:px-4 py-2 bg-darkred text-white font-black neo-btn rounded-xl text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-neo-sm shrink-0">
                     <i data-lucide="shopping-cart" class="w-4 h-4"></i>
                     <span>KERANJANG</span>
                 </a>
@@ -205,14 +216,11 @@
         </div>
     </div>
 
-     <!-- FOOTER -->
+    <!-- FOOTER -->
     <footer class="bg-neoBlack text-white py-5 sm:py-6 neo-border border-b-0 border-x-0 mt-10 sm:mt-12">
         <div class="max-w-7xl mx-auto px-4 text-center text-[11px] sm:text-xs font-bold tracking-wider uppercase leading-relaxed">
             &copy; 2026 DROPZONE &amp; YOUTH THRIFT ALL RIGHTS RESERVED.
         </div>
     </footer>
-    <script>
-        lucide.createIcons();
-    </script>
 </body>
 </html>
