@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Profil — DROPZONE & Tebar Cinta</title>
+    <title>Edit Profil — DROPZONE &amp; YOUTH THRIFT</title>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -23,13 +23,13 @@
                         sans: ['Plus Jakarta Sans', 'sans-serif'],
                     },
                     colors: {
-                        neonLime: 'darkred ',      // Pink Utama Menyala
-                        electricViolet: '#4B5563',// Slate Grey Elegan
-                        hotPink: 'darkgrey',       // Soft Hot Pink
-                        cyberYellow: 'darkgrey',   // Soft Light Grey
-                        neoBlack: '#0F0F11',      // Hitam Pekat Neo-Brutalism
-                        ecomBlue: 'darkgrey',      // Biru Khusus E-Commerce
-                        accentGreen: '#10B981',   // Hijau Aksi
+                        neonLime: 'darkred',
+                        electricViolet: '#4B5563',
+                        hotPink: 'darkgrey',
+                        cyberYellow: '#F3F4F6',
+                        neoBlack: '#0F0F11',
+                        ecomBlue: '#3B82F6',
+                        accentGreen: '#10B981',
                     },
                     boxShadow: {
                         'neo': '4px 4px 0px 0px #0F0F11',
@@ -57,7 +57,12 @@
         }
         .neo-card {
             border: 3px solid #0F0F11;
-            box-shadow: 8px 8px 0px 0px #0F0F11;
+            box-shadow: 6px 6px 0px 0px #0F0F11;
+        }
+        @media (min-width: 640px) {
+            .neo-card {
+                box-shadow: 8px 8px 0px 0px #0F0F11;
+            }
         }
         @keyframes marquee {
             0% { transform: translateX(0%); }
@@ -79,82 +84,87 @@
     <div class="bg-neonLime text-white neo-border border-t-0 border-x-0 py-2 overflow-hidden whitespace-nowrap font-extrabold text-[11px] sm:text-sm tracking-wider uppercase">
         <div class="animate-marquee flex items-center gap-6 sm:gap-8">
             <span>🚀 PERBARUI INFORMASI PROFILMU DENGAN MUDAH 🚀</span>
-            <span>✦ KELOLA AKUN & IDENTITAS KREATOR ✦</span>
-            <span>🔥 DROPZONE & TEBAR CINTA ADHIV 🔥</span>
+            <span>✦ KELOLA AKUN &amp; IDENTITAS KREATOR ✦</span>
+            <span>🔥 DROPZONE &amp; TEBAR CINTA ADHIV 🔥</span>
+            <span>🚀 PERBARUI INFORMASI PROFILMU DENGAN MUDAH 🚀</span>
+            <span>✦ KELOLA AKUN &amp; IDENTITAS KREATOR ✦</span>
+            <span>🔥 DROPZONE &amp; TEBAR CINTA ADHIV 🔥</span>
         </div>
     </div>
 
     <!-- NAVBAR -->
-    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md neo-border border-x-0 border-t-0">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3">
-            <a href="index.html" class="flex items-center gap-2 group">
-                <div class="w-9 h-9 sm:w-11 sm:h-11 bg-neonLime text-white neo-border neo-btn rounded-xl flex items-center justify-center font-black text-xl sm:text-2xl -rotate-3 group-hover:rotate-6 transition-transform">
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md neo-border border-x-0 border-t-0">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-3">
+            <a href="index.html" class="flex items-center gap-2 group min-w-0">
+                <div class="w-9 h-9 sm:w-11 sm:h-11 shrink-0 bg-neonLime text-white neo-border neo-btn rounded-xl flex items-center justify-center font-black text-lg sm:text-2xl -rotate-3 group-hover:rotate-6 transition-transform">
                     ❤️
                 </div>
-                <span class="font-black text-xl sm:text-3xl tracking-tighter uppercase">
+                <span class="font-black text-lg sm:text-3xl tracking-tighter uppercase truncate">
                     TEBAR<span class="text-neonLime">CINTA</span>
                 </span>
             </a>
-            
-            <div class="flex items-center gap-2 sm:gap-3">
-                <a href="products.html" class="px-3 sm:px-4 py-2 bg-cyberYellow text-neoBlack font-black neo-btn rounded-xl text-xs sm:text-sm uppercase tracking-wider flex items-center gap-1.5">
-                    <i data-lucide="store" class="w-4 h-4"></i>
-                    <span class="hidden sm:inline">KATALOG</span>
+
+            <div class="flex items-center gap-2 shrink-0">
+                <a href="products.html" class="px-3 py-2 sm:px-4 bg-cyberYellow text-neoBlack font-black neo-btn rounded-xl text-xs sm:text-sm uppercase tracking-wider flex items-center gap-1.5">
+                    <i data-lucide="store" class="w-4 h-4 shrink-0"></i>
+                    <span>KATALOG</span>
                 </a>
             </div>
         </div>
     </header>
 
     <!-- KONTEN UTAMA EDIT PROFIL -->
-    <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex-1 w-full space-y-8">
+    <main class="max-w-3xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-12 flex-1 w-full space-y-6 sm:space-y-8">
 
         <!-- Header Judul -->
-        <div class="border-b-4 border-neoBlack pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+        <div class="border-b-4 border-neoBlack pb-4 sm:pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
             <div>
-                <span class="bg-ecomBlue text-white text-[10px] sm:text-xs font-black px-3 py-1 rounded-md neo-border uppercase">DASHBOARD AKUN</span>
-                <h1 class="text-3xl sm:text-4xl font-black uppercase tracking-tight mt-2">EDIT PROFIL ✏️</h1>
+                <span class="inline-block bg-ecomBlue text-white text-[10px] sm:text-xs font-black px-2.5 py-1 rounded-md neo-border uppercase">DASHBOARD AKUN</span>
+                <h1 class="text-2xl sm:text-4xl font-black uppercase tracking-tight mt-2">EDIT PROFIL ✏️</h1>
             </div>
-            <p class="text-xs sm:text-sm font-bold text-slate-500">Perbarui informasi identitas profil kamu.</p>
+            <p id="profile-db-status" class="text-xs sm:text-sm font-bold text-slate-600">Memuat data profil dari database...</p>
         </div>
 
         <!-- FORMULIR EDIT PROFIL -->
-        <div class="bg-white neo-card rounded-3xl p-6 sm:p-8 space-y-6">
+        <div class="bg-white neo-card rounded-2xl sm:rounded-3xl p-4 sm:p-8 space-y-6">
 
             <div class="flex items-center gap-3 border-b-2 border-slate-100 pb-3">
-                <span class="p-2.5 bg-cyberYellow neo-border rounded-xl font-black">👤</span>
-                <h2 class="font-black text-lg uppercase tracking-tight">Informasi Akun Pengguna</h2>
+                <span class="p-2 sm:p-2.5 bg-cyberYellow neo-border rounded-xl font-black text-sm sm:text-base">👤</span>
+                <h2 class="font-black text-base sm:text-lg uppercase tracking-tight">Informasi Akun Pengguna</h2>
             </div>
 
-            <form id="edit-profile-page-form" onsubmit="handleProfileUpdate(event)" class="space-y-6 text-xs font-bold text-slate-700">
+            <form id="edit-profile-page-form" onsubmit="handleProfileUpdate(event)" class="space-y-5 sm:space-y-6 text-xs font-bold text-slate-700">
+                <input type="hidden" id="p-user-id">
 
                 <!-- Pratinjau Foto Profil -->
-                <div class="flex flex-col sm:flex-row items-center gap-6 p-4 bg-cyberYellow/50 neo-border rounded-2xl">
-                    <div class="relative">
-                        <img id="preview-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400" alt="Pratinjau Foto Profil" class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-cover neo-border shadow-neo">
+                <div class="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 p-3.5 sm:p-4 bg-cyberYellow neo-border rounded-2xl">
+                    <div class="relative shrink-0 w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-white neo-border flex items-center justify-center">
+                        <img id="preview-avatar" src="" alt="Pratinjau Foto Profil" class="hidden w-full h-full object-cover">
+                        <span id="preview-avatar-placeholder" class="text-[10px] font-black uppercase text-slate-400 text-center px-2">Belum ada foto</span>
                     </div>
-                    <div class="space-y-2 text-center sm:text-left flex-1">
-                        <label class="font-black uppercase text-[11px] block">Ganti Foto Profil (File Gambar)</label>
-                        <input type="file" id="avatar-file-input" accept="image/*" onchange="handleAvatarFile(event)" class="w-full px-3 py-2 bg-white neo-border rounded-xl font-bold text-xs focus:outline-none file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-black file:bg-neonLime file:text-white hover:file:bg-rose-600 cursor-pointer">
-                        <input type="hidden" id="p-avatar-url" value="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400">
+                    <div class="space-y-2 text-center sm:text-left flex-1 w-full min-w-0">
+                        <label for="avatar-file-input" class="font-black uppercase text-[11px] text-neoBlack block">Ganti Foto Profil (File Gambar)</label>
+                        <input type="file" id="avatar-file-input" accept="image/*" onchange="handleAvatarFile(event)" class="w-full px-2.5 sm:px-3 py-2 bg-white neo-border rounded-xl font-bold text-xs text-neoBlack focus:outline-none file:mr-2 sm:file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-2 file:border-neoBlack file:text-xs file:font-black file:bg-neonLime file:text-white hover:file:bg-red-800 cursor-pointer">
+                        <input type="hidden" id="p-avatar-url">
                         <p class="text-[10px] text-slate-500 font-bold">Format yang didukung: JPG, PNG, atau WEBP.</p>
                     </div>
                 </div>
 
                 <div class="space-y-1.5">
-                    <label class="font-black uppercase text-[11px]">Nama Lengkap</label>
-                    <input type="text" id="p-fullname" required value="Adhiv Arya" placeholder="cth. Adhiv Arya" class="w-full px-4 py-3 bg-cyberYellow neo-border rounded-xl font-bold text-sm focus:outline-none">
+                    <label for="p-fullname" class="block font-black uppercase text-[11px] text-neoBlack">Nama Lengkap</label>
+                    <input type="text" id="p-fullname" required class="w-full px-3.5 sm:px-4 py-3 bg-cyberYellow neo-border rounded-xl font-bold text-sm text-neoBlack focus:outline-none focus:bg-white transition-colors">
                 </div>
 
                 <div class="space-y-1.5">
-                    <label class="font-black uppercase text-[11px]">Bio Singkat / Profesi</label>
-                    <textarea id="p-biography" rows="3" required placeholder="Jelaskan sedikit tentang dirimu atau karya senimu..." class="w-full px-4 py-3 bg-cyberYellow neo-border rounded-xl font-bold text-sm focus:outline-none">Kreator & Penjual Karya Seni Neo-Brutalism</textarea>
+                    <label for="p-biography" class="block font-black uppercase text-[11px] text-neoBlack">Bio Singkat / Profesi</label>
+                    <textarea id="p-biography" rows="3" required class="w-full px-3.5 sm:px-4 py-3 bg-cyberYellow neo-border rounded-xl font-bold text-sm text-neoBlack focus:outline-none focus:bg-white transition-colors"></textarea>
                 </div>
 
-                <div class="pt-3 flex gap-3">
-                    <a href="profile.html" class="w-1/2 py-4 text-center bg-cyberYellow text-neoBlack neo-btn rounded-2xl font-black text-sm uppercase tracking-wider flex items-center justify-center">
+                <div class="pt-2 flex flex-col-reverse sm:flex-row gap-3">
+                    <a href="profile.html" class="w-full sm:w-1/2 py-3.5 sm:py-4 px-4 text-center bg-cyberYellow text-neoBlack neo-btn rounded-2xl font-black text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center">
                         BATAL
                     </a>
-                    <button type="submit" class="w-1/2 py-4 bg-neonLime text-white neo-btn rounded-2xl font-black text-sm uppercase tracking-wider hover:bg-rose-600 shadow-neo">
+                    <button type="submit" id="save-profile-btn" class="w-full sm:w-1/2 py-3.5 sm:py-4 px-4 bg-neonLime text-white neo-btn rounded-2xl font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-red-800">
                         SIMPAN PERUBAHAN ✨
                     </button>
                 </div>
@@ -164,12 +174,11 @@
 
     </main>
 
-    <!-- FOOTER -->
-    <footer class="bg-neoBlack text-white py-6 neo-border border-b-0 border-x-0 mt-12">
-        <div class="max-w-7xl mx-auto px-4 text-center text-xs font-bold tracking-wider">
-            &copy; 2026 DROPZONE & TEBAR CINTA ADHIV. ALL RIGHTS RESERVED.
+     <!-- FOOTER -->
+    <footer class="bg-neoBlack text-white py-5 sm:py-6 neo-border border-b-0 border-x-0 mt-10 sm:mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-[11px] sm:text-xs font-bold tracking-wider uppercase leading-relaxed">
+            &copy; 2026 DROPZONE &amp; YOUTH THRIFT ALL RIGHTS RESERVED.
         </div>
     </footer>
-
 </body>
 </html>
