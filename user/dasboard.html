@@ -181,6 +181,14 @@
                     <span class="hidden sm:inline">Galeri</span>
                 </a>
 
+                <!-- Sakelar Suara Aksesibilitas (Text to Speech) -->
+                <button type="button" data-tts-action="toggle"
+                    class="px-3 py-2 bg-white neo-btn rounded-xl font-black text-xs uppercase flex items-center gap-1.5 hover:bg-slate-100 transition-colors min-h-[44px]"
+                    title="Aktifkan atau Nonaktifkan Suara Pembaca" aria-label="Sakelar Suara Text to Speech">
+                    <i data-lucide="volume-2" class="w-4 h-4" aria-hidden="true"></i>
+                    <span class="hidden sm:inline">Suara</span>
+                </button>
+
                 <button type="button" onclick="scrollToDonasi()"
                     class="hidden md:flex px-4 py-2.5 bg-brandRed text-white font-black neo-btn rounded-xl text-xs uppercase tracking-wider items-center gap-2 min-h-[44px]">
                     <i data-lucide="heart-handshake" class="w-4 h-4" aria-hidden="true"></i>
@@ -838,6 +846,8 @@
             checkPendingOrder();
         });
     </script>
+    <!-- Text to Speech / Voice Accessibility Engine -->
+    <script src="../ws.js"></script>
 </body>
 
 </html>

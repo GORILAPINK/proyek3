@@ -172,6 +172,13 @@
 
             <!-- Action Right (Mengarahkan ke login) -->
             <div class="flex items-center gap-2.5 sm:gap-3">
+                <!-- Sakelar Suara Aksesibilitas (Text to Speech) -->
+                <button type="button" data-tts-action="toggle"
+                    class="px-3 py-2 bg-white neo-btn rounded-xl font-black text-xs uppercase flex items-center gap-1.5 hover:bg-slate-100 transition-colors min-h-[44px]"
+                    title="Aktifkan atau Nonaktifkan Suara Pembaca" aria-label="Sakelar Suara Text to Speech">
+                    <i data-lucide="volume-2" class="w-4 h-4" aria-hidden="true"></i>
+                    <span class="hidden sm:inline">Suara</span>
+                </button>
                 <a href="dasboard.html"
                     class="hidden sm:flex px-4 py-2.5 bg-surfaceSoft text-neoBlack font-black neo-btn rounded-xl text-xs sm:text-sm uppercase tracking-wider items-center gap-2 min-h-[44px]"
                     aria-label="Kunjungi Katalog Toko">
@@ -592,6 +599,8 @@
         syncRoleNavigation();
         lucide.createIcons();
     </script>
+    <!-- Text to Speech / Voice Accessibility Engine -->
+    <script src="../ws.js"></script>
 </body>
 
 </html>

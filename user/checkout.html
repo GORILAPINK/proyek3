@@ -209,6 +209,13 @@
                 </span>
             </a>
             <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Sakelar Suara Aksesibilitas (Text to Speech) -->
+                <button type="button" data-tts-action="toggle"
+                    class="px-3 py-2 bg-white neo-btn rounded-xl font-black text-xs uppercase flex items-center gap-1.5 hover:bg-slate-100 transition-colors min-h-[44px]"
+                    title="Aktifkan atau Nonaktifkan Suara Pembaca" aria-label="Sakelar Suara Text to Speech">
+                    <i data-lucide="volume-2" class="w-4 h-4" aria-hidden="true"></i>
+                    <span class="hidden sm:inline">Suara</span>
+                </button>
                 <a href="keranjang.html"
                     class="px-3.5 sm:px-4 py-2 bg-surfaceSoft text-neoBlack font-black neo-btn rounded-xl text-xs sm:text-sm uppercase tracking-wider flex items-center gap-1.5 min-h-[44px]"
                     aria-label="Kembali ke Keranjang">
@@ -381,8 +388,27 @@
                         </div>
                     </div>
 
-                    <!-- Alamat Lengkap -->
-                    <div class="space-y-1.5">
+                    <!-- Pilihan Metode Serah Terima -->
+                    <div class="space-y-2 pt-1">
+                        <label class="font-black uppercase text-xs tracking-wider block">
+                            Metode Serah Terima <span class="text-brandRed" aria-hidden="true">*</span>
+                        </label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                            <label class="p-3 bg-brandRed text-white neo-border-sm rounded-xl flex items-center gap-2.5 cursor-pointer has-[:checked]:bg-brandRed has-[:checked]:text-white transition-colors min-h-[44px]">
+                                <input type="radio" name="delivery_mode" value="kurir" checked onchange="toggleDeliveryMode('kurir')" class="accent-brandRed sr-only">
+                                <i data-lucide="truck" class="w-4 h-4 shrink-0"></i>
+                                <span class="font-black text-xs uppercase tracking-tight">Kirim ke Alamat</span>
+                            </label>
+                            <label class="p-3 bg-surfaceSoft neo-border-sm rounded-xl flex items-center gap-2.5 cursor-pointer has-[:checked]:bg-brandRed has-[:checked]:text-white transition-colors min-h-[44px]">
+                                <input type="radio" name="delivery_mode" value="posko" onchange="toggleDeliveryMode('posko')" class="accent-brandRed sr-only">
+                                <i data-lucide="store" class="w-4 h-4 shrink-0"></i>
+                                <span class="font-black text-xs uppercase tracking-tight">Ambil di Posko Fisik</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Alamat Lengkap (Ditampilkan jika kurir) -->
+                    <div id="address-container" class="space-y-1.5">
                         <label for="buyer-address" class="font-black uppercase text-xs tracking-wider block">
                             Alamat Lengkap Pengiriman <span class="text-brandRed" aria-hidden="true">*</span>
                         </label>
@@ -397,6 +423,39 @@
                         </div>
                     </div>
 
+                    <!-- Jadwal Kunjungan Posko (Ditampilkan jika posko) -->
+                    <div id="posko-container" class="hidden space-y-3 bg-emerald-50/70 p-4 rounded-2xl neo-border">
+                        <div class="space-y-1">
+                            <p class="font-black text-xs uppercase text-emerald-900 flex items-center gap-1.5">
+                                <i data-lucide="map-pin" class="w-4 h-4 text-accentGreen"></i>
+                                <span>Lokasi Posko Fisik COMITHRIFT</span>
+                            </p>
+                            <p class="text-xs font-bold text-slate-700 leading-relaxed">
+                                Gedung TI Lt. 1, Kampus ULBI Bandung (Buka Senin - Sabtu, 09:00 - 16:30 WIB)
+                            </p>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                            <div class="space-y-1">
+                                <label for="posko-date" class="text-[11px] font-bold text-slate-700 block">Tanggal Kedatangan:</label>
+                                <input type="date" id="posko-date" class="neo-input w-full px-3 py-2 rounded-xl font-bold text-xs bg-white min-h-[44px]">
+                            </div>
+                            <div class="space-y-1">
+                                <label for="posko-time" class="text-[11px] font-bold text-slate-700 block">Jam Pengambilan:</label>
+                                <input type="time" id="posko-time" value="10:00" class="neo-input w-full px-3 py-2 rounded-xl font-bold text-xs bg-white min-h-[44px]">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Catatan Khusus Pembeli -->
+                    <div class="space-y-1.5">
+                        <label for="buyer-note" class="font-black uppercase text-xs tracking-wider block">
+                            Catatan Khusus Pembeli (Opsional)
+                        </label>
+                        <textarea id="buyer-note" name="buyer_note" rows="2" maxlength="300"
+                            placeholder="Contoh: Titipkan di pos satpam, patokan rumah pagar hitam, atau request pengemasan..."
+                            class="neo-input w-full px-4 py-3 rounded-xl font-bold text-sm leading-relaxed"></textarea>
+                    </div>
+
                     <!-- Pilihan Donasi Sukarela Tebar Cinta -->
                     <div class="pt-2 space-y-2">
                         <div class="flex justify-between items-center">
@@ -407,16 +466,25 @@
                                 class="text-[10px] font-bold text-accentGreen uppercase bg-emerald-50 px-2 py-0.5 rounded border border-emerald-300">100%
                                 Untuk Donasi</span>
                         </div>
-                        <div class="grid grid-cols-3 gap-2.5" id="donation-options">
+                        <div class="grid grid-cols-4 gap-2" id="donation-options">
                             <button type="button" onclick="selectDonation(10000)"
-                                class="donation-btn py-2.5 px-2 bg-surfaceSoft neo-border-sm rounded-xl font-black text-xs hover:bg-brandRed hover:text-white transition-colors"
-                                data-amount="10000">Rp 10.000</button>
+                                class="donation-btn py-2.5 px-1 bg-surfaceSoft neo-border-sm rounded-xl font-black text-xs hover:bg-brandRed hover:text-white transition-colors min-h-[44px]"
+                                data-amount="10000">Rp 10rb</button>
                             <button type="button" onclick="selectDonation(25000)"
-                                class="donation-btn py-2.5 px-2 bg-surfaceSoft neo-border-sm rounded-xl font-black text-xs hover:bg-brandRed hover:text-white transition-colors"
-                                data-amount="25000">Rp 25.000</button>
+                                class="donation-btn py-2.5 px-1 bg-surfaceSoft neo-border-sm rounded-xl font-black text-xs hover:bg-brandRed hover:text-white transition-colors min-h-[44px]"
+                                data-amount="25000">Rp 25rb</button>
                             <button type="button" onclick="selectDonation(50000)"
-                                class="donation-btn py-2.5 px-2 bg-brandRed text-white neo-border-sm rounded-xl font-black text-xs transition-colors"
-                                data-amount="50000">Rp 50.000</button>
+                                class="donation-btn py-2.5 px-1 bg-brandRed text-white neo-border-sm rounded-xl font-black text-xs transition-colors min-h-[44px]"
+                                data-amount="50000">Rp 50rb</button>
+                            <button type="button" onclick="selectDonation(0)"
+                                class="donation-btn py-2.5 px-1 bg-surfaceSoft neo-border-sm rounded-xl font-black text-xs hover:bg-brandRed hover:text-white transition-colors min-h-[44px]"
+                                data-amount="0">Nanti</button>
+                        </div>
+                        <div class="space-y-1 pt-1">
+                            <label for="custom-donation" class="text-[11px] font-bold text-slate-600 block">Atau Masukkan Nominal Kustom (Rp):</label>
+                            <input type="number" id="custom-donation" min="0" step="1000" placeholder="Ketik nominal donasi bebas..."
+                                oninput="handleCustomDonation(this.value)"
+                                class="neo-input w-full px-3 py-2 rounded-xl font-bold text-xs bg-white min-h-[44px]">
                         </div>
                     </div>
 
@@ -588,6 +656,37 @@
         const API_BASE_URL = "http://localhost:8080/api";
         let selectedProducts = [];
         let donationAmount = 50000;
+        let selectedDeliveryMode = 'kurir';
+
+        function toggleDeliveryMode(mode) {
+            selectedDeliveryMode = mode;
+            const addressBox = document.getElementById('address-container');
+            const poskoBox = document.getElementById('posko-container');
+            const buyerAddress = document.getElementById('buyer-address');
+
+            if (mode === 'posko') {
+                addressBox.classList.add('hidden');
+                poskoBox.classList.remove('hidden');
+                buyerAddress.removeAttribute('required');
+                const today = new Date().toISOString().split('T')[0];
+                const poskoDate = document.getElementById('posko-date');
+                if (poskoDate && !poskoDate.value) poskoDate.value = today;
+            } else {
+                addressBox.classList.remove('hidden');
+                poskoBox.classList.add('hidden');
+                buyerAddress.setAttribute('required', '');
+            }
+            lucide.createIcons();
+        }
+
+        function handleCustomDonation(val) {
+            const num = Math.max(0, parseInt(val, 10) || 0);
+            donationAmount = num;
+            document.querySelectorAll('.donation-btn').forEach(btn => {
+                btn.className = 'donation-btn py-2.5 px-1 bg-surfaceSoft neo-border-sm rounded-xl font-black text-xs hover:bg-brandRed hover:text-white transition-colors min-h-[44px]';
+            });
+            renderOrderSummary();
+        }
 
         function formatRupiah(num) {
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
@@ -596,12 +695,15 @@
         // Pilihan Donasi Sukarela Tebar Cinta
         function selectDonation(amount) {
             donationAmount = amount;
+            const customInput = document.getElementById('custom-donation');
+            if (customInput) customInput.value = amount > 0 ? amount : '';
+
             document.querySelectorAll('.donation-btn').forEach(btn => {
                 const btnAmt = parseInt(btn.getAttribute('data-amount'), 10);
                 if (btnAmt === amount) {
-                    btn.className = 'donation-btn py-2.5 px-2 bg-brandRed text-white neo-border-sm rounded-xl font-black text-xs transition-colors';
+                    btn.className = 'donation-btn py-2.5 px-1 bg-brandRed text-white neo-border-sm rounded-xl font-black text-xs transition-colors min-h-[44px]';
                 } else {
-                    btn.className = 'donation-btn py-2.5 px-2 bg-surfaceSoft neo-border-sm rounded-xl font-black text-xs hover:bg-brandRed hover:text-white transition-colors';
+                    btn.className = 'donation-btn py-2.5 px-1 bg-surfaceSoft neo-border-sm rounded-xl font-black text-xs hover:bg-brandRed hover:text-white transition-colors min-h-[44px]';
                 }
             });
             renderOrderSummary();
@@ -726,9 +828,21 @@
 
             const buyerName = document.getElementById('buyer-name').value.trim();
             const buyerPhone = document.getElementById('buyer-phone').value.trim();
-            const buyerAddress = document.getElementById('buyer-address').value.trim();
+            const buyerNote = (document.getElementById('buyer-note')?.value || '').trim();
             const selectedMethodEl = document.querySelector('input[name="payment_method"]:checked');
             const selectedPaymentMethod = selectedMethodEl ? selectedMethodEl.value : 'all';
+
+            let metodeSerahTerima = "Pengiriman Kurir";
+            let displayAddress = "";
+            if (selectedDeliveryMode === 'posko') {
+                const poskoDate = document.getElementById('posko-date')?.value || new Date().toISOString().split('T')[0];
+                const poskoTime = document.getElementById('posko-time')?.value || '10:00';
+                metodeSerahTerima = `Ambil di Posko Fisik (Tgl: ${poskoDate}, Jam: ${poskoTime})`;
+                displayAddress = `Posko Utama COMITHRIFT (Gedung TI Lt. 1, ULBI) - Jadwal: ${poskoDate} ${poskoTime}`;
+            } else {
+                displayAddress = document.getElementById('buyer-address').value.trim();
+                metodeSerahTerima = `Pengiriman Kurir (${displayAddress})`;
+            }
 
             payButton.disabled = true;
             payButton.classList.add('opacity-75');
@@ -752,9 +866,9 @@
             const payload = {
                 nama_pembeli: buyerName,
                 kontak_whatsapp: buyerPhone,
-                metode_serah_terima: "pengiriman",
+                metode_serah_terima: metodeSerahTerima,
                 nominal_donasi: Number(donationAmount) || 0,
-                catatan: buyerAddress,
+                catatan: buyerNote || "-",
                 metode_pembayaran: selectedPaymentMethod,
                 items: orderItems
             };
@@ -776,13 +890,14 @@
                 const order = result.data;
                 const totalBayar = Number(order.total_belanja || 0) + Number(order.nominal_donasi || donationAmount || 0);
 
-                // Simpan data transaksi riil ke localStorage untuk ditampilkan di packing.html
+                // Simpan data transaksi riil ke localStorage untuk ditampilkan di status-pesanan.html
                 const orderDataToStore = {
                     kode_pesanan: order.kode_pesanan,
                     nama_pembeli: buyerName,
                     kontak_whatsapp: buyerPhone,
-                    catatan: buyerAddress,
-                    metode_serah_terima: "pengiriman",
+                    catatan: buyerNote || "-",
+                    alamat: displayAddress,
+                    metode_serah_terima: metodeSerahTerima,
                     metode_pembayaran: selectedPaymentMethod,
                     total_belanja: Number(order.total_belanja || 0),
                     nominal_donasi: Number(order.nominal_donasi || donationAmount || 0),
@@ -883,6 +998,8 @@
             if (e.key === 'Escape' && isMenuOpen) toggleMenu();
         });
     </script>
+    <!-- Text to Speech / Voice Accessibility Engine -->
+    <script src="../ws.js"></script>
 </body>
 
 </html>
