@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit & Validasi Access Control Berbasis Role (RBAC) — COMITHRIFT</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Custom Font: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Konfigurasi Tailwind Palet Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brandRed: '#B91C1C',
+                        brandRedDark: '#991B1B',
+                        slateDark: '#1E293B',
+                        neoBlack: '#0F0F11',
+                        surfaceBg: '#FAF8F5',
+                        surfaceSoft: '#F3F4F6',
+                        accentGreen: '#059669',
+                    },
+                    boxShadow: {
+                        'neo-sm': '2px 2px 0px 0px #0F0F11',
+                        'neo': '4px 4px 0px 0px #0F0F11',
+                        'neo-lg': '6px 6px 0px 0px #0F0F11',
+                        'neo-xl': '8px 8px 0px 0px #0F0F11',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .neo-border { border: 3px solid #0F0F11; }
+        .neo-border-sm { border: 2px solid #0F0F11; }
+        .neo-btn {
+            border: 3px solid #0F0F11;
+            box-shadow: 4px 4px 0px 0px #0F0F11;
+            transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .neo-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px #0F0F11;
+        }
+        .neo-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0px 0px #0F0F11;
+        }
+        .neo-card {
+            border: 3px solid #0F0F11;
+            box-shadow: 6px 6px 0px 0px #0F0F11;
+        }
+        pre code {
+            font-family: 'Consolas', 'Courier New', monospace;
+        }
+    </style>
+</head>
+
+<body class="bg-surfaceBg text-neoBlack font-sans min-h-screen flex flex-col antialiased selection:bg-brandRed selection:text-white p-4 sm:p-6 lg:p-10 space-y-8">
+
+    <!-- HEADER & IDENTITAS MAHASISWA (SESUAI RUBRIK SLIDE 1 & 6) -->
+    <header class="max-w-6xl mx-auto w-full bg-white neo-card rounded-3xl p-6 sm:p-8 space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-4 border-neoBlack pb-4">
+            <div>
+                <span class="px-3 py-1 bg-brandRed text-white text-xs font-black uppercase tracking-wider rounded-lg neo-border-sm">
+                    Praktikum Keamanan Sistem Informasi — ULBI
+                </span>
+                <h1 class="text-2xl sm:text-3xl font-black uppercase tracking-tight mt-2">
+                    Validasi & Implementasi Access Control (RBAC)
+                </h1>
+                <p class="text-xs sm:text-sm font-bold text-slate-600 mt-1">
+                    Studi Kasus Platform COMITHRIFT: Pembuktian Empiris Otorisasi Multi-Role & Bukti Keamanan API.
+                </p>
+            </div>
+            <div class="bg-surfaceSoft neo-border-sm rounded-2xl p-4 text-xs font-black space-y-1 shrink-0">
+                <div class="flex items-center gap-2 text-slate-500">
+                    <i data-lucide="user" class="w-4 h-4 text-brandRed"></i>
+                    <span>Penyaji:</span>
+                    <span class="text-neoBlack">Rafli Mochamad Ramadhan</span>
+                </div>
+                <div class="flex items-center gap-2 text-slate-500">
+                    <i data-lucide="badge-check" class="w-4 h-4 text-brandRed"></i>
+                    <span>NPM / Kelas:</span>
+                    <span class="text-neoBlack">714240059 / D4 TI</span>
+                </div>
+                <div class="flex items-center gap-2 text-slate-500">
+                    <i data-lucide="server" class="w-4 h-4 text-accentGreen"></i>
+                    <span>Target Backend:</span>
+                    <span class="text-neoBlack">http://localhost:8080/api</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRINSIP DASAR KEAMANAN (SLIDE 3) -->
+        <div class="bg-amber-50 border-2 border-amber-300 p-3.5 rounded-xl flex items-start gap-3 text-xs font-bold text-amber-900">
+            <i data-lucide="shield-alert" class="w-5 h-5 text-amber-700 shrink-0 mt-0.5"></i>
+            <div>
+                <span class="font-black uppercase">Prinsip Validasi Access Control:</span>
+                "Menyembunyikan tombol pada UI tidak cukup. Hak akses wajib divalidasi pada level backend/API. Setiap pengguna hanya dapat mengeksekusi fungsi sesuai batasan kewenangannya pada sistem."
+            </div>
+        </div>
+    </header>
+
+    <!-- GRID UTAMA -->
+    <main class="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+        <!-- KOLOM KIRI (7/12): ACCESS CONTROL MATRIX & TEST CASES -->
+        <div class="lg:col-span-7 space-y-8">
+
+            <!-- 1. TABEL ACCESS CONTROL MATRIX (ACM) -->
+            <section class="bg-white neo-card rounded-3xl p-6 space-y-4">
+                <div class="flex items-center justify-between border-b-2 border-slate-100 pb-3">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="grid" class="w-5 h-5 text-brandRed"></i>
+                        <h2 class="text-base font-black uppercase tracking-tight">1. Access Control Matrix (ACM)</h2>
+                    </div>
+                    <span class="text-[11px] font-bold text-slate-500">Pemetaan Hak Akses CRUD</span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs text-left border-collapse">
+                        <thead>
+                            <tr class="bg-surfaceSoft neo-border-sm text-[11px] font-black uppercase">
+                                <th class="p-2.5">Resource / Endpoint</th>
+                                <th class="p-2.5 text-center">Publik</th>
+                                <th class="p-2.5 text-center">Relawan</th>
+                                <th class="p-2.5 text-center">Admin</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 font-bold text-[11px]">
+                            <tr>
+                                <td class="p-2.5 font-black">Katalog Produk <code class="text-[10px] text-slate-500">GET /api/produk</code></td>
+                                <td class="p-2.5 text-center text-accentGreen font-black">Read</td>
+                                <td class="p-2.5 text-center text-accentGreen font-black">Read</td>
+                                <td class="p-2.5 text-center text-accentGreen font-black">Read</td>
+                            </tr>
+                            <tr class="bg-slate-50">
+                                <td class="p-2.5 font-black">Kelola Produk <code class="text-[10px] text-slate-500">POST/PATCH /api/admin/produk</code></td>
+                                <td class="p-2.5 text-center text-brandRed font-black">❌ 401</td>
+                                <td class="p-2.5 text-center text-accentGreen font-black">CRUD</td>
+                                <td class="p-2.5 text-center text-accentGreen font-black">CRUD</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2.5 font-black">Checkout Pesanan <code class="text-[10px] text-slate-500">POST /api/pesanan</code></td>
+                                <td class="p-2.5 text-center text-accentGreen font-black">Create</td>
+                                <td class="p-2.5 text-center text-accentGreen font-black">Create</td>
+                                <td class="p-2.5 text-center text-accentGreen font-black">Create</td>
+                            </tr>
+                            <tr class="bg-amber-50/50">
+                                <td class="p-2.5 font-black">Kelola Status Pesanan <code class="text-[10px] text-slate-500">PATCH /api/admin/pesanan/:id/status</code></td>
+                                <td class="p-2.5 text-center text-brandRed font-black">❌ 401</td>
+                                <td class="p-2.5 text-center text-amber-700 font-black">❌ 403 Forbidden</td>
+                                <td class="p-2.5 text-center text-accentGreen font-black">Update</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2.5 font-black">Penyaluran Donasi <code class="text-[10px] text-slate-500">POST /api/admin/donasi/penyaluran</code></td>
+                                <td class="p-2.5 text-center text-brandRed font-black">❌ 401</td>
+                                <td class="p-2.5 text-center text-amber-700 font-black">❌ 403 Forbidden</td>
+                                <td class="p-2.5 text-center text-accentGreen font-black">Create</td>
+                            </tr>
+                            <tr class="bg-slate-50">
+                                <td class="p-2.5 font-black">Rekapitulasi Keuangan <code class="text-[10px] text-slate-500">GET /api/admin/rekapitulasi</code></td>
+                                <td class="p-2.5 text-center text-brandRed font-black">❌ 401</td>
+                                <td class="p-2.5 text-center text-amber-700 font-black">❌ 403 Forbidden</td>
+                                <td class="p-2.5 text-center text-accentGreen font-black">Read</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 2. SIMULATOR IDENTITAS & KONFIGURASI TOKEN -->
+            <section class="bg-white neo-card rounded-3xl p-6 space-y-4">
+                <div class="flex items-center justify-between border-b-2 border-slate-100 pb-3">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="key" class="w-5 h-5 text-brandRed"></i>
+                        <h2 class="text-base font-black uppercase tracking-tight">2. Simulasi Identitas & Token JWT</h2>
+                    </div>
+                    <span class="text-[11px] font-bold text-slate-500">Pilih Identitas Uji</span>
+                </div>
+
+                <!-- Pilihan Role Cepat -->
+                <div class="grid grid-cols-3 gap-3">
+                    <button type="button" onclick="setRole('guest')" id="btn-role-guest" class="role-btn p-3 bg-brandRed text-white neo-border-sm rounded-xl font-black text-xs text-center transition-all flex flex-col items-center gap-1">
+                        <i data-lucide="user-x" class="w-4 h-4"></i>
+                        <span>Publik / Tamu</span>
+                        <span class="text-[10px] opacity-80">(Tanpa Token)</span>
+                    </button>
+                    <button type="button" onclick="setRole('relawan')" id="btn-role-relawan" class="role-btn p-3 bg-surfaceSoft text-neoBlack neo-border-sm rounded-xl font-black text-xs text-center transition-all flex flex-col items-center gap-1 hover:bg-slate-200">
+                        <i data-lucide="users" class="w-4 h-4"></i>
+                        <span>Relawan</span>
+                        <span class="text-[10px] opacity-70">(Role Relawan)</span>
+                    </button>
+                    <button type="button" onclick="setRole('admin')" id="btn-role-admin" class="role-btn p-3 bg-surfaceSoft text-neoBlack neo-border-sm rounded-xl font-black text-xs text-center transition-all flex flex-col items-center gap-1 hover:bg-slate-200">
+                        <i data-lucide="shield" class="w-4 h-4"></i>
+                        <span>Admin</span>
+                        <span class="text-[10px] opacity-70">(Role Admin)</span>
+                    </button>
+                </div>
+
+                <!-- Input Token JWT Aktif -->
+                <div class="space-y-1.5 text-xs">
+                    <div class="flex items-center justify-between">
+                        <label for="jwt-token-input" class="font-black uppercase text-[11px] tracking-wider text-slate-700">
+                            Header Authorization Token (Bearer):
+                        </label>
+                        <span id="active-role-badge" class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded font-black text-[10px] uppercase">
+                            Mode: Tamu (Tanpa Token)
+                        </span>
+                    </div>
+                    <textarea id="jwt-token-input" rows="2" placeholder="Tanpa token (Permintaan publik)..." class="w-full p-2.5 bg-surfaceSoft neo-border-sm rounded-xl font-mono text-[11px] focus:bg-white outline-none"></textarea>
+                    <p class="text-[10px] font-bold text-slate-500 leading-tight">
+                        * Token dapat di-paste dari login Supabase atau dibiarkan kosong untuk menguji proteksi autentikasi 401.
+                    </p>
+                </div>
+            </section>
+
+            <!-- 3. TEST SUITE RUNNER (TC01 - TC05) -->
+            <section class="bg-white neo-card rounded-3xl p-6 space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-slate-100 pb-3">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="play-circle" class="w-5 h-5 text-brandRed"></i>
+                        <h2 class="text-base font-black uppercase tracking-tight">3. Kasus Uji Diagnostik (TC01–TC05)</h2>
+                    </div>
+                    <button type="button" onclick="runAllTests()" class="py-2.5 px-4 bg-brandRed text-white neo-btn rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+                        <i data-lucide="zap" class="w-4 h-4"></i>
+                        <span>Jalankan Semua Uji Otomatis</span>
+                    </button>
+                </div>
+
+                <div class="space-y-3">
+
+                    <!-- TC01: Positive Testing Relawan -->
+                    <div class="p-3.5 bg-surfaceSoft neo-border-sm rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="space-y-0.5">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-black uppercase border border-emerald-300">TC01 Positive</span>
+                                <span class="font-black text-xs">Relawan Tambah Produk Thrift</span>
+                            </div>
+                            <p class="text-[11px] font-bold text-slate-600">
+                                POST <code>/api/admin/produk</code> &bull; Target: <span class="text-emerald-700 font-black">201 Created</span>
+                            </p>
+                        </div>
+                        <button type="button" onclick="runTC01()" class="px-3.5 py-2 bg-white neo-btn rounded-xl font-black text-xs uppercase flex items-center gap-1.5 self-start sm:self-auto shrink-0">
+                            <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                            <span>Uji TC01</span>
+                        </button>
+                    </div>
+
+                    <!-- TC02: Positive Testing Admin -->
+                    <div class="p-3.5 bg-surfaceSoft neo-border-sm rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="space-y-0.5">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px] font-black uppercase border border-emerald-300">TC02 Positive</span>
+                                <span class="font-black text-xs">Admin Verifikasi Status Pesanan</span>
+                            </div>
+                            <p class="text-[11px] font-bold text-slate-600">
+                                PATCH <code>/api/admin/pesanan/1/status</code> &bull; Target: <span class="text-emerald-700 font-black">200 OK</span>
+                            </p>
+                        </div>
+                        <button type="button" onclick="runTC02()" class="px-3.5 py-2 bg-white neo-btn rounded-xl font-black text-xs uppercase flex items-center gap-1.5 self-start sm:self-auto shrink-0">
+                            <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                            <span>Uji TC02</span>
+                        </button>
+                    </div>
+
+                    <!-- TC03: Negative Testing Authentication -->
+                    <div class="p-3.5 bg-surfaceSoft neo-border-sm rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="space-y-0.5">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2 py-0.5 bg-red-100 text-red-800 rounded text-[10px] font-black uppercase border border-red-300">TC03 Negative Auth</span>
+                                <span class="font-black text-xs">Tamu Intip Pesanan Tanpa Token</span>
+                            </div>
+                            <p class="text-[11px] font-bold text-slate-600">
+                                GET <code>/api/admin/pesanan</code> (Tanpa Token) &bull; Target: <span class="text-brandRed font-black">401 Unauthorized</span>
+                            </p>
+                        </div>
+                        <button type="button" onclick="runTC03()" class="px-3.5 py-2 bg-white neo-btn rounded-xl font-black text-xs uppercase flex items-center gap-1.5 self-start sm:self-auto shrink-0">
+                            <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                            <span>Uji TC03</span>
+                        </button>
+                    </div>
+
+                    <!-- TC04: Negative Testing RBAC Authorization (Bypass Attempt) -->
+                    <div class="p-3.5 bg-amber-50 neo-border-sm border-amber-400 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="space-y-0.5">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2 py-0.5 bg-amber-200 text-amber-900 rounded text-[10px] font-black uppercase border border-amber-400">TC04 Negative RBAC</span>
+                                <span class="font-black text-xs text-amber-900">Relawan Bypass Ubah Status Pesanan</span>
+                            </div>
+                            <p class="text-[11px] font-bold text-amber-800">
+                                PATCH <code>/api/admin/pesanan/1/status</code> (Token Relawan) &bull; Target: <span class="text-brandRed font-black">403 Forbidden</span>
+                            </p>
+                        </div>
+                        <button type="button" onclick="runTC04()" class="px-3.5 py-2 bg-amber-200 hover:bg-amber-300 neo-btn rounded-xl font-black text-xs uppercase flex items-center gap-1.5 self-start sm:self-auto shrink-0">
+                            <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                            <span>Uji TC04</span>
+                        </button>
+                    </div>
+
+                    <!-- TC05: Integrity / Balance Limit -->
+                    <div class="p-3.5 bg-surfaceSoft neo-border-sm rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="space-y-0.5">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2 py-0.5 bg-slate-200 text-slate-800 rounded text-[10px] font-black uppercase border border-slate-300">TC05 Limit Check</span>
+                                <span class="font-black text-xs">Penyaluran Donasi Melebihi Saldo Kas</span>
+                            </div>
+                            <p class="text-[11px] font-bold text-slate-600">
+                                POST <code>/api/admin/donasi/penyaluran</code> (Nominal > Saldo) &bull; Target: <span class="text-brandRed font-black">400 Bad Request</span>
+                            </p>
+                        </div>
+                        <button type="button" onclick="runTC05()" class="px-3.5 py-2 bg-white neo-btn rounded-xl font-black text-xs uppercase flex items-center gap-1.5 self-start sm:self-auto shrink-0">
+                            <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                            <span>Uji TC05</span>
+                        </button>
+                    </div>
+
+                </div>
+            </section>
+
+        </div>
+
+        <!-- KOLOM KANAN (5/12): LIVE EVIDENCE CONSOLE (SESUAI SLIDE 4 & 6) -->
+        <div class="lg:col-span-5 sticky top-6 space-y-6">
+
+            <section class="bg-neoBlack text-white neo-card rounded-3xl p-6 space-y-4">
+                <div class="flex items-center justify-between border-b-2 border-slate-700 pb-3">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="terminal" class="w-5 h-5 text-accentGreen"></i>
+                        <h2 class="text-sm font-black uppercase tracking-wider">Evidence & Network Console</h2>
+                    </div>
+                    <span id="console-status-badge" class="px-2 py-0.5 bg-slate-800 text-slate-300 text-[10px] font-mono rounded font-bold">
+                        STANDBY
+                    </span>
+                </div>
+
+                <!-- Ringkasan Status HTTP & Verdict -->
+                <div id="verdict-banner" class="hidden p-4 rounded-2xl neo-border-sm space-y-1">
+                    <div class="flex items-center justify-between">
+                        <span id="verdict-tc-name" class="font-black text-xs uppercase">TC00</span>
+                        <span id="verdict-http-status" class="px-2 py-0.5 rounded font-black text-xs">HTTP 000</span>
+                    </div>
+                    <p id="verdict-desc" class="text-xs font-bold leading-normal">Keterangan hasil audit sistematis.</p>
+                </div>
+
+                <!-- Detail Request HTTP -->
+                <div class="space-y-1 text-xs">
+                    <p class="text-[10px] font-black uppercase text-slate-400">Request Details:</p>
+                    <div class="bg-slate-900 neo-border-sm border-slate-700 p-3 rounded-xl font-mono text-[11px] space-y-1 overflow-x-auto text-slate-300">
+                        <div><span class="text-accentGreen">METHOD:</span> <span id="req-method" class="text-white">-</span></div>
+                        <div><span class="text-accentGreen">URL:</span> <span id="req-url" class="text-white">-</span></div>
+                        <div class="truncate"><span class="text-accentGreen">AUTH:</span> <span id="req-auth" class="text-slate-400">None</span></div>
+                    </div>
+                </div>
+
+                <!-- Response Body Raw JSON -->
+                <div class="space-y-1 text-xs">
+                    <div class="flex items-center justify-between">
+                        <p class="text-[10px] font-black uppercase text-slate-400">Response JSON Body:</p>
+                        <span id="res-timing" class="text-[10px] font-mono text-slate-500">0 ms</span>
+                    </div>
+                    <pre class="bg-slate-900 neo-border-sm border-slate-700 p-3 rounded-xl font-mono text-[11px] text-amber-300 overflow-x-auto max-h-64 overflow-y-auto"><code id="res-body">// Klik salah satu tombol uji untuk melihat bukti network live...</code></pre>
+                </div>
+
+                <!-- Tombol Bersihkan Console -->
+                <button type="button" onclick="clearConsole()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-black text-xs uppercase tracking-wider transition-colors">
+                    Bersihkan Console
+                </button>
+            </section>
+
+            <!-- TAUTAN NAVIGASI CEPAT -->
+            <div class="bg-white neo-card rounded-2xl p-4 flex justify-between items-center text-xs font-black">
+                <a href="user/checkout.html" class="flex items-center gap-1.5 hover:text-brandRed transition-colors">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    <span>Kembali ke Checkout Demo</span>
+                </a>
+                <a href="http://localhost:8080/swagger/index.html" target="_blank" class="flex items-center gap-1.5 text-accentGreen hover:underline">
+                    <span>Swagger UI</span>
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                </a>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="max-w-6xl mx-auto w-full text-center text-xs font-bold text-slate-500 pt-6">
+        <p>&copy; 2026 COMITHRIFT &mdash; Bukti Evaluasi Praktikum Keamanan Sistem Informasi D4 TI ULBI.</p>
+    </footer>
+
+    <!-- SCRIPT RUNNER LOGIC -->
+    <script>
+        lucide.createIcons();
+
+        const API_BASE = "http://localhost:8080/api";
+        const jwtInput = document.getElementById('jwt-token-input');
+        const roleBadge = document.getElementById('active-role-badge');
+        const verdictBanner = document.getElementById('verdict-banner');
+        const verdictTcName = document.getElementById('verdict-tc-name');
+        const verdictHttpStatus = document.getElementById('verdict-http-status');
+        const verdictDesc = document.getElementById('verdict-desc');
+        const reqMethod = document.getElementById('req-method');
+        const reqUrl = document.getElementById('req-url');
+        const reqAuth = document.getElementById('req-auth');
+        const resBody = document.getElementById('res-body');
+        const resTiming = document.getElementById('res-timing');
+        const consoleStatusBadge = document.getElementById('console-status-badge');
+
+        let currentRole = 'guest';
+        let samplePesananId = 1;
+
+        // Token Presets otomatis dimuat dari backend endpoint dev
+        let PRESETS = {
+            guest: "",
+            relawan: localStorage.getItem('token_relawan') || "",
+            admin: localStorage.getItem('token_admin') || ""
+        };
+
+        async function fetchDevTokens() {
+            try {
+                const res = await fetch(`${API_BASE}/dev/tokens`);
+                if (res.ok) {
+                    const json = await res.json();
+                    if (json.data) {
+                        PRESETS.admin = json.data.token_admin;
+                        PRESETS.relawan = json.data.token_relawan;
+                        if (json.data.pesanan_id) {
+                            samplePesananId = json.data.pesanan_id;
+                        }
+                        localStorage.setItem('token_admin', PRESETS.admin);
+                        localStorage.setItem('token_relawan', PRESETS.relawan);
+                    }
+                }
+            } catch (err) {
+                console.warn("Gagal memuat dev tokens dari server:", err);
+            }
+        }
+
+        async function setRole(role) {
+            currentRole = role;
+            if (!PRESETS.admin || !PRESETS.relawan) {
+                await fetchDevTokens();
+            }
+
+            document.querySelectorAll('.role-btn').forEach(b => {
+                b.className = 'role-btn p-3 bg-surfaceSoft text-neoBlack neo-border-sm rounded-xl font-black text-xs text-center transition-all flex flex-col items-center gap-1 hover:bg-slate-200';
+            });
+
+            const activeBtn = document.getElementById(`btn-role-${role}`);
+            if (activeBtn) {
+                activeBtn.className = 'role-btn p-3 bg-brandRed text-white neo-border-sm rounded-xl font-black text-xs text-center transition-all flex flex-col items-center gap-1';
+            }
+
+            if (role === 'guest') {
+                jwtInput.value = "";
+                roleBadge.textContent = "Mode: Tamu (Tanpa Token)";
+                roleBadge.className = "px-2 py-0.5 bg-slate-200 text-slate-800 rounded font-black text-[10px] uppercase";
+            } else if (role === 'relawan') {
+                jwtInput.value = PRESETS.relawan;
+                roleBadge.textContent = "Mode: Relawan (Token Aktif)";
+                roleBadge.className = "px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 rounded font-black text-[10px] uppercase";
+            } else if (role === 'admin') {
+                jwtInput.value = PRESETS.admin;
+                roleBadge.textContent = "Mode: Admin (Superuser)";
+                roleBadge.className = "px-2 py-0.5 bg-emerald-100 text-emerald-900 border border-emerald-300 rounded font-black text-[10px] uppercase";
+            }
+        }
+
+        async function executeRequest(tcId, tcTitle, method, endpoint, body, tokenOverride) {
+            consoleStatusBadge.textContent = "TESTING...";
+            consoleStatusBadge.className = "px-2 py-0.5 bg-amber-500 text-neoBlack font-mono rounded font-black";
+
+            // Ambil token dan bersihkan jika ada prefix 'Bearer ' ganda
+            let token = tokenOverride !== undefined ? tokenOverride : jwtInput.value.trim();
+            if (token) {
+                token = token.replace(/^Bearer\s+/i, '').trim();
+            }
+
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+
+            reqMethod.textContent = method;
+            reqUrl.textContent = `${API_BASE}${endpoint}`;
+            reqAuth.textContent = token ? `Bearer ${token.substring(0, 22)}...` : 'None (No Authorization Header)';
+
+            const startTime = performance.now();
+            try {
+                const res = await fetch(`${API_BASE}${endpoint}`, {
+                    method: method,
+                    headers: headers,
+                    body: body ? JSON.stringify(body) : undefined
+                });
+
+                const duration = Math.round(performance.now() - startTime);
+                resTiming.textContent = `${duration} ms`;
+
+                let resData;
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    resData = await res.json();
+                    resBody.textContent = JSON.stringify(resData, null, 2);
+                } else {
+                    const text = await res.text();
+                    resBody.textContent = text || `// Status HTTP ${res.status}`;
+                }
+
+                evaluateVerdict(tcId, tcTitle, res.status, resData);
+                return { status: res.status, data: resData };
+
+            } catch (err) {
+                resBody.textContent = `// Jaringan/Server Gagal: ${err.message}\nPastikan backend Go aktif di http://localhost:8080`;
+                verdictBanner.className = "p-4 rounded-2xl neo-border-sm space-y-1 bg-red-600 text-white";
+                verdictTcName.textContent = tcId;
+                verdictHttpStatus.textContent = "CONN_REFUSED";
+                verdictDesc.textContent = "Backend tidak dapat dihubungi. Jalankan 'go run cmd/api/main.go' terlebih dahulu.";
+                verdictBanner.classList.remove('hidden');
+                consoleStatusBadge.textContent = "FAILED";
+                consoleStatusBadge.className = "px-2 py-0.5 bg-red-600 text-white font-mono rounded font-black";
+                return { status: 0, error: err };
+            }
+        }
+
+        function evaluateVerdict(tcId, tcTitle, status, data) {
+            verdictBanner.classList.remove('hidden');
+            verdictTcName.textContent = `${tcId}: ${tcTitle}`;
+            verdictHttpStatus.textContent = `HTTP ${status}`;
+
+            if (tcId === 'TC01' && status === 201) {
+                verdictBanner.className = "p-4 rounded-2xl neo-border-sm space-y-1 bg-emerald-600 text-white";
+                verdictHttpStatus.className = "px-2 py-0.5 rounded font-black text-xs bg-white text-emerald-900";
+                verdictDesc.textContent = "PASSED: Relawan BERHASIL menambah produk (Status 201 Created). Otorisasi peran sah.";
+                consoleStatusBadge.textContent = "PASS 201";
+                consoleStatusBadge.className = "px-2 py-0.5 bg-emerald-500 text-neoBlack font-mono rounded font-black";
+            } else if (tcId === 'TC02' && status === 200) {
+                verdictBanner.className = "p-4 rounded-2xl neo-border-sm space-y-1 bg-emerald-600 text-white";
+                verdictHttpStatus.className = "px-2 py-0.5 rounded font-black text-xs bg-white text-emerald-900";
+                verdictDesc.textContent = "PASSED: Admin BERHASIL memperbarui status pesanan (Status 200 OK).";
+                consoleStatusBadge.textContent = "PASS 200";
+                consoleStatusBadge.className = "px-2 py-0.5 bg-emerald-500 text-neoBlack font-mono rounded font-black";
+            } else if (tcId === 'TC03' && status === 401) {
+                verdictBanner.className = "p-4 rounded-2xl neo-border-sm space-y-1 bg-brandRed text-white";
+                verdictHttpStatus.className = "px-2 py-0.5 rounded font-black text-xs bg-white text-brandRed";
+                verdictDesc.textContent = "PASSED (NEGATIVE AUTH): Permintaan tanpa token DITOLAK SISTEMATIS (Status 401 Unauthorized).";
+                consoleStatusBadge.textContent = "PASS 401";
+                consoleStatusBadge.className = "px-2 py-0.5 bg-brandRed text-white font-mono rounded font-black";
+            } else if (tcId === 'TC04' && status === 403) {
+                verdictBanner.className = "p-4 rounded-2xl neo-border-sm space-y-1 bg-amber-500 text-neoBlack";
+                verdictHttpStatus.className = "px-2 py-0.5 rounded font-black text-xs bg-neoBlack text-white";
+                verdictDesc.textContent = "PASSED (NEGATIVE RBAC): Usaha bypass Relawan DITOLAK SISTEMATIS (Status 403 Forbidden). Perlindungan backend aktif!";
+                consoleStatusBadge.textContent = "PASS 403";
+                consoleStatusBadge.className = "px-2 py-0.5 bg-amber-400 text-neoBlack font-mono rounded font-black";
+            } else if (tcId === 'TC05' && status === 400) {
+                verdictBanner.className = "p-4 rounded-2xl neo-border-sm space-y-1 bg-blue-600 text-white";
+                verdictHttpStatus.className = "px-2 py-0.5 rounded font-black text-xs bg-white text-blue-900";
+                verdictDesc.textContent = "PASSED (LIMIT CHECK): Penyaluran donasi melebihi saldo kas DITOLAK VALIDASI SERVER (Status 400 Bad Request).";
+                consoleStatusBadge.textContent = "PASS 400";
+                consoleStatusBadge.className = "px-2 py-0.5 bg-blue-500 text-white font-mono rounded font-black";
+            } else {
+                verdictBanner.className = "p-4 rounded-2xl neo-border-sm space-y-1 bg-slate-800 text-white";
+                verdictHttpStatus.className = "px-2 py-0.5 rounded font-black text-xs bg-slate-600 text-white";
+                verdictDesc.textContent = `Response diterima dengan status HTTP ${status}.`;
+                consoleStatusBadge.textContent = `STATUS ${status}`;
+                consoleStatusBadge.className = "px-2 py-0.5 bg-slate-700 text-white font-mono rounded font-black";
+            }
+        }
+
+        // Action Handlers
+        async function runTC01() {
+            if (!PRESETS.relawan) await fetchDevTokens();
+            await setRole('relawan');
+            const sampleProduct = {
+                nama_produk: "Jaket Bomber Relawan " + Math.floor(Math.random() * 1000),
+                harga: 95000,
+                deskripsi: "Pakaian thrift hasil kurasi relawan program Tebar Cinta.",
+                ukuran: "XL",
+                kondisi: "Sangat Baik",
+                kategori: "Jaket",
+                foto: "https://supabase.co/storage/v1/object/public/produk/sample-bomber.jpg"
+            };
+            await executeRequest('TC01', 'Relawan Tambah Produk', 'POST', '/admin/produk', sampleProduct, PRESETS.relawan);
+        }
+
+        async function runTC02() {
+            if (!PRESETS.admin) await fetchDevTokens();
+            await setRole('admin');
+            await executeRequest('TC02', 'Admin Update Status Pesanan', 'PATCH', `/admin/pesanan/${samplePesananId}/status`, { status_pesanan: 'dibayar' }, PRESETS.admin);
+        }
+
+        async function runTC03() {
+            await setRole('guest');
+            await executeRequest('TC03', 'Tamu Akses Pesanan Tanpa Token', 'GET', '/admin/pesanan', null, "");
+        }
+
+        async function runTC04() {
+            if (!PRESETS.relawan) await fetchDevTokens();
+            await setRole('relawan');
+            // Menyerang endpoint khusus admin menggunakan token relawan
+            await executeRequest('TC04', 'Relawan Bypass Update Pesanan', 'PATCH', `/admin/pesanan/${samplePesananId}/status`, { status_pesanan: 'dibayar' }, PRESETS.relawan);
+        }
+
+        async function runTC05() {
+            if (!PRESETS.admin) await fetchDevTokens();
+            await setRole('admin');
+            // Mencoba menyalurkan donasi Rp 1 Milyar (melebihi saldo)
+            const samplePenyaluran = {
+                nominal: 1000000000,
+                keterangan: "Penyaluran donasi fiktif uji batas nominal saldo"
+            };
+            await executeRequest('TC05', 'Penyaluran Melebihi Saldo', 'POST', '/admin/donasi/penyaluran', samplePenyaluran, PRESETS.admin);
+        }
+
+        async function runAllTests() {
+            showToast("Menjalankan seluruh Test Case secara berurutan...", "info");
+            await runTC03(); // Test 401
+            await new Promise(r => setTimeout(r, 1400));
+            await runTC04(); // Test 403
+            await new Promise(r => setTimeout(r, 1400));
+            await runTC05(); // Test 400
+            await new Promise(r => setTimeout(r, 1400));
+            await runTC01(); // Test 201
+            await new Promise(r => setTimeout(r, 1400));
+            await runTC02(); // Test 200
+            showToast("Seluruh suite pengujian RBAC telah selesai dieksekusi!", "success");
+        }
+
+        function clearConsole() {
+            verdictBanner.classList.add('hidden');
+            reqMethod.textContent = "-";
+            reqUrl.textContent = "-";
+            reqAuth.textContent = "None";
+            resBody.textContent = "// Console bersih.";
+            resTiming.textContent = "0 ms";
+            consoleStatusBadge.textContent = "STANDBY";
+            consoleStatusBadge.className = "px-2 py-0.5 bg-slate-800 text-slate-300 text-[10px] font-mono rounded font-bold";
+        }
+
+        function showToast(msg, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-6 right-6 p-4 neo-border rounded-xl font-bold text-xs shadow-neo z-50 transition-all ${
+                type === 'success' ? 'bg-accentGreen text-white' : 'bg-neoBlack text-white'
+            }`;
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Muat token dev saat halaman pertama kali dibuka
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchDevTokens();
+        });
+
+        function showToast(msg, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-6 right-6 p-4 neo-border rounded-xl font-bold text-xs shadow-neo z-50 transition-all ${
+                type === 'success' ? 'bg-accentGreen text-white' : 'bg-neoBlack text-white'
+            }`;
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+</html>

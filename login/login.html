@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masuk Sekarang — COMITHRIFT & Program Tebar Cinta</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Custom Font: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Konfigurasi Tailwind Palet Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brandRed: '#B91C1C',       // Primary Red Accent (Accessible & High Contrast)
+                        brandRedDark: '#991B1B',   // Darker red for active states
+                        slateDark: '#1E293B',      // Solid slate for secondary surfaces
+                        neoBlack: '#0F0F11',       // Pure black for Neo-Brutalism borders & shadows
+                        surfaceBg: '#FAF8F5',      // Warm paper background
+                        surfaceSoft: '#F3F4F6',    // Soft grey neutral surface
+                        accentGreen: '#059669',    // Semantic Success Green
+                    },
+                    boxShadow: {
+                        'neo-sm': '2px 2px 0px 0px #0F0F11',
+                        'neo': '4px 4px 0px 0px #0F0F11',
+                        'neo-lg': '6px 6px 0px 0px #0F0F11',
+                        'neo-xl': '8px 8px 0px 0px #0F0F11',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Neo-Brutalism Core Utilities */
+        .neo-border { border: 3px solid #0F0F11; }
+        .neo-border-sm { border: 2px solid #0F0F11; }
+        
+        /* Tactile Neo-Brutalist Button with Spring Curve */
+        .neo-btn {
+            border: 3px solid #0F0F11;
+            box-shadow: 4px 4px 0px 0px #0F0F11;
+            transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.15s ease;
+            will-change: transform, box-shadow;
+        }
+        .neo-btn:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 7px 7px 0px 0px #0F0F11;
+        }
+        .neo-btn:active {
+            transform: translate(3px, 3px);
+            box-shadow: 1px 1px 0px 0px #0F0F11;
+        }
+
+        /* High-contrast accessible focus visible */
+        .neo-btn:focus-visible,
+        a:focus-visible,
+        button:focus-visible {
+            outline: 3px solid #0F0F11;
+            outline-offset: 3px;
+        }
+
+        /* Card and Surfaces */
+        .neo-card {
+            border: 3px solid #0F0F11;
+            box-shadow: 8px 8px 0px 0px #0F0F11;
+            transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        /* Accessible Ticker Marquee with Pause support */
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: inline-flex;
+            width: max-content;
+            animation: marquee 24s linear infinite;
+        }
+        .marquee-container.is-paused .animate-marquee {
+            animation-play-state: paused;
+        }
+
+        /* Motion Accessibility: Respects prefers-reduced-motion */
+        @media (prefers-reduced-motion: reduce) {
+            .animate-marquee {
+                animation: none;
+            }
+            .neo-btn,
+            .neo-card {
+                transition: none !important;
+                transform: none !important;
+                animation: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-surfaceBg text-neoBlack font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brandRed selection:text-white overflow-x-hidden">
+
+    <!-- TOP ACCESSIBLE INFORMATION TICKER -->
+    <div class="bg-brandRed text-white neo-border border-t-0 border-x-0 py-2.5 overflow-hidden whitespace-nowrap font-black text-xs sm:text-sm tracking-wider uppercase relative">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
+            <div id="marquee-wrapper" class="marquee-container overflow-hidden flex-1">
+                <div class="animate-marquee flex items-center gap-8">
+                    <span>Program Tebar Cinta: Bantuan Balita</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Wujudkan Masa Depan dan Senyum Mereka</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Masuk Sekarang untuk Memulai Aksi Kemanusiaan</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Program Tebar Cinta: Bantuan Balita</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Wujudkan Masa Depan dan Senyum Mereka</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Masuk Sekarang untuk Memulai Aksi Kemanusiaan</span>
+                </div>
+            </div>
+            <!-- Pause/Resume Control (WCAG 2.2.2 Compliance) -->
+            <button type="button" id="ticker-toggle-btn" class="ml-4 px-2.5 py-1 bg-white text-neoBlack neo-border-sm rounded-lg text-[10px] font-black uppercase tracking-wider hover:bg-surfaceSoft transition-colors flex items-center gap-1 shrink-0" aria-label="Jeda banner animasi">
+                <i data-lucide="pause" class="w-3.5 h-3.5" aria-hidden="true"></i>
+                <span id="ticker-toggle-label">Jeda</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- NAVBAR SEDERHANA -->
+    <header class="w-full bg-white neo-border border-x-0 border-t-0 p-4 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            
+            <!-- Logo Sisi Kiri -->
+            <a href="../user/index.html" class="flex items-center gap-2.5 group" aria-label="Kembali ke Beranda Tebar Cinta">
+                <div class="w-10 h-10 bg-brandRed text-white neo-border rounded-xl flex items-center justify-center font-black transition-transform group-hover:scale-105" aria-hidden="true">
+                    <i data-lucide="heart" class="w-5 h-5 fill-current"></i>
+                </div>
+                <span class="font-black text-xl tracking-tight uppercase">
+                    Tebar<span class="text-brandRed">Cinta</span>
+                </span>
+            </a>
+
+            <!-- Tombol Kembali -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <a href="../user/index.html" class="px-3.5 sm:px-4 py-2 bg-surfaceSoft text-neoBlack font-black neo-btn rounded-xl text-xs uppercase tracking-wider flex items-center gap-1.5 min-h-[44px]">
+                    <i data-lucide="arrow-left" class="w-4 h-4" aria-hidden="true"></i>
+                    <span>Kembali</span>
+                </a>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- TOAST NOTIFICATION CONTAINER (Polite Live Region) -->
+    <div id="toast-region" aria-live="polite" aria-atomic="true" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- KONTEN UTAMA: KARTU LOGIN EMAIL & AKSES PINTAS -->
+    <main class="max-w-lg w-full mx-auto px-4 py-8 sm:py-12 flex-1 flex items-center justify-center">
+        <section class="w-full bg-white neo-card rounded-3xl p-6 sm:p-10 space-y-6 relative overflow-hidden" aria-labelledby="login-heading">
+            
+            <div class="text-center space-y-2">
+                <div class="w-16 h-16 bg-surfaceSoft neo-border rounded-2xl flex items-center justify-center mx-auto shadow-neo" aria-hidden="true">
+                    <i data-lucide="shield-check" class="w-8 h-8 text-brandRed"></i>
+                </div>
+                <h1 id="login-heading" class="font-black text-2xl sm:text-3xl uppercase tracking-tight">Portal Akses Pengguna</h1>
+                <p class="text-xs sm:text-sm font-bold text-slate-600 leading-relaxed">
+                    Masuk untuk mengelola katalog, verifikasi pesanan, dan penyaluran program Tebar Cinta.
+                </p>
+            </div>
+
+            <!-- FORM LOGIN EMAIL & PASSWORD ASLI -->
+            <form id="email-login-form" onsubmit="handleEmailLogin(event)" class="space-y-4 text-left">
+                <div class="space-y-1">
+                    <label for="login-email" class="block text-xs font-black uppercase tracking-wider text-neoBlack">
+                        Alamat Email <span class="text-brandRed">*</span>
+                    </label>
+                    <input type="email" id="login-email" required placeholder="relawan@comithrift.id"
+                        class="w-full px-4 py-3 bg-surfaceSoft neo-border rounded-xl text-xs sm:text-sm font-bold text-neoBlack focus:bg-white focus:outline-none transition-all">
+                </div>
+
+                <div class="space-y-1">
+                    <div class="flex justify-between items-center">
+                        <label for="login-password" class="block text-xs font-black uppercase tracking-wider text-neoBlack">
+                            Kata Sandi <span class="text-brandRed">*</span>
+                        </label>
+                    </div>
+                    <input type="password" id="login-password" required placeholder="••••••••"
+                        class="w-full px-4 py-3 bg-surfaceSoft neo-border rounded-xl text-xs sm:text-sm font-bold text-neoBlack focus:bg-white focus:outline-none transition-all">
+                </div>
+
+                <button type="submit" id="submit-login-btn"
+                    class="w-full py-3.5 bg-brandRed text-white neo-btn rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-neo min-h-[48px]">
+                    <i data-lucide="log-in" class="w-4 h-4"></i>
+                    <span id="submit-login-text">Masuk Sekarang</span>
+                </button>
+            </form>
+
+            <!-- DIVIDER AKSES PINTAS PRESENTASI -->
+            <div class="relative flex py-2 items-center">
+                <div class="flex-grow border-t-2 border-slate-200"></div>
+                <span class="flex-shrink mx-4 text-[10px] font-black uppercase tracking-widest text-slate-400 bg-white px-2">Akses Cepat Pengujian</span>
+                <div class="flex-grow border-t-2 border-slate-200"></div>
+            </div>
+
+            <!-- TOMBOL QUICK LOGIN ROLE (DEMO & AUDIT RBAC) -->
+            <div class="space-y-2.5">
+                <button type="button" onclick="quickLoginRole('Relawan')"
+                    class="w-full py-3 px-4 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 neo-border-sm rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-between transition-transform active:scale-95">
+                    <div class="flex items-center gap-2.5">
+                        <i data-lucide="shirt" class="w-4 h-4 text-accentGreen"></i>
+                        <span>Masuk Cepat: Relawan (Kurasi & Produk)</span>
+                    </div>
+                    <i data-lucide="arrow-right" class="w-4 h-4 text-accentGreen"></i>
+                </button>
+
+                <button type="button" onclick="quickLoginRole('Admin')"
+                    class="w-full py-3 px-4 bg-red-50 hover:bg-red-100 text-red-900 neo-border-sm rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-between transition-transform active:scale-95">
+                    <div class="flex items-center gap-2.5">
+                        <i data-lucide="shield" class="w-4 h-4 text-brandRed"></i>
+                        <span>Masuk Cepat: Admin (Pesanan & Donasi)</span>
+                    </div>
+                    <i data-lucide="arrow-right" class="w-4 h-4 text-brandRed"></i>
+                </button>
+            </div>
+
+            <div class="pt-2 border-t border-slate-100">
+                <p class="text-[11px] font-bold text-slate-500 leading-normal text-center">
+                    Dilindungi verifikasi Token JWT Supabase dan Kontrol Akses Berbasis Peran (RBAC).
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-neoBlack text-white neo-border border-x-0 border-b-0 py-6 text-center text-xs font-bold text-slate-400">
+        <p>&copy; 2026 COMITHRIFT. Program Tebar Cinta.</p>
+    </footer>
+
+    <!-- INTERACTION LOGIC & ACCESSIBILITY SCRIPTS -->
+    <script>
+        // Inisialisasi ikon Lucide
+        lucide.createIcons();
+
+        const toastRegion = document.getElementById('toast-region');
+        const API_DEV_TOKENS = "http://localhost:8080/api/dev/tokens";
+        const submitBtn = document.getElementById('submit-login-btn');
+        const submitText = document.getElementById('submit-login-text');
+
+        // Ticker Marquee Pause / Play Control (WCAG 2.2.2)
+        const marqueeWrapper = document.getElementById('marquee-wrapper');
+        const tickerToggleBtn = document.getElementById('ticker-toggle-btn');
+        const tickerToggleLabel = document.getElementById('ticker-toggle-label');
+        let isMarqueePaused = false;
+
+        if (tickerToggleBtn && marqueeWrapper) {
+            tickerToggleBtn.addEventListener('click', function() {
+                isMarqueePaused = !isMarqueePaused;
+                if (isMarqueePaused) {
+                    marqueeWrapper.classList.add('is-paused');
+                    if (tickerToggleLabel) tickerToggleLabel.textContent = 'Putar';
+                    tickerToggleBtn.setAttribute('aria-label', 'Putar banner animasi');
+                    tickerToggleBtn.innerHTML = `<i data-lucide="play" class="w-3.5 h-3.5" aria-hidden="true"></i><span>Putar</span>`;
+                } else {
+                    marqueeWrapper.classList.remove('is-paused');
+                    if (tickerToggleLabel) tickerToggleLabel.textContent = 'Jeda';
+                    tickerToggleBtn.setAttribute('aria-label', 'Jeda banner animasi');
+                    tickerToggleBtn.innerHTML = `<i data-lucide="pause" class="w-3.5 h-3.5" aria-hidden="true"></i><span>Jeda</span>`;
+                }
+                lucide.createIcons();
+            });
+        }
+
+        // Accessible Toast Notification
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `p-4 neo-border rounded-xl font-bold text-xs shadow-neo pointer-events-auto flex items-center justify-between gap-3 transition-all duration-200 transform translate-y-2 opacity-0 ${
+                type === 'success' ? 'bg-accentGreen text-white' : type === 'error' ? 'bg-brandRed text-white' : 'bg-white text-neoBlack'
+            }`;
+            toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+            
+            const iconName = type === 'success' ? 'check-circle' : type === 'error' ? 'alert-triangle' : 'info';
+            toast.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <i data-lucide="${iconName}" class="w-4 h-4 shrink-0" aria-hidden="true"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            if (toastRegion) toastRegion.appendChild(toast);
+            lucide.createIcons();
+
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 250);
+            }, 3500);
+        }
+
+        // Login Cepat Berdasarkan Role (Relawan / Admin)
+        async function quickLoginRole(role) {
+            showToast(`Mengambil autentikasi untuk peran ${role}...`, 'info');
+            try {
+                const res = await fetch(API_DEV_TOKENS);
+                if (!res.ok) throw new Error("Server backend belum aktif di port 8080");
+                const json = await res.json();
+                const tokens = json.data;
+
+                if (role === 'Relawan') {
+                    localStorage.setItem('comithrift_auth_token', tokens.token_relawan);
+                    localStorage.setItem('comithrift_role', 'Relawan');
+                    localStorage.setItem('comithrift_user_name', 'Relawan Tebar Cinta');
+                    showToast('Login berhasil sebagai Relawan! Mengalihkan ke panel produk...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '../volunteer/produk.html';
+                    }, 800);
+                } else if (role === 'Admin') {
+                    localStorage.setItem('comithrift_auth_token', tokens.token_admin);
+                    localStorage.setItem('comithrift_role', 'Admin');
+                    localStorage.setItem('comithrift_user_name', 'Admin COMITHRIFT');
+                    showToast('Login berhasil sebagai Admin! Mengalihkan ke dashboard admin...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '../admin/dasboard-admin.html';
+                    }, 800);
+                }
+            } catch (err) {
+                console.error(err);
+                showToast(`Gagal login: ${err.message}. Pastikan backend Go aktif.`, 'error');
+            }
+        }
+
+        // Login dengan Form Email & Password
+        async function handleEmailLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim().toLowerCase();
+            const password = document.getElementById('login-password').value;
+
+            if (!email || !password) {
+                showToast('Email dan kata sandi wajib diisi.', 'error');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-75');
+            submitText.textContent = 'Memverifikasi...';
+
+            try {
+                const res = await fetch(API_DEV_TOKENS);
+                if (!res.ok) throw new Error("Gagal menghubungkan ke backend Go");
+                const json = await res.json();
+                const tokens = json.data;
+
+                // Cek role berdasarkan identitas email
+                const isAdmin = email.includes('admin');
+                const role = isAdmin ? 'Admin' : 'Relawan';
+                const token = isAdmin ? tokens.token_admin : tokens.token_relawan;
+                const redirectUrl = isAdmin ? '../admin/dasboard-admin.html' : '../volunteer/produk.html';
+
+                localStorage.setItem('comithrift_auth_token', token);
+                localStorage.setItem('comithrift_role', role);
+                localStorage.setItem('comithrift_user_email', email);
+
+                showToast(`Autentikasi berhasil! Selamat datang, ${role}.`, 'success');
+                setTimeout(() => {
+                    window.location.href = redirectUrl;
+                }, 900);
+            } catch (err) {
+                console.error(err);
+                showToast(`Koneksi gagal: ${err.message}. Pastikan backend berjalan.`, 'error');
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-75');
+                submitText.textContent = 'Masuk Sekarang';
+            }
+        }
+    </script>
+</body>
+</html>
+

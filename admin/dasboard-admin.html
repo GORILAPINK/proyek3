@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin — Kelola Pesanan | COMITHRIFT & Tebar Cinta</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Custom Font: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Client-side RBAC Route Guard: Hanya Admin yang diizinkan -->
+    <script>
+        (function() {
+            const token = localStorage.getItem('comithrift_auth_token');
+            const role = localStorage.getItem('comithrift_role');
+            if (!token || role !== 'Admin') {
+                alert('Akses Terbatas! Halaman ini hanya dapat diakses oleh Administrator.');
+                window.location.replace('../login/login.html');
+            }
+        })();
+    </script>
+
+    <!-- Konfigurasi Tailwind Palet Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brandRed: '#B91C1C',       // Primary Red Accent (Accessible & High Contrast)
+                        brandRedDark: '#991B1B',   // Darker red for active states
+                        slateDark: '#1E293B',      // Solid slate for secondary surfaces
+                        neoBlack: '#0F0F11',       // Pure black for Neo-Brutalism borders & shadows
+                        surfaceBg: '#FAF8F5',      // Warm paper background
+                        surfaceSoft: '#F3F4F6',    // Soft grey neutral surface
+                        accentGreen: '#059669',    // Semantic Success Green
+                        accentAmber: '#D97706',    // Amber Warning
+                        accentBlue: '#2563EB',     // Blue Info
+                        waGreen: '#15803D',        // High-contrast WhatsApp Green
+                    },
+                    boxShadow: {
+                        'neo-sm': '2px 2px 0px 0px #0F0F11',
+                        'neo': '4px 4px 0px 0px #0F0F11',
+                        'neo-lg': '6px 6px 0px 0px #0F0F11',
+                        'neo-xl': '8px 8px 0px 0px #0F0F11',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Neo-Brutalism Core Utilities */
+        .neo-border {
+            border: 3px solid #0F0F11;
+        }
+
+        .neo-border-sm {
+            border: 2px solid #0F0F11;
+        }
+
+        /* Tactile Neo-Brutalist Button with Spring Curve */
+        .neo-btn {
+            border: 3px solid #0F0F11;
+            box-shadow: 4px 4px 0px 0px #0F0F11;
+            transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.15s ease;
+            will-change: transform, box-shadow;
+        }
+
+        .neo-btn:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 7px 7px 0px 0px #0F0F11;
+        }
+
+        .neo-btn:active {
+            transform: translate(3px, 3px);
+            box-shadow: 1px 1px 0px 0px #0F0F11;
+        }
+
+        /* High-contrast accessible focus visible */
+        .neo-btn:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        a:focus-visible,
+        button:focus-visible {
+            outline: 3px solid #0F0F11;
+            outline-offset: 3px;
+        }
+
+        /* Card and Surfaces */
+        .neo-card {
+            border: 3px solid #0F0F11;
+            box-shadow: 8px 8px 0px 0px #0F0F11;
+            transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        /* Accessible Ticker Marquee with Pause support */
+        @keyframes marquee {
+            0% {
+                transform: translateX(0%);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .animate-marquee {
+            display: inline-flex;
+            width: max-content;
+            animation: marquee 24s linear infinite;
+        }
+
+        .marquee-container.is-paused .animate-marquee {
+            animation-play-state: paused;
+        }
+
+        /* Motion Accessibility: Respects prefers-reduced-motion */
+        @media (prefers-reduced-motion: reduce) {
+            .animate-marquee {
+                animation: none;
+            }
+
+            .neo-btn,
+            .neo-card {
+                transition: none !important;
+                transform: none !important;
+                animation: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body
+    class="bg-surfaceBg text-neoBlack font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brandRed selection:text-white overflow-x-hidden">
+
+    <!-- TOP ACCESSIBLE INFORMATION TICKER -->
+    <div
+        class="bg-neoBlack text-white neo-border border-t-0 border-x-0 py-2.5 overflow-hidden whitespace-nowrap font-black text-xs sm:text-sm tracking-wider uppercase relative">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
+            <div id="marquee-wrapper" class="marquee-container overflow-hidden flex-1">
+                <div class="animate-marquee flex items-center gap-8">
+                    <span>Panel Pengelolaan Pesanan & Donasi Tebar Cinta</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Kelola Pengemasan, Pengiriman & Konfirmasi Diterima</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Laporan Real-Time Penyaluran Bantuan Nutrisi Balita</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Panel Pengelolaan Pesanan & Donasi Tebar Cinta</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Kelola Pengemasan, Pengiriman & Konfirmasi Diterima</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Laporan Real-Time Penyaluran Bantuan Nutrisi Balita</span>
+                </div>
+            </div>
+            <!-- Pause/Resume Control (WCAG 2.2.2 Compliance) -->
+            <button type="button" id="ticker-toggle-btn"
+                class="ml-4 px-2.5 py-1 bg-white text-neoBlack neo-border-sm rounded-lg text-[10px] font-black uppercase tracking-wider hover:bg-surfaceSoft transition-colors flex items-center gap-1 shrink-0"
+                aria-label="Jeda banner animasi">
+                <i data-lucide="pause" class="w-3.5 h-3.5" aria-hidden="true"></i>
+                <span id="ticker-toggle-label">Jeda</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- NAVBAR ADMIN -->
+    <header class="sticky top-0 z-40 bg-white neo-border border-x-0 border-t-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3">
+            <a href="admin.html" class="flex items-center gap-2.5 group" aria-label="Dashboard Admin">
+                <div class="w-10 h-10 bg-brandRed text-white neo-border rounded-xl flex items-center justify-center font-black transition-transform group-hover:scale-105"
+                    aria-hidden="true">
+                    <i data-lucide="shield" class="w-5 h-5 fill-current"></i>
+                </div>
+                <span class="font-black text-xl sm:text-2xl tracking-tight uppercase">
+                    Admin<span class="text-brandRed">Panel</span>
+                </span>
+            </a>
+            <div class="flex items-center gap-2 sm:gap-3">
+                <a href="../user/dasboard.html"
+                    class="px-3.5 sm:px-4 py-2 bg-surfaceSoft text-neoBlack font-black neo-btn rounded-xl text-xs sm:text-sm uppercase tracking-wider flex items-center gap-1.5 min-h-[44px]"
+                    aria-label="Kembali ke Toko User">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Toko</span>
+                </a>
+                <a href="packing.html"
+                    class="hidden md:flex px-3.5 sm:px-4 py-2 bg-surfaceSoft text-neoBlack font-black neo-btn rounded-xl text-xs sm:text-sm uppercase tracking-wider items-center gap-1.5 min-h-[44px]">
+                    <i data-lucide="package" class="w-4 h-4"></i>
+                    <span>Pengemasan</span>
+                </a>
+                <button type="button" onclick="handleLogout()"
+                    class="px-3.5 sm:px-4 py-2 bg-brandRed text-white font-black neo-btn rounded-xl text-xs sm:text-sm uppercase tracking-wider flex items-center gap-2 min-h-[44px]"
+                    aria-label="Keluar Admin">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Keluar</span>
+                </button>
+                <!-- Burger Menu Toggle Button -->
+                <button type="button" onclick="toggleMenu()"
+                    class="p-3 bg-surfaceSoft neo-btn rounded-xl flex items-center justify-center min-h-[44px] min-w-[44px]"
+                    aria-label="Buka Menu Navigasi" aria-expanded="false" id="menu-toggle-btn">
+                    <i data-lucide="menu" class="w-5 h-5" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- SIDEBAR DRAWER MENU -->
+    <div id="menu-overlay" onclick="toggleMenu()"
+        class="fixed inset-0 bg-neoBlack/60 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-300"
+        aria-hidden="true"></div>
+    <aside id="menu-drawer"
+        class="fixed top-0 right-0 w-80 sm:w-96 max-w-[85vw] h-full bg-white z-50 neo-border border-y-0 border-r-0 translate-x-full transition-transform duration-300 ease-in-out p-6 flex flex-col justify-between overflow-y-auto"
+        aria-label="Menu Admin" aria-hidden="true">
+        <div class="space-y-6">
+            <div class="flex items-center justify-between border-b-2 border-slate-100 pb-4">
+                <div class="flex items-center gap-2">
+                    <div
+                        class="w-8 h-8 bg-brandRed text-white neo-border-sm rounded-lg flex items-center justify-center font-black">
+                        <i data-lucide="shield" class="w-4 h-4 fill-current"></i>
+                    </div>
+                    <span class="font-black text-lg uppercase tracking-tight">Menu Admin</span>
+                </div>
+                <button type="button" onclick="toggleMenu()"
+                    class="p-2 neo-border-sm rounded-lg hover:bg-surfaceSoft min-h-[44px] min-w-[44px] flex items-center justify-center"
+                    aria-label="Tutup Menu" id="drawer-close-btn">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <nav class="space-y-2.5 font-black text-sm uppercase">
+                <a href="dasboard-admin.html"
+                    class="flex items-center justify-between p-3 bg-brandRed text-white neo-border-sm rounded-xl transition-colors"
+                    aria-current="page">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="clipboard-list" class="w-4 h-4"></i>
+                        <span>Kelola Pesanan</span>
+                    </div>
+                    <span
+                        class="px-2 py-0.5 bg-white text-neoBlack text-[10px] font-black rounded neo-border-sm">Aktif</span>
+                </a>
+                <a href="packing.html"
+                    class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="package" class="w-4 h-4"></i>
+                        <span>Status Pengemasan</span>
+                    </div>
+                </a>
+                <a href="../user/dasboard.html"
+                    class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="store" class="w-4 h-4"></i>
+                        <span>Toko COMITHRIFT</span>
+                    </div>
+                    <i data-lucide="external-link" class="w-3.5 h-3.5 opacity-60"></i>
+                </a>
+                <a href="../user/index.html"
+                    class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="image" class="w-4 h-4"></i>
+                        <span>Galeri Kegiatan</span>
+                    </div>
+                    <i data-lucide="external-link" class="w-3.5 h-3.5 opacity-60"></i>
+                </a>
+                <a href="../volunteer/profile.html"
+                    class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="user" class="w-4 h-4"></i>
+                        <span>Area Relawan</span>
+                    </div>
+                    <i data-lucide="external-link" class="w-3.5 h-3.5 opacity-60"></i>
+                </a>
+            </nav>
+        </div>
+
+        <div class="border-t-2 border-slate-100 pt-4">
+            <button type="button" onclick="handleLogout()"
+                class="w-full py-3 bg-brandRed text-white neo-btn rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-brandRedDark transition-colors min-h-[44px]">
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+                <span>Keluar Admin</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- TOAST NOTIFICATION CONTAINER (Polite Live Region) -->
+    <div id="toast-region" aria-live="polite" aria-atomic="true"
+        class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- KONTEN UTAMA DASHBOARD ADMIN -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex-1 w-full space-y-8">
+
+        <!-- Header Dashboard -->
+        <header class="border-b-4 border-neoBlack pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+                <p class="text-xs font-black uppercase tracking-wider text-slateDark flex items-center gap-1.5">
+                    <i data-lucide="settings" class="w-4 h-4 text-brandRed"></i>
+                    Manajemen Pesanan
+                </p>
+                <h1 class="text-3xl sm:text-5xl font-black uppercase tracking-tight mt-1">Daftar Pesanan Masuk</h1>
+                <p class="text-xs sm:text-sm font-bold text-slate-600 mt-1">Pantau dan perbarui status pesanan dari
+                    pengemasan hingga sampai ke pembeli.</p>
+            </div>
+
+            <div class="bg-white neo-card rounded-2xl p-3.5 flex items-center gap-3">
+                <div class="w-10 h-10 bg-surfaceSoft neo-border rounded-xl flex items-center justify-center font-black">
+                    <i data-lucide="user-check" class="w-5 h-5 text-brandRed"></i>
+                </div>
+                <div>
+                    <p class="text-[10px] font-black uppercase text-slate-500">Akses Masuk:</p>
+                    <p class="text-xs font-black text-neoBlack">Administrator Tebar Cinta</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- STATISTIK RINGKAS (KLIK KARTU UNTUK FILTER CEPAT) -->
+        <section class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4" aria-label="Statistik Pesanan">
+            <button type="button" onclick="setOrderStatusFilter('all')"
+                class="stat-card bg-white neo-card rounded-2xl p-4 space-y-1 text-left transition-all hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-neoBlack cursor-pointer group"
+                title="Tampilkan semua pesanan">
+                <div class="flex items-center justify-between">
+                    <p class="text-[10px] font-black uppercase text-slate-500">Total Pesanan</p>
+                    <i data-lucide="layers"
+                        class="w-3.5 h-3.5 text-slate-400 group-hover:text-neoBlack transition-colors"></i>
+                </div>
+                <p id="stat-total" class="text-2xl font-black text-neoBlack">3</p>
+            </button>
+            <button type="button" onclick="setOrderStatusFilter('Sedang Dikemas')"
+                class="stat-card bg-amber-50 neo-card rounded-2xl p-4 space-y-1 text-left transition-all hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-accentAmber cursor-pointer group"
+                title="Filter: Sedang Dikemas">
+                <div class="flex items-center justify-between">
+                    <p class="text-[10px] font-black uppercase text-accentAmber">Sedang Dikemas</p>
+                    <i data-lucide="package"
+                        class="w-3.5 h-3.5 text-accentAmber group-hover:scale-110 transition-transform"></i>
+                </div>
+                <p id="stat-packing" class="text-2xl font-black text-accentAmber">1</p>
+            </button>
+            <button type="button" onclick="setOrderStatusFilter('Dalam Pengiriman')"
+                class="stat-card bg-blue-50 neo-card rounded-2xl p-4 space-y-1 text-left transition-all hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-accentBlue cursor-pointer group"
+                title="Filter: Dalam Pengiriman">
+                <div class="flex items-center justify-between">
+                    <p class="text-[10px] font-black uppercase text-accentBlue">Dalam Pengiriman</p>
+                    <i data-lucide="truck"
+                        class="w-3.5 h-3.5 text-accentBlue group-hover:scale-110 transition-transform"></i>
+                </div>
+                <p id="stat-shipping" class="text-2xl font-black text-accentBlue">1</p>
+            </button>
+            <button type="button" onclick="setOrderStatusFilter('Pesanan Selesai')"
+                class="stat-card bg-emerald-50 neo-card rounded-2xl p-4 space-y-1 text-left transition-all hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-accentGreen cursor-pointer group"
+                title="Filter: Pesanan Selesai">
+                <div class="flex items-center justify-between">
+                    <p class="text-[10px] font-black uppercase text-accentGreen">Pesanan Selesai</p>
+                    <i data-lucide="check-circle-2"
+                        class="w-3.5 h-3.5 text-accentGreen group-hover:scale-110 transition-transform"></i>
+                </div>
+                <p id="stat-received" class="text-2xl font-black text-accentGreen">1</p>
+            </button>
+        </section>
+
+        <!-- FILTER & PENCARIAN MODERN NEO-BRUTALIST -->
+        <div
+            class="flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-3 bg-white neo-card p-4 rounded-2xl">
+            <div class="relative w-full xl:w-80 shrink-0">
+                <label for="admin-search" class="sr-only">Cari pesanan</label>
+                <input type="search" id="admin-search" oninput="filterOrders()"
+                    placeholder="Cari nama, invoice, atau no HP..."
+                    class="w-full pl-10 pr-4 py-2.5 bg-surfaceSoft neo-border rounded-xl font-bold text-xs sm:text-sm focus:outline-none focus:bg-white focus:shadow-neo-sm transition-all min-h-[44px]">
+                <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            </div>
+
+            <!-- Segmented Status Pills (Modern Neo-Brutalist Interactive Filter) -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-1 xl:pb-0 scrollbar-none" id="status-filter-pills"
+                role="radiogroup" aria-label="Filter status pesanan">
+                <input type="hidden" id="status-filter" value="all">
+
+                <button type="button" role="radio" aria-checked="true" data-filter="all"
+                    onclick="setOrderStatusFilter('all', this)"
+                    class="status-pill active px-3.5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider neo-border-sm bg-neoBlack text-white shadow-neo-sm transition-all min-h-[44px] shrink-0 flex items-center gap-2">
+                    <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+                    <span>Semua Status</span>
+                    <span id="pill-count-total"
+                        class="px-2 py-0.5 rounded-md text-[10px] bg-white/20 font-black">3</span>
+                </button>
+
+                <button type="button" role="radio" aria-checked="false" data-filter="Sedang Dikemas"
+                    onclick="setOrderStatusFilter('Sedang Dikemas', this)"
+                    class="status-pill px-3.5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider neo-border-sm bg-surfaceSoft text-neoBlack hover:bg-amber-100 hover:border-accentAmber transition-all min-h-[44px] shrink-0 flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-accentAmber"></span>
+                    <span>Sedang Dikemas</span>
+                    <span id="pill-count-packing"
+                        class="px-2 py-0.5 rounded-md text-[10px] bg-amber-100 text-accentAmber font-black">1</span>
+                </button>
+
+                <button type="button" role="radio" aria-checked="false" data-filter="Dalam Pengiriman"
+                    onclick="setOrderStatusFilter('Dalam Pengiriman', this)"
+                    class="status-pill px-3.5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider neo-border-sm bg-surfaceSoft text-neoBlack hover:bg-blue-100 hover:border-accentBlue transition-all min-h-[44px] shrink-0 flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-accentBlue"></span>
+                    <span>Dalam Pengiriman</span>
+                    <span id="pill-count-shipping"
+                        class="px-2 py-0.5 rounded-md text-[10px] bg-blue-100 text-accentBlue font-black">1</span>
+                </button>
+
+                <button type="button" role="radio" aria-checked="false" data-filter="Pesanan Selesai"
+                    onclick="setOrderStatusFilter('Pesanan Selesai', this)"
+                    class="status-pill px-3.5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider neo-border-sm bg-surfaceSoft text-neoBlack hover:bg-emerald-100 hover:border-accentGreen transition-all min-h-[44px] shrink-0 flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-accentGreen"></span>
+                    <span>Pesanan Selesai</span>
+                    <span id="pill-count-received"
+                        class="px-2 py-0.5 rounded-md text-[10px] bg-emerald-100 text-accentGreen font-black">1</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- TABEL PESANAN -->
+        <div class="bg-white neo-card rounded-3xl overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr
+                            class="bg-surfaceSoft border-b-4 border-neoBlack text-[11px] font-black uppercase text-slate-700">
+                            <th class="p-4">Nomor Invoice</th>
+                            <th class="p-4">Pembeli & WhatsApp</th>
+                            <th class="p-4">Total & Donasi</th>
+                            <th class="p-4">Status Pesanan</th>
+                            <th class="p-4 text-center">Tindakan Admin</th>
+                        </tr>
+                    </thead>
+                    <tbody id="order-table-body" class="divide-y-2 divide-slate-100 text-xs font-bold">
+                        <!-- Diisi via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL DETAIL PESANAN -->
+    <div id="order-modal"
+        class="fixed inset-0 bg-neoBlack/80 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-200 flex items-center justify-center p-4"
+        role="dialog" aria-modal="true" aria-labelledby="modal-invoice-title">
+        <div
+            class="bg-white neo-card rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 relative max-h-[90vh] overflow-y-auto">
+            <button type="button" onclick="closeOrderModal()"
+                class="absolute top-5 right-5 p-2 bg-surfaceSoft neo-border-sm rounded-xl min-h-[36px] min-w-[36px] flex items-center justify-center"
+                aria-label="Tutup jendela rincian">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+            <div>
+                <span
+                    class="text-[10px] font-black uppercase px-2.5 py-0.5 bg-surfaceSoft neo-border-sm rounded-md text-slate-700 inline-block">Rincian
+                    Pengiriman</span>
+                <h2 id="modal-invoice-title" class="font-black text-xl uppercase tracking-tight mt-1 text-neoBlack">
+                </h2>
+            </div>
+
+            <div class="space-y-4 text-xs font-bold text-slate-700">
+                <div class="bg-surfaceSoft p-4 rounded-xl neo-border-sm space-y-2">
+                    <p class="text-[10px] font-black uppercase text-slate-500">Penerima & Alamat:</p>
+                    <p id="modal-buyer-info" class="text-sm font-black text-neoBlack"></p>
+                    <p id="modal-buyer-address" class="text-xs font-normal text-slate-600 leading-relaxed"></p>
+                </div>
+
+                <div class="bg-surfaceSoft p-4 rounded-xl neo-border-sm space-y-2">
+                    <p class="text-[10px] font-black uppercase text-slate-500">Rincian Pembayaran:</p>
+                    <div class="flex justify-between">
+                        <span>Total Transaksi</span>
+                        <span id="modal-buyer-total" class="font-black text-brandRed"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-2 flex flex-col sm:flex-row gap-2.5">
+                <button type="button" id="modal-wa-btn"
+                    class="w-full sm:w-1/2 py-3 bg-waGreen text-white neo-btn rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 min-h-[44px]">
+                    <i data-lucide="message-circle" class="w-4 h-4"></i>
+                    <span>Hubungi WA</span>
+                </button>
+                <button type="button" onclick="closeOrderModal()"
+                    class="w-full sm:w-1/2 py-3 bg-surfaceSoft text-neoBlack neo-btn rounded-xl font-black text-xs uppercase tracking-wider min-h-[44px]">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer
+        class="bg-neoBlack text-white neo-border border-x-0 border-b-0 py-6 text-center text-xs font-bold text-slate-400 mt-auto">
+        <p>&copy; 2026 COMITHRIFT. Program Tebar Cinta Admin Panel.</p>
+    </footer>
+
+    <!-- INTERACTION LOGIC & ACCESSIBILITY SCRIPTS -->
+    <script>
+        // Inisialisasi ikon Lucide
+        lucide.createIcons();
+
+        // Data Pesanan Contoh
+        let orders = [
+            {
+                id: "TC-2026-001",
+                name: "Budi Santoso",
+                phone: "081234567890",
+                address: "Jl. Kasih Sejahtera No. 42, Jakarta Selatan",
+                total: 170000,
+                status: "Sedang Dikemas"
+            },
+            {
+                id: "TC-2026-002",
+                name: "Siti Rahmawati",
+                phone: "082198765432",
+                address: "Jl. Harmoni Indah No. 15, Bandung",
+                total: 250000,
+                status: "Dalam Pengiriman"
+            },
+            {
+                id: "TC-2026-003",
+                name: "Ahmad Fauzi",
+                phone: "085712345678",
+                address: "Komplek Tebar Kebaikan Blok C3, Surabaya",
+                total: 125000,
+                status: "Pesanan Selesai"
+            }
+        ];
+
+        const orderTableBody = document.getElementById('order-table-body');
+        const toastRegion = document.getElementById('toast-region');
+
+        function updateStats() {
+            const total = orders.length;
+            const packing = orders.filter(o => o.status === 'Sedang Dikemas').length;
+            const shipping = orders.filter(o => o.status === 'Dalam Pengiriman').length;
+            const received = orders.filter(o => o.status === 'Pesanan Selesai').length;
+
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-packing').textContent = packing;
+            document.getElementById('stat-shipping').textContent = shipping;
+            document.getElementById('stat-received').textContent = received;
+
+            const pTotal = document.getElementById('pill-count-total');
+            const pPack = document.getElementById('pill-count-packing');
+            const pShip = document.getElementById('pill-count-shipping');
+            const pRecv = document.getElementById('pill-count-received');
+            if (pTotal) pTotal.textContent = total;
+            if (pPack) pPack.textContent = packing;
+            if (pShip) pShip.textContent = shipping;
+            if (pRecv) pRecv.textContent = received;
+        }
+
+        function setOrderStatusFilter(status, btnElement) {
+            document.getElementById('status-filter').value = status;
+
+            const pills = document.querySelectorAll('.status-pill');
+            pills.forEach(pill => {
+                pill.classList.remove('bg-neoBlack', 'text-white', 'shadow-neo-sm', 'active');
+                pill.classList.add('bg-surfaceSoft', 'text-neoBlack');
+                pill.setAttribute('aria-checked', 'false');
+            });
+
+            const targetBtn = btnElement || document.querySelector(`.status-pill[data-filter="${status}"]`);
+            if (targetBtn) {
+                targetBtn.classList.remove('bg-surfaceSoft', 'text-neoBlack');
+                targetBtn.classList.add('bg-neoBlack', 'text-white', 'shadow-neo-sm', 'active');
+                targetBtn.setAttribute('aria-checked', 'true');
+            }
+
+            filterOrders();
+        }
+
+        function renderOrders(list) {
+            orderTableBody.innerHTML = '';
+            list.forEach(order => {
+                const tr = document.createElement('tr');
+                const badgeClass = order.status === 'Sedang Dikemas' ? 'bg-amber-100 text-accentAmber' :
+                    order.status === 'Dalam Pengiriman' ? 'bg-blue-100 text-accentBlue' :
+                        'bg-emerald-100 text-accentGreen';
+
+                tr.innerHTML = `
+                    <td class="p-4">
+                        <span class="font-black text-neoBlack block">${order.id}</span>
+                        <span class="text-[10px] text-slate-500 font-bold">Hari ini, 14:20 WIB</span>
+                    </td>
+                    <td class="p-4">
+                        <span class="font-black text-neoBlack block">${order.name}</span>
+                        <span class="text-[10px] text-slate-500">${order.phone}</span>
+                    </td>
+                    <td class="p-4">
+                        <span class="font-black text-brandRed block">Rp ${order.total.toLocaleString('id-ID')}</span>
+                        <span class="text-[10px] text-slate-500">Termasuk Donasi</span>
+                    </td>
+                    <td class="p-4">
+                        <span class="px-2.5 py-1 neo-border-sm rounded-lg text-[10px] font-black uppercase ${badgeClass}">
+                            ${order.status}
+                        </span>
+                    </td>
+                    <td class="p-4 text-center">
+                        <div class="flex items-center justify-center gap-2">
+                            <button type="button" onclick="openOrderModal('${order.id}')" class="px-3 py-1.5 bg-surfaceSoft neo-btn rounded-lg text-xs font-black uppercase min-h-[36px]">
+                                Rincian
+                            </button>
+                            <button type="button" onclick="advanceOrderStatus('${order.id}')" class="px-3 py-1.5 bg-brandRed text-white neo-btn rounded-lg text-xs font-black uppercase min-h-[36px]">
+                                Ubah Status
+                            </button>
+                        </div>
+                    </td>
+                `;
+                orderTableBody.appendChild(tr);
+            });
+            updateStats();
+            lucide.createIcons();
+        }
+
+        renderOrders(orders);
+
+        function filterOrders() {
+            const query = document.getElementById('admin-search').value.toLowerCase().trim();
+            const statusFilter = document.getElementById('status-filter').value;
+
+            const filtered = orders.filter(o => {
+                const matchQuery = o.name.toLowerCase().includes(query) || o.id.toLowerCase().includes(query) || o.phone.includes(query);
+                const matchStatus = statusFilter === 'all' || o.status === statusFilter;
+                return matchQuery && matchStatus;
+            });
+
+            renderOrders(filtered);
+        }
+
+        function advanceOrderStatus(id) {
+            const order = orders.find(o => o.id === id);
+            if (!order) return;
+
+            if (order.status === 'Sedang Dikemas') {
+                order.status = 'Dalam Pengiriman';
+                showToast(`Pesanan ${id} kini berstatus "Dalam Pengiriman".`, 'info');
+            } else if (order.status === 'Dalam Pengiriman') {
+                order.status = 'Pesanan Selesai';
+                showToast(`Pesanan ${id} telah diselesaikan.`, 'success');
+            } else {
+                showToast(`Pesanan ${id} sudah berstatus selesai.`, 'info');
+            }
+            filterOrders();
+        }
+
+        // Modal Logic
+        const orderModal = document.getElementById('order-modal');
+        function openOrderModal(id) {
+            const order = orders.find(o => o.id === id);
+            if (!order) return;
+
+            document.getElementById('modal-invoice-title').textContent = order.id;
+            document.getElementById('modal-buyer-info').textContent = `${order.name} (${order.phone})`;
+            document.getElementById('modal-buyer-address').textContent = order.address;
+            document.getElementById('modal-buyer-total').textContent = 'Rp ' + order.total.toLocaleString('id-ID');
+
+            const waBtn = document.getElementById('modal-wa-btn');
+            waBtn.onclick = () => {
+                const text = encodeURIComponent(`Halo Kak ${order.name}, kami dari Admin Tebar Cinta COMITHRIFT ingin mengonfirmasi pesanan ${order.id}.`);
+                window.open(`https://wa.me/62${order.phone.replace(/^0/, '')}?text=${text}`, '_blank');
+            };
+
+            orderModal.classList.remove('opacity-0', 'pointer-events-none');
+            orderModal.classList.add('opacity-100');
+        }
+
+        function closeOrderModal() {
+            orderModal.classList.remove('opacity-100');
+            orderModal.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        // Close on ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeOrderModal();
+        });
+
+        // Logout simulation
+        function handleLogout() {
+            showToast('Mengeluarkan sesi administrator...', 'info');
+            setTimeout(() => {
+                window.location.href = '../login/login.html';
+            }, 800);
+        }
+
+        // Accessible Toast Notification
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `p-4 neo-border rounded-xl font-bold text-xs shadow-neo pointer-events-auto flex items-center justify-between gap-3 transition-all duration-200 transform translate-y-2 opacity-0 ${type === 'success' ? 'bg-accentGreen text-white' : type === 'error' ? 'bg-brandRed text-white' : 'bg-white text-neoBlack'
+                }`;
+            toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+
+            const iconName = type === 'success' ? 'check-circle' : type === 'error' ? 'alert-triangle' : 'info';
+            toast.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <i data-lucide="${iconName}" class="w-4 h-4 shrink-0" aria-hidden="true"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            toastRegion.appendChild(toast);
+            lucide.createIcons();
+
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 250);
+            }, 3500);
+        }
+
+        // Ticker Marquee Pause / Play Control (WCAG 2.2.2)
+        const marqueeWrapper = document.getElementById('marquee-wrapper');
+        const tickerToggleBtn = document.getElementById('ticker-toggle-btn');
+        const tickerToggleLabel = document.getElementById('ticker-toggle-label');
+        let isMarqueePaused = false;
+
+        tickerToggleBtn.addEventListener('click', function () {
+            isMarqueePaused = !isMarqueePaused;
+            if (isMarqueePaused) {
+                marqueeWrapper.classList.add('is-paused');
+                tickerToggleLabel.textContent = 'Putar';
+                tickerToggleBtn.setAttribute('aria-label', 'Putar banner animasi');
+                tickerToggleBtn.innerHTML = `<i data-lucide="play" class="w-3.5 h-3.5" aria-hidden="true"></i><span>Putar</span>`;
+            } else {
+                marqueeWrapper.classList.remove('is-paused');
+                tickerToggleLabel.textContent = 'Jeda';
+                tickerToggleBtn.setAttribute('aria-label', 'Jeda banner animasi');
+                tickerToggleBtn.innerHTML = `<i data-lucide="pause" class="w-3.5 h-3.5" aria-hidden="true"></i><span>Jeda</span>`;
+            }
+            lucide.createIcons();
+        });
+
+        // Drawer Menu Logic
+        const menuDrawer = document.getElementById('menu-drawer');
+        const menuOverlay = document.getElementById('menu-overlay');
+        const menuToggleBtn = document.getElementById('menu-toggle-btn');
+        const drawerCloseBtn = document.getElementById('drawer-close-btn');
+        let isMenuOpen = false;
+
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+            if (isMenuOpen) {
+                menuDrawer.classList.remove('translate-x-full');
+                menuDrawer.setAttribute('aria-hidden', 'false');
+                menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                menuOverlay.setAttribute('aria-hidden', 'false');
+                menuToggleBtn.setAttribute('aria-expanded', 'true');
+                document.body.classList.add('overflow-hidden');
+                if (drawerCloseBtn) drawerCloseBtn.focus();
+            } else {
+                menuDrawer.classList.add('translate-x-full');
+                menuDrawer.setAttribute('aria-hidden', 'true');
+                menuOverlay.classList.add('opacity-0', 'pointer-events-none');
+                menuOverlay.setAttribute('aria-hidden', 'true');
+                menuToggleBtn.setAttribute('aria-expanded', 'false');
+                document.body.classList.remove('overflow-hidden');
+                menuToggleBtn.focus();
+            }
+        }
+
+        // Close drawer on ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isMenuOpen) toggleMenu();
+        });
+    </script>
+</body>
+
+</html>

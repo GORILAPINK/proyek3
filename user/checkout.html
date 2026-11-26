@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout Pesanan — COMITHRIFT & Tebar Cinta</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Custom Font: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Midtrans Snap JS (Sandbox) -->
+    <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
+        data-client-key="SB-Mid-client-pxANVyOi8_1ptcZt"></script>
+
+    <!-- Konfigurasi Tailwind Palet Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brandRed: '#B91C1C',       // Primary Red Accent (Accessible & High Contrast)
+                        brandRedDark: '#991B1B',   // Darker red for active states
+                        slateDark: '#1E293B',      // Solid slate for secondary surfaces
+                        neoBlack: '#0F0F11',       // Pure black for Neo-Brutalism borders & shadows
+                        surfaceBg: '#FAF8F5',      // Warm paper background
+                        surfaceSoft: '#F3F4F6',    // Soft grey neutral surface
+                        accentGreen: '#059669',    // Semantic Success Green
+                    },
+                    boxShadow: {
+                        'neo-sm': '2px 2px 0px 0px #0F0F11',
+                        'neo': '4px 4px 0px 0px #0F0F11',
+                        'neo-lg': '6px 6px 0px 0px #0F0F11',
+                        'neo-xl': '8px 8px 0px 0px #0F0F11',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Neo-Brutalism Core Utilities */
+        .neo-border {
+            border: 3px solid #0F0F11;
+        }
+
+        .neo-border-sm {
+            border: 2px solid #0F0F11;
+        }
+
+        /* Tactile Neo-Brutalist Button with Spring Curve */
+        .neo-btn {
+            border: 3px solid #0F0F11;
+            box-shadow: 4px 4px 0px 0px #0F0F11;
+            transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.15s ease;
+            will-change: transform, box-shadow;
+        }
+
+        .neo-btn:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 7px 7px 0px 0px #0F0F11;
+        }
+
+        .neo-btn:active {
+            transform: translate(3px, 3px);
+            box-shadow: 1px 1px 0px 0px #0F0F11;
+        }
+
+        /* High-contrast accessible focus visible */
+        .neo-btn:focus-visible,
+        input:focus-visible,
+        textarea:focus-visible,
+        select:focus-visible,
+        button:focus-visible {
+            outline: 3px solid #0F0F11;
+            outline-offset: 3px;
+        }
+
+        /* Tactile Input States */
+        .neo-input {
+            border: 3px solid #0F0F11;
+            background-color: #F3F4F6;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+            min-height: 48px;
+        }
+
+        .neo-input:focus {
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0px 0px #0F0F11;
+            background-color: #FFFFFF;
+        }
+
+        /* Modern Form Validation: :user-invalid deferred error states */
+        .neo-input:user-invalid {
+            border-color: #DC2626;
+            background-color: #FEF2F2;
+        }
+
+        .neo-input:user-invalid+.error-msg {
+            display: flex;
+        }
+
+        .error-msg {
+            display: none;
+            color: #B91C1C;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-top: 0.35rem;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        /* Card and Surfaces */
+        .neo-card {
+            border: 3px solid #0F0F11;
+            box-shadow: 8px 8px 0px 0px #0F0F11;
+            transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        /* Accessible Ticker Marquee with Pause support */
+        @keyframes marquee {
+            0% {
+                transform: translateX(0%);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .animate-marquee {
+            display: inline-flex;
+            width: max-content;
+            animation: marquee 24s linear infinite;
+        }
+
+        .marquee-container.is-paused .animate-marquee {
+            animation-play-state: paused;
+        }
+
+        /* Motion Accessibility: Respects prefers-reduced-motion */
+        @media (prefers-reduced-motion: reduce) {
+            .animate-marquee {
+                animation: none;
+            }
+
+            .neo-btn,
+            .neo-input,
+            .neo-card {
+                transition: none !important;
+                transform: none !important;
+                animation: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body
+    class="bg-surfaceBg text-neoBlack font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brandRed selection:text-white overflow-x-hidden">
+
+    <!-- TOP ACCESSIBLE INFORMATION TICKER -->
+    <div
+        class="bg-brandRed text-white neo-border border-t-0 border-x-0 py-2.5 overflow-hidden whitespace-nowrap font-black text-xs sm:text-sm tracking-wider uppercase relative">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
+            <div id="marquee-wrapper" class="marquee-container overflow-hidden flex-1">
+                <div class="animate-marquee flex items-center gap-8">
+                    <span>Penyelesaian Checkout Donasi Tebar Cinta</span>
+                    <span aria-hidden="true">•</span>
+                    <span>100% Transaksi Tercatat Transparan dan Akuntabel</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Bantuan Gizi Balita Langsung Disalurkan</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Penyelesaian Checkout Donasi Tebar Cinta</span>
+                    <span aria-hidden="true">•</span>
+                    <span>100% Transaksi Tercatat Transparan dan Akuntabel</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Bantuan Gizi Balita Langsung Disalurkan</span>
+                </div>
+            </div>
+            <!-- Pause/Resume Control (WCAG 2.2.2 Compliance) -->
+            <button type="button" id="ticker-toggle-btn"
+                class="ml-4 px-2.5 py-1 bg-white text-neoBlack neo-border-sm rounded-lg text-[10px] font-black uppercase tracking-wider hover:bg-surfaceSoft transition-colors flex items-center gap-1 shrink-0"
+                aria-label="Jeda banner animasi">
+                <i data-lucide="pause" class="w-3.5 h-3.5" aria-hidden="true"></i>
+                <span id="ticker-toggle-label">Jeda</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <header class="sticky top-0 z-40 bg-white neo-border border-x-0 border-t-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3">
+            <a href="keranjang.html" class="flex items-center gap-2.5 group" aria-label="Kembali ke Keranjang">
+                <div class="w-10 h-10 bg-brandRed text-white neo-border rounded-xl flex items-center justify-center font-black transition-transform group-hover:scale-105"
+                    aria-hidden="true">
+                    <i data-lucide="heart" class="w-5 h-5 fill-current"></i>
+                </div>
+                <span class="font-black text-xl sm:text-2xl tracking-tight uppercase">
+                    Tebar<span class="text-brandRed">Cinta</span>
+                </span>
+            </a>
+            <div class="flex items-center gap-2 sm:gap-3">
+                <a href="keranjang.html"
+                    class="px-3.5 sm:px-4 py-2 bg-surfaceSoft text-neoBlack font-black neo-btn rounded-xl text-xs sm:text-sm uppercase tracking-wider flex items-center gap-1.5 min-h-[44px]"
+                    aria-label="Kembali ke Keranjang">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    <span>Kembali</span>
+                </a>
+                <!-- Burger Menu Toggle Button -->
+                <button type="button" onclick="toggleMenu()"
+                    class="p-3 bg-surfaceSoft neo-btn rounded-xl flex items-center justify-center min-h-[44px] min-w-[44px]"
+                    aria-label="Buka Menu Navigasi" aria-expanded="false" id="menu-toggle-btn">
+                    <i data-lucide="menu" class="w-5 h-5" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- SIDEBAR DRAWER MENU -->
+    <div id="menu-overlay" onclick="toggleMenu()"
+        class="fixed inset-0 bg-neoBlack/60 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-300"
+        aria-hidden="true"></div>
+    <aside id="menu-drawer"
+        class="fixed top-0 right-0 w-80 sm:w-96 max-w-[85vw] h-full bg-white z-50 neo-border border-y-0 border-r-0 translate-x-full transition-transform duration-300 ease-in-out p-6 flex flex-col justify-between overflow-y-auto"
+        aria-label="Menu Utama" aria-hidden="true">
+        <div class="space-y-6">
+            <div class="flex items-center justify-between border-b-2 border-slate-100 pb-4">
+                <div class="flex items-center gap-2">
+                    <div
+                        class="w-8 h-8 bg-brandRed text-white neo-border-sm rounded-lg flex items-center justify-center font-black">
+                        <i data-lucide="heart" class="w-4 h-4 fill-current"></i>
+                    </div>
+                    <span class="font-black text-lg uppercase tracking-tight">Menu Navigasi</span>
+                </div>
+                <button type="button" onclick="toggleMenu()"
+                    class="p-2 neo-border-sm rounded-lg hover:bg-surfaceSoft min-h-[44px] min-w-[44px] flex items-center justify-center"
+                    aria-label="Tutup Menu" id="drawer-close-btn">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <nav class="space-y-2.5 font-black text-sm uppercase">
+                <a href="index.html"
+                    class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="image" class="w-4 h-4"></i>
+                        <span>Galeri Kegiatan</span>
+                    </div>
+                </a>
+                <a href="dasboard.html"
+                    class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                        <span>Katalog & Donasi</span>
+                    </div>
+                </a>
+                <a href="detail produk.html"
+                    class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="search" class="w-4 h-4"></i>
+                        <span>Cari & Filter Produk</span>
+                    </div>
+                </a>
+                <a href="keranjang.html"
+                    class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                        <span>Keranjang Belanja</span>
+                    </div>
+                </a>
+                <a href="checkout.html"
+                    class="flex items-center justify-between p-3 bg-brandRed text-white neo-border-sm rounded-xl transition-colors"
+                    aria-current="page">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="credit-card" class="w-4 h-4"></i>
+                        <span>Checkout Donasi</span>
+                    </div>
+                    <span
+                        class="px-2 py-0.5 bg-white text-neoBlack text-[10px] font-black rounded neo-border-sm">Aktif</span>
+                </a>
+                <a href="../volunteer/profile.html"
+                    class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="user" class="w-4 h-4"></i>
+                        <span>Area Relawan</span>
+                    </div>
+                    <i data-lucide="external-link" class="w-3.5 h-3.5 opacity-60"></i>
+                </a>
+                <a href="../admin/dasboard-admin.html"
+                    class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="shield" class="w-4 h-4"></i>
+                        <span>Panel Admin</span>
+                    </div>
+                    <i data-lucide="external-link" class="w-3.5 h-3.5 opacity-60"></i>
+                </a>
+            </nav>
+        </div>
+
+        <div class="border-t-2 border-slate-100 pt-4">
+            <a href="../login/login.html"
+                class="w-full py-3 bg-surfaceSoft neo-btn rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-brandRed hover:text-white transition-colors min-h-[44px]">
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+                <span>Keluar Akun</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- TOAST NOTIFICATION CONTAINER (Polite Live Region) -->
+    <div id="toast-region" aria-live="polite" aria-atomic="true"
+        class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- KONTEN UTAMA CHECKOUT -->
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex-1 w-full space-y-8">
+
+        <!-- Header Halaman -->
+        <header class="border-b-4 border-neoBlack pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+            <div>
+                <p class="text-xs font-black uppercase tracking-wider text-slateDark flex items-center gap-1.5">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-brandRed"></i>
+                    Konfirmasi Pembayaran
+                </p>
+                <h1 class="text-3xl sm:text-4xl font-black uppercase tracking-tight mt-1">Checkout Pesanan</h1>
+            </div>
+            <p class="text-xs sm:text-sm font-bold text-slate-600">Lengkapi data pengiriman untuk penyelesaian pesanan &
+                donasi.</p>
+        </header>
+
+        <form id="checkout-form" novalidate onsubmit="processPayment(event)"
+            class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+            <!-- SISI KIRI: DATA PENGIRIMAN & METODE BAYAR -->
+            <section class="lg:col-span-7 bg-white neo-card rounded-3xl p-6 sm:p-8 space-y-6"
+                aria-labelledby="shipping-heading">
+
+                <div class="flex items-center gap-3 border-b-2 border-slate-100 pb-4">
+                    <div class="w-10 h-10 bg-surfaceSoft neo-border rounded-xl flex items-center justify-center font-black"
+                        aria-hidden="true">
+                        <i data-lucide="map-pin" class="w-5 h-5 text-neoBlack"></i>
+                    </div>
+                    <h2 id="shipping-heading" class="font-black text-lg uppercase tracking-tight">Informasi Pengiriman
+                    </h2>
+                </div>
+
+                <div class="space-y-4 text-xs font-bold text-slate-800">
+
+                    <!-- Nama Lengkap -->
+                    <div class="space-y-1.5">
+                        <label for="buyer-name" class="font-black uppercase text-xs tracking-wider block">
+                            Nama Penerima <span class="text-brandRed" aria-hidden="true">*</span>
+                        </label>
+                        <input type="text" id="buyer-name" name="buyer_name" required minlength="3" autocomplete="name"
+                            value="Budi Santoso" class="neo-input w-full px-4 py-3 rounded-xl font-bold text-sm"
+                            aria-describedby="buyer-name-error" data-error="buyer-name-error">
+                        <div id="buyer-name-error" class="error-msg">
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5 shrink-0" aria-hidden="true"></i>
+                            <span>Nama penerima wajib diisi (minimal 3 karakter).</span>
+                        </div>
+                    </div>
+
+                    <!-- Nomor WhatsApp -->
+                    <div class="space-y-1.5">
+                        <label for="buyer-phone" class="font-black uppercase text-xs tracking-wider block">
+                            Nomor WhatsApp <span class="text-brandRed" aria-hidden="true">*</span>
+                        </label>
+                        <input type="tel" id="buyer-phone" name="buyer_phone" required minlength="9" autocomplete="tel"
+                            value="081234567890" class="neo-input w-full px-4 py-3 rounded-xl font-bold text-sm"
+                            aria-describedby="buyer-phone-error" data-error="buyer-phone-error">
+                        <div id="buyer-phone-error" class="error-msg">
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5 shrink-0" aria-hidden="true"></i>
+                            <span>Nomor WhatsApp aktif wajib diisi.</span>
+                        </div>
+                    </div>
+
+                    <!-- Alamat Lengkap -->
+                    <div class="space-y-1.5">
+                        <label for="buyer-address" class="font-black uppercase text-xs tracking-wider block">
+                            Alamat Lengkap Pengiriman <span class="text-brandRed" aria-hidden="true">*</span>
+                        </label>
+                        <textarea id="buyer-address" name="buyer_address" rows="3" required minlength="10"
+                            autocomplete="street-address"
+                            class="neo-input w-full px-4 py-3 rounded-xl font-bold text-sm leading-relaxed"
+                            aria-describedby="buyer-address-error"
+                            data-error="buyer-address-error">Jl. Kasih Sejahtera No. 42, RT 02/RW 05, Jakarta Selatan</textarea>
+                        <div id="buyer-address-error" class="error-msg">
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5 shrink-0" aria-hidden="true"></i>
+                            <span>Alamat pengiriman lengkap wajib diisi (minimal 10 karakter).</span>
+                        </div>
+                    </div>
+
+                    <!-- Pilihan Donasi Sukarela Tebar Cinta -->
+                    <div class="pt-2 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="font-black uppercase text-xs tracking-wider block">
+                                Donasi Sukarela Tebar Cinta <span class="text-brandRed" aria-hidden="true">*</span>
+                            </label>
+                            <span
+                                class="text-[10px] font-bold text-accentGreen uppercase bg-emerald-50 px-2 py-0.5 rounded border border-emerald-300">100%
+                                Untuk Donasi</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2.5" id="donation-options">
+                            <button type="button" onclick="selectDonation(10000)"
+                                class="donation-btn py-2.5 px-2 bg-surfaceSoft neo-border-sm rounded-xl font-black text-xs hover:bg-brandRed hover:text-white transition-colors"
+                                data-amount="10000">Rp 10.000</button>
+                            <button type="button" onclick="selectDonation(25000)"
+                                class="donation-btn py-2.5 px-2 bg-surfaceSoft neo-border-sm rounded-xl font-black text-xs hover:bg-brandRed hover:text-white transition-colors"
+                                data-amount="25000">Rp 25.000</button>
+                            <button type="button" onclick="selectDonation(50000)"
+                                class="donation-btn py-2.5 px-2 bg-brandRed text-white neo-border-sm rounded-xl font-black text-xs transition-colors"
+                                data-amount="50000">Rp 50.000</button>
+                        </div>
+                    </div>
+
+                    <!-- Pilihan Metode Pembayaran (Midtrans Gateway Terpadu) -->
+                    <div class="pt-3 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <label class="font-black uppercase text-xs tracking-wider block">
+                                Metode Pembayaran Online <span class="text-brandRed" aria-hidden="true">*</span>
+                            </label>
+                            <span class="text-[10px] font-black uppercase text-accentGreen bg-emerald-50 px-2 py-0.5 rounded border border-emerald-300 flex items-center gap-1">
+                                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-accentGreen"></i>
+                                Midtrans Verified
+                            </span>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                            <label
+                                class="p-3 bg-surfaceSoft neo-border-sm rounded-xl flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer has-[:checked]:bg-brandRed has-[:checked]:text-white transition-colors">
+                                <input type="radio" name="payment_method" value="all" checked class="accent-brandRed sr-only">
+                                <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                                <span class="font-black text-[11px] uppercase tracking-tight">Semua Opsi</span>
+                            </label>
+                            <label
+                                class="p-3 bg-surfaceSoft neo-border-sm rounded-xl flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer has-[:checked]:bg-brandRed has-[:checked]:text-white transition-colors">
+                                <input type="radio" name="payment_method" value="qris" class="accent-brandRed sr-only">
+                                <i data-lucide="qr-code" class="w-4 h-4"></i>
+                                <span class="font-black text-[11px] uppercase tracking-tight">QRIS Instan</span>
+                            </label>
+                            <label
+                                class="p-3 bg-surfaceSoft neo-border-sm rounded-xl flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer has-[:checked]:bg-brandRed has-[:checked]:text-white transition-colors">
+                                <input type="radio" name="payment_method" value="va" class="accent-brandRed sr-only">
+                                <i data-lucide="building-2" class="w-4 h-4"></i>
+                                <span class="font-black text-[11px] uppercase tracking-tight">Transfer VA</span>
+                            </label>
+                            <label
+                                class="p-3 bg-surfaceSoft neo-border-sm rounded-xl flex flex-col items-center justify-center text-center gap-1.5 cursor-pointer has-[:checked]:bg-brandRed has-[:checked]:text-white transition-colors">
+                                <input type="radio" name="payment_method" value="ewallet" class="accent-brandRed sr-only">
+                                <i data-lucide="wallet" class="w-4 h-4"></i>
+                                <span class="font-black text-[11px] uppercase tracking-tight">GoPay / E-Wallet</span>
+                            </label>
+                        </div>
+                        <div class="p-3 bg-surfaceSoft neo-border-sm rounded-xl flex items-start gap-2.5 text-[11px] text-slate-600 font-semibold leading-normal">
+                            <i data-lucide="info" class="w-4 h-4 text-brandRed shrink-0 mt-0.5"></i>
+                            <span>Pembayaran diproses otomatis 24/7 oleh <strong>Midtrans Payment Gateway</strong>. Tersedia QRIS, GoPay, ShopeePay, OVO, Dana, Virtual Account Semua Bank, dan Minimarket.</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- SISI KANAN: RINGKASAN TAGIHAN & TOMBOL PAY -->
+            <section class="lg:col-span-5 bg-white neo-card rounded-3xl p-6 sm:p-7 space-y-5"
+                aria-labelledby="order-summary-heading">
+                <h2 id="order-summary-heading"
+                    class="font-black text-lg uppercase tracking-tight border-b-2 border-slate-100 pb-3 flex items-center gap-2">
+                    <i data-lucide="file-text" class="w-5 h-5 text-brandRed"></i>
+                    Rincian Pembayaran
+                </h2>
+
+                <div class="space-y-3 text-xs font-bold text-slate-700">
+                    <div id="summary-items-list" class="space-y-2">
+                        <div class="flex justify-between items-center text-slate-400">
+                            <span>Memuat produk...</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center text-brandRed">
+                        <span>Donasi Tebar Cinta</span>
+                        <span id="summary-donation-val" class="font-black">+Rp 50.000</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-500">Biaya Pengiriman</span>
+                        <span class="font-black text-accentGreen uppercase">Gratis Donasi</span>
+                    </div>
+
+                    <div class="border-t-2 border-slate-200 pt-3 flex justify-between items-center text-sm">
+                        <span class="font-black uppercase">Total Bayar:</span>
+                        <span id="summary-total-val" class="font-black text-2xl text-brandRed">Rp 0</span>
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" id="pay-button"
+                        class="w-full py-4 bg-brandRed text-white neo-btn rounded-xl font-black text-base uppercase tracking-wider flex items-center justify-center gap-2.5 min-h-[52px]">
+                        <i data-lucide="credit-card" class="w-5 h-5"></i>
+                        <span id="pay-button-label">Bayar Sekarang (Rp 170.000)</span>
+                    </button>
+                </div>
+
+                <div class="bg-surfaceSoft neo-border-sm rounded-xl p-3.5 space-y-1">
+                    <p class="text-[11px] font-black uppercase text-slate-800">Status Pesanan Langsung:</p>
+                    <p class="text-[11px] font-semibold text-slate-600 leading-normal">
+                        Setelah pembayaran dikonfirmasi, kamu akan diarahkan ke halaman pemantauan pengemasan barang
+                        relawan.
+                    </p>
+                </div>
+            </section>
+
+        </form>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer
+        class="bg-neoBlack text-white neo-border border-x-0 border-b-0 py-6 text-center text-xs font-bold text-slate-400 mt-auto">
+        <p>&copy; 2026 COMITHRIFT. Program Tebar Cinta.</p>
+    </footer>
+
+    <!-- INTERACTION LOGIC & ACCESSIBILITY SCRIPTS -->
+    <script>
+        // Inisialisasi ikon Lucide
+        lucide.createIcons();
+
+        const checkoutForm = document.getElementById('checkout-form');
+        const payButton = document.getElementById('pay-button');
+        const payButtonLabel = document.getElementById('pay-button-label');
+        const toastRegion = document.getElementById('toast-region');
+
+        // Accessible Toast Notification
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `p-4 neo-border rounded-xl font-bold text-xs shadow-neo pointer-events-auto flex items-center justify-between gap-3 transition-all duration-200 transform translate-y-2 opacity-0 ${type === 'success' ? 'bg-accentGreen text-white' : type === 'error' ? 'bg-brandRed text-white' : 'bg-white text-neoBlack'
+                }`;
+            toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+
+            const iconName = type === 'success' ? 'check-circle' : type === 'error' ? 'alert-triangle' : 'info';
+            toast.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <i data-lucide="${iconName}" class="w-4 h-4 shrink-0" aria-hidden="true"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            toastRegion.appendChild(toast);
+            lucide.createIcons();
+
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 250);
+            }, 3500);
+        }
+
+        // Ticker Marquee Pause / Play Control (WCAG 2.2.2)
+        const marqueeWrapper = document.getElementById('marquee-wrapper');
+        const tickerToggleBtn = document.getElementById('ticker-toggle-btn');
+        const tickerToggleLabel = document.getElementById('ticker-toggle-label');
+        let isMarqueePaused = false;
+
+        tickerToggleBtn.addEventListener('click', function () {
+            isMarqueePaused = !isMarqueePaused;
+            if (isMarqueePaused) {
+                marqueeWrapper.classList.add('is-paused');
+                tickerToggleLabel.textContent = 'Putar';
+                tickerToggleBtn.setAttribute('aria-label', 'Putar banner animasi');
+                tickerToggleBtn.innerHTML = `<i data-lucide="play" class="w-3.5 h-3.5" aria-hidden="true"></i><span>Putar</span>`;
+            } else {
+                marqueeWrapper.classList.remove('is-paused');
+                tickerToggleLabel.textContent = 'Jeda';
+                tickerToggleBtn.setAttribute('aria-label', 'Jeda banner animasi');
+                tickerToggleBtn.innerHTML = `<i data-lucide="pause" class="w-3.5 h-3.5" aria-hidden="true"></i><span>Jeda</span>`;
+            }
+            lucide.createIcons();
+        });
+
+        // Konfigurasi Integrasi Backend & Midtrans
+        const API_BASE_URL = "http://localhost:8080/api";
+        let selectedProducts = [];
+        let donationAmount = 50000;
+
+        function formatRupiah(num) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
+        }
+
+        // Pilihan Donasi Sukarela Tebar Cinta
+        function selectDonation(amount) {
+            donationAmount = amount;
+            document.querySelectorAll('.donation-btn').forEach(btn => {
+                const btnAmt = parseInt(btn.getAttribute('data-amount'), 10);
+                if (btnAmt === amount) {
+                    btn.className = 'donation-btn py-2.5 px-2 bg-brandRed text-white neo-border-sm rounded-xl font-black text-xs transition-colors';
+                } else {
+                    btn.className = 'donation-btn py-2.5 px-2 bg-surfaceSoft neo-border-sm rounded-xl font-black text-xs hover:bg-brandRed hover:text-white transition-colors';
+                }
+            });
+            renderOrderSummary();
+        }
+
+        // Render Rincian Pembayaran
+        function renderOrderSummary() {
+            const summaryList = document.getElementById('summary-items-list');
+            const summaryDonation = document.getElementById('summary-donation-val');
+            const summaryTotal = document.getElementById('summary-total-val');
+            const payBtnLabel = document.getElementById('pay-button-label');
+
+            if (!summaryList) return;
+
+            summaryList.innerHTML = '';
+            let subtotal = 0;
+
+            selectedProducts.forEach(item => {
+                const price = Number(item.harga || item.price || 0);
+                const name = item.nama_produk || item.name || 'Produk Thrift';
+                subtotal += price;
+
+                const row = document.createElement('div');
+                row.className = 'flex justify-between items-center';
+                row.innerHTML = `
+                    <span class="text-slate-600 line-clamp-1">${name}</span>
+                    <span class="font-black text-neoBlack whitespace-nowrap">${formatRupiah(price)}</span>
+                `;
+                summaryList.appendChild(row);
+            });
+
+            if (selectedProducts.length === 0) {
+                summaryList.innerHTML = `<div class="text-slate-400 italic">Tidak ada produk dipilih</div>`;
+            }
+
+            const total = subtotal + donationAmount;
+            if (summaryDonation) summaryDonation.textContent = `+${formatRupiah(donationAmount)}`;
+            if (summaryTotal) summaryTotal.textContent = formatRupiah(total);
+            if (payBtnLabel) payBtnLabel.textContent = `Bayar Sekarang (${formatRupiah(total)})`;
+        }
+
+        // Ambil Data Produk Tersedia dari Backend / LocalStorage
+        async function initCheckoutData() {
+            try {
+                // 1. Cek apakah ada barang dari keranjang di localStorage dengan id_produk yang valid
+                const stored = localStorage.getItem('cartItems');
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        const validItems = parsed.filter(i => (i.id_produk && Number(i.id_produk) > 0) || (i.id && Number(i.id) > 0));
+                        if (validItems.length > 0) {
+                            selectedProducts = validItems.map(i => ({
+                                id_produk: Number(i.id_produk || i.id),
+                                id: Number(i.id_produk || i.id),
+                                nama_produk: i.nama_produk || i.name || 'Produk Thrift',
+                                harga: Number(i.harga || i.price || 0)
+                            }));
+                            renderOrderSummary();
+                            return;
+                        }
+                    }
+                }
+
+                // 2. Ambil produk berstatus 'tersedia' langsung dari database backend
+                const res = await fetch(`${API_BASE_URL}/produk?status=tersedia`);
+                if (res.ok) {
+                    const json = await res.json();
+                    if (json.data && Array.isArray(json.data) && json.data.length > 0) {
+                        // Ambil produk pertama dari database
+                        const first = json.data[0];
+                        selectedProducts = [{
+                            id_produk: first.id_produk,
+                            id: first.id_produk,
+                            nama_produk: first.nama_produk,
+                            harga: first.harga
+                        }];
+                        renderOrderSummary();
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.warn('Gagal memuat produk dari server:', err);
+            }
+
+            // Fallback produk sampel jika database belum memiliki produk
+            selectedProducts = [{
+                id_produk: 1,
+                id: 1,
+                nama_produk: "Jaket Denim Vintage Blue",
+                harga: 85000
+            }];
+            renderOrderSummary();
+        }
+
+        // Reset Tombol Bayar
+        function resetPayButton() {
+            payButton.disabled = false;
+            payButton.classList.remove('opacity-75');
+            payButton.innerHTML = `
+                <i data-lucide="credit-card" class="w-5 h-5"></i>
+                <span id="pay-button-label">Bayar Sekarang</span>
+            `;
+            lucide.createIcons();
+            renderOrderSummary();
+        }
+
+        // Proses Pembayaran ke REST API Backend & Buka Midtrans Snap
+        async function processPayment(e) {
+            e.preventDefault();
+
+            if (!checkoutForm.checkValidity()) {
+                const firstInvalid = checkoutForm.querySelector(':invalid');
+                if (firstInvalid) firstInvalid.focus();
+                showToast('Mohon lengkapi data formulir pengiriman dengan benar.', 'error');
+                return;
+            }
+
+            if (selectedProducts.length === 0) {
+                showToast('Belum ada produk yang dipilih untuk checkout.', 'error');
+                return;
+            }
+
+            const buyerName = document.getElementById('buyer-name').value.trim();
+            const buyerPhone = document.getElementById('buyer-phone').value.trim();
+            const buyerAddress = document.getElementById('buyer-address').value.trim();
+            const selectedMethodEl = document.querySelector('input[name="payment_method"]:checked');
+            const selectedPaymentMethod = selectedMethodEl ? selectedMethodEl.value : 'all';
+
+            payButton.disabled = true;
+            payButton.classList.add('opacity-75');
+            payButton.innerHTML = `
+                <i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>
+                <span>Menghubungi Midtrans Gateway...</span>
+            `;
+            lucide.createIcons();
+
+            // Susun item pesanan dengan id_produk yang pasti valid
+            const orderItems = selectedProducts.map(p => ({
+                id_produk: Number(p.id_produk || p.id)
+            })).filter(it => it.id_produk > 0);
+
+            if (orderItems.length === 0) {
+                showToast('ID produk tidak valid. Silakan pilih produk dari katalog.', 'error');
+                resetPayButton();
+                return;
+            }
+
+            const payload = {
+                nama_pembeli: buyerName,
+                kontak_whatsapp: buyerPhone,
+                metode_serah_terima: "pengiriman",
+                nominal_donasi: Number(donationAmount) || 0,
+                catatan: buyerAddress,
+                metode_pembayaran: selectedPaymentMethod,
+                items: orderItems
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/pesanan`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok || !result.data) {
+                    const errMsg = (result.error && result.error.message) || result.pesan || 'Gagal memproses pesanan di backend.';
+                    throw new Error(errMsg);
+                }
+
+                const order = result.data;
+                const totalBayar = Number(order.total_belanja || 0) + Number(order.nominal_donasi || donationAmount || 0);
+
+                // Simpan data transaksi riil ke localStorage untuk ditampilkan di packing.html
+                const orderDataToStore = {
+                    kode_pesanan: order.kode_pesanan,
+                    nama_pembeli: buyerName,
+                    kontak_whatsapp: buyerPhone,
+                    catatan: buyerAddress,
+                    metode_serah_terima: "pengiriman",
+                    metode_pembayaran: selectedPaymentMethod,
+                    total_belanja: Number(order.total_belanja || 0),
+                    nominal_donasi: Number(order.nominal_donasi || donationAmount || 0),
+                    total_bayar: totalBayar,
+                    snap_token: order.snap_token || "",
+                    snap_redirect_url: order.snap_redirect_url || "",
+                    items: selectedProducts,
+                    status_pesanan: "menunggu_pembayaran",
+                    tanggal: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+                };
+                localStorage.setItem('lastOrder', JSON.stringify(orderDataToStore));
+
+                showToast(`Pesanan #${order.kode_pesanan} dibuat! Membuka pop-up pembayaran...`, 'success');
+
+                // Jika Snap Token tersedia dan library Midtrans Snap sudah dimuat
+                if (order.snap_token && typeof window.snap !== 'undefined') {
+                    window.snap.pay(order.snap_token, {
+                        onSuccess: function (snapRes) {
+                            showToast('Pembayaran berhasil dikonfirmasi!', 'success');
+                            orderDataToStore.status_pesanan = 'dibayar';
+                            localStorage.setItem('lastOrder', JSON.stringify(orderDataToStore));
+                            localStorage.removeItem('cartItems'); // Bersihkan keranjang
+                            setTimeout(() => {
+                                window.location.href = `status-pesanan.html?kode=${encodeURIComponent(order.kode_pesanan)}`;
+                            }, 1200);
+                        },
+                        onPending: function (snapRes) {
+                            showToast('Menunggu pembayaran diselesaikan...', 'info');
+                            orderDataToStore.status_pesanan = 'menunggu_pembayaran';
+                            localStorage.setItem('lastOrder', JSON.stringify(orderDataToStore));
+                            localStorage.removeItem('cartItems');
+                            setTimeout(() => {
+                                window.location.href = `status-pesanan.html?kode=${encodeURIComponent(order.kode_pesanan)}`;
+                            }, 1500);
+                        },
+                        onError: function (snapRes) {
+                            showToast('Pembayaran gagal atau dibatalkan oleh pengguna.', 'error');
+                            resetPayButton();
+                        },
+                        onClose: function () {
+                            showToast('Pop-up pembayaran ditutup. Pembayaran belum diselesaikan.', 'info');
+                            resetPayButton();
+                        }
+                    });
+                } else if (order.snap_redirect_url) {
+                    localStorage.removeItem('cartItems');
+                    window.location.href = order.snap_redirect_url;
+                } else {
+                    showToast('Pesanan berhasil dibuat (Mode Tanpa Gateway)!', 'success');
+                    localStorage.removeItem('cartItems');
+                    setTimeout(() => {
+                        window.location.href = `status-pesanan.html?kode=${encodeURIComponent(order.kode_pesanan)}`;
+                    }, 1200);
+                }
+
+            } catch (err) {
+                console.error('Error saat checkout:', err);
+                showToast(`Gagal: ${err.message}`, 'error');
+                resetPayButton();
+            }
+        }
+
+        // Inisialisasi saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            initCheckoutData();
+        });
+
+        // Drawer Menu Logic
+        const menuDrawer = document.getElementById('menu-drawer');
+        const menuOverlay = document.getElementById('menu-overlay');
+        const menuToggleBtn = document.getElementById('menu-toggle-btn');
+        const drawerCloseBtn = document.getElementById('drawer-close-btn');
+        let isMenuOpen = false;
+
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+            if (isMenuOpen) {
+                menuDrawer.classList.remove('translate-x-full');
+                menuDrawer.setAttribute('aria-hidden', 'false');
+                menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                menuOverlay.setAttribute('aria-hidden', 'false');
+                menuToggleBtn.setAttribute('aria-expanded', 'true');
+                document.body.classList.add('overflow-hidden');
+                if (drawerCloseBtn) drawerCloseBtn.focus();
+            } else {
+                menuDrawer.classList.add('translate-x-full');
+                menuDrawer.setAttribute('aria-hidden', 'true');
+                menuOverlay.classList.add('opacity-0', 'pointer-events-none');
+                menuOverlay.setAttribute('aria-hidden', 'true');
+                menuToggleBtn.setAttribute('aria-expanded', 'false');
+                document.body.classList.remove('overflow-hidden');
+                menuToggleBtn.focus();
+            }
+        }
+
+        // Close drawer on ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isMenuOpen) toggleMenu();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keranjang Belanja — COMITHRIFT & Tebar Cinta</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Custom Font: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Konfigurasi Tailwind Palet Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brandRed: '#B91C1C',       // Primary Red Accent (Accessible & High Contrast)
+                        brandRedDark: '#991B1B',   // Darker red for active states
+                        slateDark: '#1E293B',      // Solid slate for secondary surfaces
+                        neoBlack: '#0F0F11',       // Pure black for Neo-Brutalism borders & shadows
+                        surfaceBg: '#FAF8F5',      // Warm paper background
+                        surfaceSoft: '#F3F4F6',    // Soft grey neutral surface
+                        accentGreen: '#059669',    // Semantic Success Green
+                    },
+                    boxShadow: {
+                        'neo-sm': '2px 2px 0px 0px #0F0F11',
+                        'neo': '4px 4px 0px 0px #0F0F11',
+                        'neo-lg': '6px 6px 0px 0px #0F0F11',
+                        'neo-xl': '8px 8px 0px 0px #0F0F11',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Neo-Brutalism Core Utilities */
+        .neo-border {
+            border: 3px solid #0F0F11;
+        }
+
+        .neo-border-sm {
+            border: 2px solid #0F0F11;
+        }
+
+        /* Tactile Neo-Brutalist Button with Spring Curve */
+        .neo-btn {
+            border: 3px solid #0F0F11;
+            box-shadow: 4px 4px 0px 0px #0F0F11;
+            transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.15s ease;
+            will-change: transform, box-shadow;
+        }
+
+        .neo-btn:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 7px 7px 0px 0px #0F0F11;
+        }
+
+        .neo-btn:active {
+            transform: translate(3px, 3px);
+            box-shadow: 1px 1px 0px 0px #0F0F11;
+        }
+
+        /* High-contrast accessible focus visible */
+        .neo-btn:focus-visible,
+        input:focus-visible,
+        a:focus-visible,
+        button:focus-visible {
+            outline: 3px solid #0F0F11;
+            outline-offset: 3px;
+        }
+
+        /* Card and Surfaces */
+        .neo-card {
+            border: 3px solid #0F0F11;
+            box-shadow: 8px 8px 0px 0px #0F0F11;
+            transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        /* Accessible Ticker Marquee with Pause support */
+        @keyframes marquee {
+            0% {
+                transform: translateX(0%);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .animate-marquee {
+            display: inline-flex;
+            width: max-content;
+            animation: marquee 24s linear infinite;
+        }
+
+        .marquee-container.is-paused .animate-marquee {
+            animation-play-state: paused;
+        }
+
+        /* Motion Accessibility: Respects prefers-reduced-motion */
+        @media (prefers-reduced-motion: reduce) {
+            .animate-marquee {
+                animation: none;
+            }
+
+            .neo-btn,
+            .neo-card {
+                transition: none !important;
+                transform: none !important;
+                animation: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body
+    class="bg-surfaceBg text-neoBlack font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brandRed selection:text-white overflow-x-hidden">
+
+    <!-- TOP ACCESSIBLE INFORMATION TICKER -->
+    <div
+        class="bg-brandRed text-white neo-border border-t-0 border-x-0 py-2.5 overflow-hidden whitespace-nowrap font-black text-xs sm:text-sm tracking-wider uppercase relative">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
+            <div id="marquee-wrapper" class="marquee-container overflow-hidden flex-1">
+                <div class="animate-marquee flex items-center gap-8">
+                    <span>Keranjang Belanja Donasi Tebar Cinta</span>
+                    <span aria-hidden="true">•</span>
+                    <span>100% Hasil Penjualan Disalurkan untuk Kebutuhan Gizi</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Periksa Kembali Pesananmu Sebelum Melakukan Checkout</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Keranjang Belanja Donasi Tebar Cinta</span>
+                    <span aria-hidden="true">•</span>
+                    <span>100% Hasil Penjualan Disalurkan untuk Kebutuhan Gizi</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Periksa Kembali Pesananmu Sebelum Melakukan Checkout</span>
+                </div>
+            </div>
+            <!-- Pause/Resume Control (WCAG 2.2.2 Compliance) -->
+            <button type="button" id="ticker-toggle-btn"
+                class="ml-4 px-2.5 py-1 bg-white text-neoBlack neo-border-sm rounded-lg text-[10px] font-black uppercase tracking-wider hover:bg-surfaceSoft transition-colors flex items-center gap-1 shrink-0"
+                aria-label="Jeda banner animasi">
+                <i data-lucide="pause" class="w-3.5 h-3.5" aria-hidden="true"></i>
+                <span id="ticker-toggle-label">Jeda</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <header class="sticky top-0 z-40 bg-white neo-border border-x-0 border-t-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3">
+            <a href="dasboard.html" class="flex items-center gap-2.5 group" aria-label="Kembali ke Beranda Store">
+                <div class="w-10 h-10 bg-brandRed text-white neo-border rounded-xl flex items-center justify-center font-black transition-transform group-hover:scale-105"
+                    aria-hidden="true">
+                    <i data-lucide="heart" class="w-5 h-5 fill-current"></i>
+                </div>
+                <span class="font-black text-xl sm:text-2xl tracking-tight uppercase">
+                    Tebar<span class="text-brandRed">Cinta</span>
+                </span>
+            </a>
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Navigasi Tombol Kembali -->
+                <a href="dasboard.html"
+                    class="px-3 sm:px-4 py-2 bg-surfaceSoft text-neoBlack font-black neo-btn rounded-xl text-xs sm:text-sm uppercase tracking-wider flex items-center gap-1.5 min-h-[44px]"
+                    aria-label="Kembali ke Toko & Donasi">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    <span class="hidden xs:inline sm:inline">Kembali</span>
+                </a>
+                <a href="detail produk.html"
+                    class="px-3.5 sm:px-4 py-2 bg-surfaceSoft text-neoBlack font-black neo-btn rounded-xl text-xs sm:text-sm uppercase tracking-wider flex items-center gap-2 min-h-[44px]"
+                    aria-label="Tambah Produk dari Katalog">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Tambah Produk</span>
+                </a>
+                <!-- Burger Menu Toggle Button -->
+                <button type="button" onclick="toggleMenu()"
+                    class="p-3 bg-surfaceSoft neo-btn rounded-xl flex items-center justify-center min-h-[44px] min-w-[44px]"
+                    aria-label="Buka Menu Navigasi" aria-expanded="false" id="menu-toggle-btn">
+                    <i data-lucide="menu" class="w-5 h-5" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- SIDEBAR DRAWER MENU -->
+    <div id="menu-overlay" onclick="toggleMenu()"
+        class="fixed inset-0 bg-neoBlack/60 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-300"
+        aria-hidden="true"></div>
+    <aside id="menu-drawer"
+        class="fixed top-0 right-0 w-80 sm:w-96 max-w-[85vw] h-full bg-white z-50 neo-border border-y-0 border-r-0 translate-x-full transition-transform duration-300 ease-in-out p-6 flex flex-col justify-between overflow-y-auto"
+        aria-label="Menu Utama" aria-hidden="true">
+        <div class="space-y-6">
+            <div class="flex items-center justify-between border-b-2 border-slate-100 pb-4">
+                <div class="flex items-center gap-2">
+                    <div
+                        class="w-8 h-8 bg-brandRed text-white neo-border-sm rounded-lg flex items-center justify-center font-black">
+                        <i data-lucide="heart" class="w-4 h-4 fill-current"></i>
+                    </div>
+                    <span class="font-black text-lg uppercase tracking-tight">Menu Navigasi</span>
+                </div>
+                <button type="button" onclick="toggleMenu()"
+                    class="p-2 neo-border-sm rounded-lg hover:bg-surfaceSoft min-h-[44px] min-w-[44px] flex items-center justify-center"
+                    aria-label="Tutup Menu" id="drawer-close-btn">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <nav class="space-y-2.5 font-black text-sm uppercase">
+                <a href="index.html"
+                    class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="image" class="w-4 h-4"></i>
+                        <span>Galeri Kegiatan</span>
+                    </div>
+                </a>
+                <a href="dasboard.html"
+                    class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                        <span>Katalog & Donasi</span>
+                    </div>
+                </a>
+                <a href="detail produk.html"
+                    class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="search" class="w-4 h-4"></i>
+                        <span>Cari & Filter Produk</span>
+                    </div>
+                </a>
+                <a href="keranjang.html"
+                    class="flex items-center justify-between p-3 bg-brandRed text-white neo-border-sm rounded-xl transition-colors"
+                    aria-current="page">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                        <span>Keranjang Belanja</span>
+                    </div>
+                    <span
+                        class="px-2 py-0.5 bg-white text-neoBlack text-[10px] font-black rounded neo-border-sm">Aktif</span>
+                </a>
+                <a href="status-pesanan.html"
+                    class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="receipt" class="w-4 h-4"></i>
+                        <span>Status Pesanan</span>
+                    </div>
+                </a>
+                <!-- Role-Specific Navigation Area (Dinamis: Relawan / Admin / Publik) -->
+                <div id="role-nav-container" class="space-y-2.5 pt-1"></div>
+            </nav>
+        </div>
+
+        <div class="border-t-2 border-slate-100 pt-4" id="auth-action-container">
+            <a href="../login/login.html"
+                class="w-full py-3 bg-brandRed text-white neo-btn rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 min-h-[44px]">
+                <i data-lucide="log-in" class="w-4 h-4"></i>
+                <span>Masuk Akun</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- TOAST NOTIFICATION CONTAINER (Polite Live Region) -->
+    <div id="toast-region" aria-live="polite" aria-atomic="true"
+        class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- KONTEN UTAMA KERANJANG -->
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex-1 w-full space-y-8">
+
+        <!-- PENDING ORDER BANNER (Dinamis jika ada tagihan belum dibayar) -->
+        <div id="pending-order-banner" class="hidden"></div>
+
+        <!-- Header Halaman -->
+        <header class="border-b-4 border-neoBlack pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+            <div>
+                <p class="text-xs font-black uppercase tracking-wider text-slateDark flex items-center gap-1.5">
+                    <i data-lucide="shopping-cart" class="w-4 h-4 text-brandRed"></i>
+                    Pesanan Belanja
+                </p>
+                <h1 class="text-3xl sm:text-4xl font-black uppercase tracking-tight mt-1">Keranjang Donasi</h1>
+            </div>
+            <p class="text-xs sm:text-sm font-bold text-slate-600">Pastikan jumlah pesananmu sudah sesuai sebelum
+                melanjutkan ke checkout.</p>
+        </header>
+
+        <!-- KONTEN DUA KOLOM -->
+        <div id="cart-content" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+            <!-- DAFTAR ITEM KERANJANG -->
+            <div class="lg:col-span-8 space-y-4" id="cart-items-container">
+                <!-- Diisi secara dinamis via JavaScript -->
+            </div>
+
+            <!-- RINGKASAN PEMBELIAN & CHECKOUT -->
+            <div class="lg:col-span-4 bg-white neo-card rounded-3xl p-6 sm:p-7 space-y-5">
+                <h2
+                    class="font-black text-lg uppercase tracking-tight border-b-2 border-slate-100 pb-3 flex items-center gap-2">
+                    <i data-lucide="receipt" class="w-5 h-5 text-brandRed"></i>
+                    Ringkasan Donasi
+                </h2>
+
+                <div class="space-y-3 text-xs font-bold text-slate-700">
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-500">Subtotal Belanja</span>
+                        <span id="summary-subtotal" class="font-black text-sm text-neoBlack">Rp 0</span>
+                    </div>
+
+                    <div class="border-t-2 border-slate-200 pt-3 flex justify-between items-center text-sm">
+                        <span class="font-black uppercase">Total Belanja:</span>
+                        <span id="summary-total" class="font-black text-xl text-brandRed">Rp 0</span>
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <a href="checkout.html"
+                        class="w-full py-4 bg-brandRed text-white neo-btn rounded-xl font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2.5 min-h-[48px]">
+                        <span>Lanjut ke Checkout</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+
+                <div class="bg-surfaceSoft neo-border-sm rounded-xl p-3 text-center space-y-1">
+                    <p class="text-[11px] font-black uppercase text-slate-700">Transaksi Transparan & Aman</p>
+                    <p class="text-[10px] font-bold text-slate-500 leading-tight">Laporan penyaluran donasi tersedia
+                        secara terbuka di situs resmi.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- STATE JIKA KERANJANG KOSONG -->
+        <div id="cart-empty" class="hidden bg-white neo-card rounded-3xl p-12 text-center space-y-4">
+            <div class="w-16 h-16 mx-auto bg-surfaceSoft neo-border rounded-2xl flex items-center justify-center">
+                <i data-lucide="shopping-bag" class="w-8 h-8 text-slate-400"></i>
+            </div>
+            <h2 class="font-black text-2xl uppercase tracking-tight">Keranjang Masih Kosong</h2>
+            <p class="text-xs sm:text-sm font-bold text-slate-600 max-w-md mx-auto">
+                Kamu belum menambahkan produk apa pun ke keranjang belanja. Yuk temukan karya favoritmu dan dukung
+                gerakan sosial ini.
+            </p>
+            <div class="pt-2">
+                <a href="detail produk.html"
+                    class="inline-block px-8 py-3.5 bg-brandRed text-white neo-btn rounded-xl font-black text-xs uppercase tracking-wider min-h-[44px]">
+                    Jelajahi Katalog Produk
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer
+        class="bg-neoBlack text-white neo-border border-x-0 border-b-0 py-6 text-center text-xs font-bold text-slate-400 mt-auto">
+        <p>&copy; 2026 COMITHRIFT. Program Tebar Cinta.</p>
+    </footer>
+
+    <!-- INTERACTION LOGIC & ACCESSIBILITY SCRIPTS -->
+    <script>
+        const API_BASE_URL = "http://localhost:8080/api";
+        const toastRegion = document.getElementById('toast-region');
+        const cartItemsContainer = document.getElementById('cart-items-container');
+        const cartContent = document.getElementById('cart-content');
+        const cartEmpty = document.getElementById('cart-empty');
+        const summarySubtotal = document.getElementById('summary-subtotal');
+        const summaryTotal = document.getElementById('summary-total');
+
+        // Ambil data keranjang riil dari localStorage
+        let cartItems = [];
+        try {
+            const stored = localStorage.getItem('cartItems');
+            if (stored) {
+                const parsed = JSON.parse(stored);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    cartItems = parsed.map(item => ({
+                        id: item.id_produk || item.id || 1,
+                        id_produk: item.id_produk || item.id || 1,
+                        name: item.nama_produk || item.name || "Pakaian Thrift",
+                        price: Number(item.harga || item.price || 0),
+                        qty: item.qty || 1,
+                        image: item.image || item.foto || "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&q=80&w=600"
+                    }));
+                }
+            }
+        } catch (e) {
+            console.warn("Gagal membaca localStorage:", e);
+        }
+
+        // Simpan keranjang ke localStorage
+        function saveCart() {
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+        }
+
+        function renderCart() {
+            if (!cartItems || cartItems.length === 0) {
+                cartContent.classList.add('hidden');
+                cartEmpty.classList.remove('hidden');
+                lucide.createIcons();
+                return;
+            }
+
+            cartContent.classList.remove('hidden');
+            cartEmpty.classList.add('hidden');
+            cartItemsContainer.innerHTML = '';
+
+            cartItems.forEach(item => {
+                const el = document.createElement('article');
+                el.className = "bg-white neo-card rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4";
+                el.innerHTML = `
+                    <div class="flex items-center gap-4 w-full sm:w-auto">
+                        <div class="w-20 h-20 bg-surfaceSoft neo-border rounded-xl overflow-hidden shrink-0">
+                            <img src="${item.image}" alt="${item.name}" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&q=80&w=600'" class="w-full h-full object-cover">
+                        </div>
+                        <div class="space-y-1">
+                            <h3 class="font-black text-sm sm:text-base uppercase tracking-tight">${item.name}</h3>
+                            <p class="text-xs font-bold text-slate-500">Harga Satuan: <span class="text-brandRed font-black">Rp ${item.price.toLocaleString('id-ID')}</span></p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between sm:justify-end gap-5 w-full sm:w-auto border-t sm:border-t-0 pt-3 sm:pt-0 border-slate-100">
+                        <!-- Qty Controls -->
+                        <div class="flex items-center gap-1.5 bg-surfaceSoft neo-border-sm rounded-xl p-1">
+                            <button type="button" onclick="changeQty(${item.id}, -1)" class="w-8 h-8 bg-white neo-border-sm rounded-lg font-black flex items-center justify-center hover:bg-slate-200" aria-label="Kurangi jumlah">-</button>
+                            <span class="w-8 text-center font-black text-xs">${item.qty}</span>
+                            <button type="button" onclick="changeQty(${item.id}, 1)" class="w-8 h-8 bg-white neo-border-sm rounded-lg font-black flex items-center justify-center hover:bg-slate-200" aria-label="Tambah jumlah">+</button>
+                        </div>
+
+                        <!-- Subtotal Item -->
+                        <div class="text-right min-w-[90px]">
+                            <span class="font-black text-sm text-brandRed">Rp ${(item.price * item.qty).toLocaleString('id-ID')}</span>
+                        </div>
+
+                        <!-- Hapus Button -->
+                        <button type="button" onclick="removeItem(${item.id}, '${item.name}')" class="p-2 text-slate-400 hover:text-brandRed transition-colors" aria-label="Hapus item">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `;
+                cartItemsContainer.appendChild(el);
+            });
+
+            updateSummary();
+            lucide.createIcons();
+        }
+
+        function changeQty(id, delta) {
+            const item = cartItems.find(i => i.id === id);
+            if (!item) return;
+            item.qty += delta;
+            if (item.qty <= 0) {
+                removeItem(id, item.name);
+                return;
+            }
+            saveCart();
+            renderCart();
+        }
+
+        function removeItem(id, name) {
+            cartItems = cartItems.filter(i => i.id !== id);
+            saveCart();
+            renderCart();
+            showToast(`${name} telah dihapus dari keranjang.`, 'info');
+        }
+
+        function updateSummary() {
+            const subtotal = cartItems.reduce((acc, i) => acc + (i.price * i.qty), 0);
+            summarySubtotal.textContent = 'Rp ' + subtotal.toLocaleString('id-ID');
+            summaryTotal.textContent = 'Rp ' + subtotal.toLocaleString('id-ID');
+        }
+
+        // Accessible Toast Notification
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `p-4 neo-border rounded-xl font-bold text-xs shadow-neo pointer-events-auto flex items-center justify-between gap-3 transition-all duration-200 transform translate-y-2 opacity-0 ${type === 'success' ? 'bg-accentGreen text-white' : type === 'error' ? 'bg-brandRed text-white' : 'bg-white text-neoBlack'
+                }`;
+            toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+
+            const iconName = type === 'success' ? 'check-circle' : type === 'error' ? 'alert-triangle' : 'info';
+            toast.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <i data-lucide="${iconName}" class="w-4 h-4 shrink-0" aria-hidden="true"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            toastRegion.appendChild(toast);
+            lucide.createIcons();
+
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 250);
+            }, 3500);
+        }
+
+        // Ticker Marquee Pause / Play Control (WCAG 2.2.2)
+        const marqueeWrapper = document.getElementById('marquee-wrapper');
+        const tickerToggleBtn = document.getElementById('ticker-toggle-btn');
+        const tickerToggleLabel = document.getElementById('ticker-toggle-label');
+        let isMarqueePaused = false;
+
+        tickerToggleBtn.addEventListener('click', function () {
+            isMarqueePaused = !isMarqueePaused;
+            if (isMarqueePaused) {
+                marqueeWrapper.classList.add('is-paused');
+                tickerToggleLabel.textContent = 'Putar';
+                tickerToggleBtn.setAttribute('aria-label', 'Putar banner animasi');
+                tickerToggleBtn.innerHTML = `<i data-lucide="play" class="w-3.5 h-3.5" aria-hidden="true"></i><span>Putar</span>`;
+            } else {
+                marqueeWrapper.classList.remove('is-paused');
+                tickerToggleLabel.textContent = 'Jeda';
+                tickerToggleBtn.setAttribute('aria-label', 'Jeda banner animasi');
+                tickerToggleBtn.innerHTML = `<i data-lucide="pause" class="w-3.5 h-3.5" aria-hidden="true"></i><span>Jeda</span>`;
+            }
+            lucide.createIcons();
+        });
+
+        // Drawer Menu Logic
+        const menuDrawer = document.getElementById('menu-drawer');
+        const menuOverlay = document.getElementById('menu-overlay');
+        const menuToggleBtn = document.getElementById('menu-toggle-btn');
+        const drawerCloseBtn = document.getElementById('drawer-close-btn');
+        let isMenuOpen = false;
+
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+            if (isMenuOpen) {
+                menuDrawer.classList.remove('translate-x-full');
+                menuDrawer.setAttribute('aria-hidden', 'false');
+                menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                menuOverlay.setAttribute('aria-hidden', 'false');
+                menuToggleBtn.setAttribute('aria-expanded', 'true');
+                document.body.classList.add('overflow-hidden');
+                if (drawerCloseBtn) drawerCloseBtn.focus();
+            } else {
+                menuDrawer.classList.add('translate-x-full');
+                menuDrawer.setAttribute('aria-hidden', 'true');
+                menuOverlay.classList.add('opacity-0', 'pointer-events-none');
+                menuOverlay.setAttribute('aria-hidden', 'true');
+                menuToggleBtn.setAttribute('aria-expanded', 'false');
+                document.body.classList.remove('overflow-hidden');
+                menuToggleBtn.focus();
+            }
+        }
+
+        // SINKRONISASI PEMBATASAN AKSES MENU (RBAC Menu Guard)
+        function syncRoleNavigation() {
+            const role = localStorage.getItem('comithrift_role');
+            const token = localStorage.getItem('comithrift_auth_token');
+            const roleContainer = document.getElementById('role-nav-container');
+            const authActionContainer = document.getElementById('auth-action-container');
+
+            if (!roleContainer) return;
+
+            if (token && role === 'Admin') {
+                roleContainer.innerHTML = `
+                    <a href="../admin/dasboard-admin.html" class="flex items-center justify-between p-3 bg-red-50 text-brandRed neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="shield" class="w-4 h-4"></i>
+                            <span>Panel Admin</span>
+                        </div>
+                        <span class="px-2 py-0.5 bg-brandRed text-white text-[10px] font-black rounded">Admin</span>
+                    </a>
+                    <a href="../volunteer/produk.html" class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="shirt" class="w-4 h-4"></i>
+                            <span>Area Relawan</span>
+                        </div>
+                    </a>
+                `;
+                if (authActionContainer) {
+                    authActionContainer.innerHTML = `
+                        <button type="button" onclick="handleLogout()" class="w-full py-3 bg-surfaceSoft neo-btn rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-brandRed hover:text-white transition-colors min-h-[44px]">
+                            <i data-lucide="log-out" class="w-4 h-4"></i>
+                            <span>Keluar Akun Admin</span>
+                        </button>
+                    `;
+                }
+            } else if (token && role === 'Relawan') {
+                roleContainer.innerHTML = `
+                    <a href="../volunteer/produk.html" class="flex items-center justify-between p-3 bg-emerald-50 text-emerald-900 neo-border-sm rounded-xl hover:bg-accentGreen hover:text-white transition-colors">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="shirt" class="w-4 h-4"></i>
+                            <span>Area Relawan (Unggah Produk)</span>
+                        </div>
+                        <span class="px-2 py-0.5 bg-accentGreen text-white text-[10px] font-black rounded">Relawan</span>
+                    </a>
+                `;
+                if (authActionContainer) {
+                    authActionContainer.innerHTML = `
+                        <button type="button" onclick="handleLogout()" class="w-full py-3 bg-surfaceSoft neo-btn rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-brandRed hover:text-white transition-colors min-h-[44px]">
+                            <i data-lucide="log-out" class="w-4 h-4"></i>
+                            <span>Keluar Akun Relawan</span>
+                        </button>
+                    `;
+                }
+            } else {
+                // Pengguna Publik / Tamu Biasa: Area Relawan dan Admin disembunyikan sepenuhnya
+                roleContainer.innerHTML = ``;
+                if (authActionContainer) {
+                    authActionContainer.innerHTML = `
+                        <a href="../login/login.html" class="w-full py-3 bg-brandRed text-white neo-btn rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 min-h-[44px]">
+                            <i data-lucide="log-in" class="w-4 h-4"></i>
+                            <span>Masuk Relawan / Admin</span>
+                        </a>
+                    `;
+                }
+            }
+            lucide.createIcons();
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('comithrift_auth_token');
+            localStorage.removeItem('comithrift_role');
+            localStorage.removeItem('comithrift_user_name');
+            localStorage.removeItem('comithrift_user_email');
+            showToast('Anda telah keluar akun.', 'info');
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
+        }
+
+        // Close drawer on ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isMenuOpen) toggleMenu();
+        });
+
+        function checkPendingOrder() {
+            try {
+                const stored = localStorage.getItem('lastOrder');
+                if (stored) {
+                    const order = JSON.parse(stored);
+                    const isPending = order && order.kode_pesanan && order.status_pesanan !== 'dibayar' && order.status_pesanan !== 'selesai' && order.status_pesanan !== 'dibatalkan';
+                    if (isPending) {
+                        const banner = document.getElementById('pending-order-banner');
+                        if (banner) {
+                            banner.innerHTML = `
+                                <div class="bg-amber-50 neo-border rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 border-l-8 border-l-accentAmber">
+                                    <div class="flex items-center gap-3.5">
+                                        <div class="w-10 h-10 bg-accentAmber text-white neo-border-sm rounded-xl flex items-center justify-center shrink-0">
+                                            <i data-lucide="clock" class="w-5 h-5"></i>
+                                        </div>
+                                        <div class="space-y-0.5">
+                                            <p class="font-black text-xs uppercase tracking-wider text-accentAmber">Tagihan Pesanan Belum Selesai</p>
+                                            <p class="text-xs sm:text-sm font-bold text-neoBlack">
+                                                Pesanan <span class="font-black">#${order.kode_pesanan}</span> sebesar <span class="text-brandRed font-black">Rp ${(order.total_bayar || 0).toLocaleString('id-ID')}</span> sedang menunggu pembayaran.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                                        <a href="status-pesanan.html?kode=${encodeURIComponent(order.kode_pesanan)}"
+                                            class="w-full sm:w-auto px-4 py-2.5 bg-brandRed text-white neo-btn rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 min-h-[40px]">
+                                            <span>Lihat & Bayar</span>
+                                            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            `;
+                            banner.classList.remove('hidden');
+                            lucide.createIcons();
+                        }
+                    }
+                }
+            } catch (e) {
+                console.warn("Gagal cek pending order:", e);
+            }
+        }
+
+        // Inisialisasi awal saat halaman siap
+        document.addEventListener('DOMContentLoaded', () => {
+            syncRoleNavigation();
+            renderCart();
+            checkPendingOrder();
+            lucide.createIcons();
+        });
+
+        // Fallback eksekusi langsung
+        syncRoleNavigation();
+        renderCart();
+        checkPendingOrder();
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COMITHRIFT — Galeri & Program Tebar Cinta</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Custom Font: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Konfigurasi Tailwind Palet Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brandRed: '#B91C1C',       // Primary Red Accent (Accessible & High Contrast)
+                        brandRedDark: '#991B1B',   // Darker red for active states
+                        slateDark: '#1E293B',      // Solid slate for secondary surfaces
+                        neoBlack: '#0F0F11',       // Pure black for Neo-Brutalism borders & shadows
+                        surfaceBg: '#FAF8F5',      // Warm paper background
+                        surfaceSoft: '#F3F4F6',    // Soft grey neutral surface
+                        accentGreen: '#059669',    // Semantic Success Green
+                    },
+                    boxShadow: {
+                        'neo-sm': '2px 2px 0px 0px #0F0F11',
+                        'neo': '4px 4px 0px 0px #0F0F11',
+                        'neo-lg': '6px 6px 0px 0px #0F0F11',
+                        'neo-xl': '8px 8px 0px 0px #0F0F11',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Neo-Brutalism Core Utilities */
+        .neo-border {
+            border: 3px solid #0F0F11;
+        }
+
+        .neo-border-sm {
+            border: 2px solid #0F0F11;
+        }
+
+        /* Tactile Neo-Brutalist Button with Spring Curve */
+        .neo-btn {
+            border: 3px solid #0F0F11;
+            box-shadow: 4px 4px 0px 0px #0F0F11;
+            transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.15s ease;
+            will-change: transform, box-shadow;
+        }
+
+        .neo-btn:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 7px 7px 0px 0px #0F0F11;
+        }
+
+        .neo-btn:active {
+            transform: translate(3px, 3px);
+            box-shadow: 1px 1px 0px 0px #0F0F11;
+        }
+
+        /* High-contrast accessible focus visible */
+        .neo-btn:focus-visible,
+        a:focus-visible,
+        button:focus-visible {
+            outline: 3px solid #0F0F11;
+            outline-offset: 3px;
+        }
+
+        /* Card and Surfaces */
+        .neo-card {
+            border: 3px solid #0F0F11;
+            box-shadow: 8px 8px 0px 0px #0F0F11;
+            transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        /* Accessible Ticker Marquee with Pause support */
+        @keyframes marquee {
+            0% {
+                transform: translateX(0%);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .animate-marquee {
+            display: inline-flex;
+            width: max-content;
+            animation: marquee 24s linear infinite;
+        }
+
+        .marquee-container.is-paused .animate-marquee {
+            animation-play-state: paused;
+        }
+
+        /* Motion Accessibility: Respects prefers-reduced-motion */
+        @media (prefers-reduced-motion: reduce) {
+            .animate-marquee {
+                animation: none;
+            }
+
+            .neo-btn,
+            .neo-card,
+            #slider-track {
+                transition: none !important;
+                transform: none !important;
+                animation: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body
+    class="bg-surfaceBg text-neoBlack font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brandRed selection:text-white overflow-x-hidden">
+
+    <!-- TOP ACCESSIBLE INFORMATION TICKER -->
+    <div
+        class="bg-brandRed text-white neo-border border-t-0 border-x-0 py-2.5 overflow-hidden whitespace-nowrap font-black text-xs sm:text-sm tracking-wider uppercase relative">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
+            <div id="marquee-wrapper" class="marquee-container overflow-hidden flex-1">
+                <div class="animate-marquee flex items-center gap-8">
+                    <span>Galeri Kegiatan Tebar Cinta</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Bersama Wujudkan Senyum dan Harapan Mereka</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Aksi Nyata Pemenuhan Gizi Balita Prasejahtera</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Galeri Kegiatan Tebar Cinta</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Bersama Wujudkan Senyum dan Harapan Mereka</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Aksi Nyata Pemenuhan Gizi Balita Prasejahtera</span>
+                </div>
+            </div>
+            <!-- Pause/Resume Control (WCAG 2.2.2 Compliance) -->
+            <button type="button" id="ticker-toggle-btn"
+                class="ml-4 px-2.5 py-1 bg-white text-neoBlack neo-border-sm rounded-lg text-[10px] font-black uppercase tracking-wider hover:bg-surfaceSoft transition-colors flex items-center gap-1 shrink-0"
+                aria-label="Jeda banner animasi">
+                <i data-lucide="pause" class="w-3.5 h-3.5" aria-hidden="true"></i>
+                <span id="ticker-toggle-label">Jeda</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <header class="sticky top-0 z-40 bg-white neo-border border-x-0 border-t-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+            <!-- Logo -->
+            <a href="index.html" class="flex items-center gap-2.5 group" aria-label="Beranda Tebar Cinta">
+                <div class="w-11 h-11 bg-brandRed text-white neo-border rounded-xl flex items-center justify-center font-black transition-transform group-hover:scale-105"
+                    aria-hidden="true">
+                    <i data-lucide="heart" class="w-5 h-5 fill-current"></i>
+                </div>
+                <span class="font-black text-2xl sm:text-3xl tracking-tight uppercase">
+                    Tebar<span class="text-brandRed">Cinta</span>
+                </span>
+            </a>
+
+            <!-- Action Right (Mengarahkan ke login) -->
+            <div class="flex items-center gap-2.5 sm:gap-3">
+                <a href="dasboard.html"
+                    class="hidden sm:flex px-4 py-2.5 bg-surfaceSoft text-neoBlack font-black neo-btn rounded-xl text-xs sm:text-sm uppercase tracking-wider items-center gap-2 min-h-[44px]"
+                    aria-label="Kunjungi Katalog Toko">
+                    <i data-lucide="shopping-bag" class="w-4 h-4" aria-hidden="true"></i>
+                    <span>Katalog Toko</span>
+                </a>
+                <a href="../login/login.html"
+                    class="px-4 sm:px-5 py-2.5 bg-brandRed text-white font-black neo-btn rounded-xl text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 min-h-[44px]"
+                    aria-label="Masuk ke Akun">
+                    <span>Masuk</span>
+                    <i data-lucide="log-in" class="w-4 h-4" aria-hidden="true"></i>
+                </a>
+                <!-- Drawer Menu Toggle Button -->
+                <button type="button" onclick="toggleMenu()"
+                    class="p-3 bg-surfaceSoft neo-btn rounded-xl flex items-center justify-center min-h-[44px] min-w-[44px]"
+                    aria-label="Buka Menu Navigasi" aria-expanded="false" id="menu-toggle-btn">
+                    <i data-lucide="menu" class="w-5 h-5" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- SIDEBAR DRAWER MENU -->
+    <div id="menu-overlay" onclick="toggleMenu()"
+        class="fixed inset-0 bg-neoBlack/60 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-300"
+        aria-hidden="true"></div>
+    <aside id="menu-drawer"
+        class="fixed top-0 right-0 w-80 sm:w-96 max-w-[85vw] h-full bg-white z-50 neo-border border-y-0 border-r-0 translate-x-full transition-transform duration-300 ease-in-out p-6 flex flex-col justify-between overflow-y-auto"
+        aria-label="Menu Utama" aria-hidden="true">
+        <div class="space-y-6">
+            <div class="flex items-center justify-between border-b-2 border-slate-100 pb-4">
+                <div class="flex items-center gap-2">
+                    <div
+                        class="w-8 h-8 bg-brandRed text-white neo-border-sm rounded-lg flex items-center justify-center font-black">
+                        <i data-lucide="heart" class="w-4 h-4 fill-current"></i>
+                    </div>
+                    <span class="font-black text-lg uppercase tracking-tight">Menu Navigasi</span>
+                </div>
+                <button type="button" onclick="toggleMenu()"
+                    class="p-2 neo-border-sm rounded-lg hover:bg-surfaceSoft min-h-[44px] min-w-[44px] flex items-center justify-center"
+                    aria-label="Tutup Menu" id="drawer-close-btn">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <nav class="space-y-2.5 font-black text-sm uppercase">
+                <a href="index.html"
+                    class="flex items-center justify-between p-3 bg-brandRed text-white neo-border-sm rounded-xl transition-colors"
+                    aria-current="page">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="image" class="w-4 h-4"></i>
+                        <span>Galeri Kegiatan</span>
+                    </div>
+                    <span
+                        class="px-2 py-0.5 bg-white text-neoBlack text-[10px] font-black rounded neo-border-sm">Aktif</span>
+                </a>
+                <a href="dasboard.html"
+                    class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                        <span>Katalog & Donasi</span>
+                    </div>
+                </a>
+                <a href="detail produk.html"
+                    class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="search" class="w-4 h-4"></i>
+                        <span>Cari & Filter Produk</span>
+                    </div>
+                </a>
+                <a href="keranjang.html"
+                    class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                        <span>Keranjang Belanja</span>
+                    </div>
+                </a>
+                <!-- Role-Specific Navigation Area (Dinamis: Relawan / Admin / Publik) -->
+                <div id="role-nav-container" class="space-y-2.5 pt-1"></div>
+            </nav>
+        </div>
+
+        <div class="border-t-2 border-slate-100 pt-4" id="auth-action-container">
+            <a href="../login/login.html"
+                class="w-full py-3 bg-brandRed text-white neo-btn rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-brandRedDark transition-colors min-h-[44px]">
+                <i data-lucide="log-in" class="w-4 h-4"></i>
+                <span>Masuk Akun</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT: GALERI EKSTRA BESAR -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-8 flex-1 w-full">
+
+        <!-- CAROUSEL AUTO-SLIDE -->
+        <div class="relative w-full h-[60vh] sm:h-[75vh] neo-card rounded-3xl overflow-hidden bg-neoBlack group"
+            id="carousel-container">
+
+            <div id="slider-track" class="w-full h-full flex transition-transform duration-500 ease-out">
+                <!-- Slide 1 -->
+                <div class="w-full h-full flex-shrink-0 relative">
+                    <img src="https://images.unsplash.com/photo-1594608661623-aa0bd3a69d98?auto=format&fit=crop&w=1600&q=80"
+                        alt="Pendampingan Balita" width="1600" height="900" loading="eager" fetchpriority="high"
+                        class="w-full h-full object-cover">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-neoBlack/80 via-transparent to-transparent flex items-end p-6 sm:p-10">
+                        <div class="bg-white/95 backdrop-blur-sm p-4 sm:p-6 rounded-2xl neo-border max-w-lg space-y-1">
+                            <span
+                                class="bg-brandRed text-white text-[10px] sm:text-xs font-black px-2.5 py-1 rounded-md neo-border uppercase">Aksi
+                                Lapangan</span>
+                            <h3 class="font-black text-lg sm:text-2xl uppercase tracking-tight">Pendampingan Gizi Balita
+                            </h3>
+                            <p class="text-xs sm:text-sm font-bold text-slate-700">Penyaluran formula nutrisi & suplemen
+                                imun bagi balita dari keluarga prasejahtera.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="w-full h-full flex-shrink-0 relative">
+                    <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1600&q=80"
+                        alt="Senyum Kasih Sayang" width="1600" height="900" loading="lazy"
+                        class="w-full h-full object-cover">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-neoBlack/80 via-transparent to-transparent flex items-end p-6 sm:p-10">
+                        <div class="bg-white/95 backdrop-blur-sm p-4 sm:p-6 rounded-2xl neo-border max-w-lg space-y-1">
+                            <span
+                                class="bg-surfaceSoft text-neoBlack text-[10px] sm:text-xs font-black px-2.5 py-1 rounded-md neo-border uppercase">Dukungan
+                                Moral</span>
+                            <h3 class="font-black text-lg sm:text-2xl uppercase tracking-tight">Ruang Tumbuh Ceria</h3>
+                            <p class="text-xs sm:text-sm font-bold text-slate-700">Menciptakan lingkungan yang aman dan
+                                bebas stigma untuk masa depan mereka.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 3 -->
+                <div class="w-full h-full flex-shrink-0 relative">
+                    <img src="https://images.unsplash.com/photo-1532629345422-7515fe926fb8?auto=format&fit=crop&w=1600&q=80"
+                        alt="Transparansi Penyaluran" width="1600" height="900" loading="lazy"
+                        class="w-full h-full object-cover">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-neoBlack/80 via-transparent to-transparent flex items-end p-6 sm:p-10">
+                        <div class="bg-white/95 backdrop-blur-sm p-4 sm:p-6 rounded-2xl neo-border max-w-lg space-y-1">
+                            <span
+                                class="bg-brandRed text-white text-[10px] sm:text-xs font-black px-2.5 py-1 rounded-md neo-border uppercase">Transparansi</span>
+                            <h3 class="font-black text-lg sm:text-2xl uppercase tracking-tight">Penyaluran Bantuan Medis
+                            </h3>
+                            <p class="text-xs sm:text-sm font-bold text-slate-700">Dukungan pemeriksaan rutin &
+                                obat-obatan gratis bagi keluarga balita.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tombol Navigasi Prev/Next -->
+            <button type="button" onclick="prevSlide()"
+                class="absolute left-4 top-1/2 -translate-y-1/2 bg-white text-neoBlack p-3 sm:p-4 neo-btn rounded-2xl z-20 hover:bg-surfaceSoft min-h-[48px] min-w-[48px] flex items-center justify-center"
+                aria-label="Slide sebelumnya">
+                <i data-lucide="chevron-left" class="w-6 h-6" aria-hidden="true"></i>
+            </button>
+            <button type="button" onclick="nextSlide()"
+                class="absolute right-4 top-1/2 -translate-y-1/2 bg-white text-neoBlack p-3 sm:p-4 neo-btn rounded-2xl z-20 hover:bg-surfaceSoft min-h-[48px] min-w-[48px] flex items-center justify-center"
+                aria-label="Slide selanjutnya">
+                <i data-lucide="chevron-right" class="w-6 h-6" aria-hidden="true"></i>
+            </button>
+
+            <!-- Tombol Zoom Fullscreen -->
+            <button type="button" onclick="openZoomModal()"
+                class="absolute top-4 right-4 bg-white text-neoBlack p-3 neo-btn rounded-xl z-20 hover:bg-surfaceSoft min-h-[44px] min-w-[44px] flex items-center justify-center"
+                aria-label="Buka foto ukuran penuh">
+                <i data-lucide="maximize-2" class="w-5 h-5" aria-hidden="true"></i>
+            </button>
+
+            <!-- Indikator Dots -->
+            <div id="slider-dots" class="absolute bottom-4 right-6 sm:right-10 flex gap-2 z-20"
+                aria-label="Pilihan slide"></div>
+        </div>
+
+    </main>
+
+    <!-- MODAL ZOOM FULLSCREEN -->
+    <div id="zoom-modal-overlay" onclick="closeZoomModal()"
+        class="fixed inset-0 bg-neoBlack/90 backdrop-blur-md z-50 opacity-0 pointer-events-none transition-opacity duration-300 flex items-center justify-center p-4"
+        role="dialog" aria-modal="true" aria-label="Foto Ukuran Penuh">
+        <button type="button" onclick="closeZoomModal()"
+            class="absolute top-6 right-6 p-3 bg-brandRed text-white neo-border rounded-xl min-h-[44px] min-w-[44px] flex items-center justify-center"
+            aria-label="Tutup foto">
+            <i data-lucide="x" class="w-6 h-6" aria-hidden="true"></i>
+        </button>
+        <img id="zoom-image" src="" alt="Foto Galeri Ukuran Penuh"
+            class="max-w-full max-h-[85vh] object-contain neo-border rounded-2xl">
+    </div>
+
+    <!-- FOOTER -->
+    <footer
+        class="bg-neoBlack text-white neo-border border-x-0 border-b-0 py-6 text-center text-xs font-bold text-slate-400">
+        <p>&copy; 2026 COMITHRIFT. Program Tebar Cinta.</p>
+    </footer>
+
+    <!-- INTERACTION LOGIC & ACCESSIBILITY SCRIPTS -->
+    <script>
+        // Inisialisasi ikon Lucide
+        lucide.createIcons();
+
+        // Ticker Marquee Pause / Play Control (WCAG 2.2.2)
+        const marqueeWrapper = document.getElementById('marquee-wrapper');
+        const tickerToggleBtn = document.getElementById('ticker-toggle-btn');
+        const tickerToggleLabel = document.getElementById('ticker-toggle-label');
+        let isMarqueePaused = false;
+
+        tickerToggleBtn.addEventListener('click', function () {
+            isMarqueePaused = !isMarqueePaused;
+            if (isMarqueePaused) {
+                marqueeWrapper.classList.add('is-paused');
+                tickerToggleLabel.textContent = 'Putar';
+                tickerToggleBtn.setAttribute('aria-label', 'Putar banner animasi');
+                tickerToggleBtn.innerHTML = `<i data-lucide="play" class="w-3.5 h-3.5" aria-hidden="true"></i><span>Putar</span>`;
+            } else {
+                marqueeWrapper.classList.remove('is-paused');
+                tickerToggleLabel.textContent = 'Jeda';
+                tickerToggleBtn.setAttribute('aria-label', 'Jeda banner animasi');
+                tickerToggleBtn.innerHTML = `<i data-lucide="pause" class="w-3.5 h-3.5" aria-hidden="true"></i><span>Jeda</span>`;
+            }
+            lucide.createIcons();
+        });
+
+        // Carousel Slider Logic
+        const sliderTrack = document.getElementById('slider-track');
+        const dotsContainer = document.getElementById('slider-dots');
+        const slides = sliderTrack.children;
+        const totalSlides = slides.length;
+        let currentSlide = 0;
+        let autoSlideTimer;
+
+        // Render Dots
+        for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement('button');
+            dot.className = `w-3 h-3 rounded-full neo-border transition-all ${i === 0 ? 'bg-brandRed w-6' : 'bg-white'}`;
+            dot.setAttribute('aria-label', `Slide ${i + 1}`);
+            dot.onclick = () => goToSlide(i);
+            dotsContainer.appendChild(dot);
+        }
+
+        function updateSlider() {
+            sliderTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+            const dots = dotsContainer.children;
+            for (let i = 0; i < dots.length; i++) {
+                if (i === currentSlide) {
+                    dots[i].className = 'w-6 h-3 rounded-full neo-border bg-brandRed transition-all';
+                } else {
+                    dots[i].className = 'w-3 h-3 rounded-full neo-border bg-white transition-all';
+                }
+            }
+        }
+
+        function goToSlide(index) {
+            currentSlide = (index + totalSlides) % totalSlides;
+            updateSlider();
+            resetAutoSlide();
+        }
+
+        function nextSlide() {
+            goToSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            goToSlide(currentSlide - 1);
+        }
+
+        function startAutoSlide() {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            autoSlideTimer = setInterval(nextSlide, 5000);
+        }
+
+        function resetAutoSlide() {
+            clearInterval(autoSlideTimer);
+            startAutoSlide();
+        }
+
+        startAutoSlide();
+
+        // Pause on hover
+        const carousel = document.getElementById('carousel-container');
+        carousel.addEventListener('mouseenter', () => clearInterval(autoSlideTimer));
+        carousel.addEventListener('mouseleave', () => startAutoSlide());
+
+        // Zoom Modal Logic
+        const zoomOverlay = document.getElementById('zoom-modal-overlay');
+        const zoomImage = document.getElementById('zoom-image');
+
+        function openZoomModal() {
+            const activeImg = slides[currentSlide].querySelector('img');
+            zoomImage.src = activeImg.src;
+            zoomImage.alt = activeImg.alt;
+            zoomOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            zoomOverlay.classList.add('opacity-100');
+        }
+
+        function closeZoomModal() {
+            zoomOverlay.classList.remove('opacity-100');
+            zoomOverlay.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        // Drawer Menu Logic
+        const menuDrawer = document.getElementById('menu-drawer');
+        const menuOverlay = document.getElementById('menu-overlay');
+        const menuToggleBtn = document.getElementById('menu-toggle-btn');
+        const drawerCloseBtn = document.getElementById('drawer-close-btn');
+        let isMenuOpen = false;
+
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+            if (isMenuOpen) {
+                menuDrawer.classList.remove('translate-x-full');
+                menuDrawer.setAttribute('aria-hidden', 'false');
+                menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                menuOverlay.setAttribute('aria-hidden', 'false');
+                menuToggleBtn.setAttribute('aria-expanded', 'true');
+                document.body.classList.add('overflow-hidden');
+                if (drawerCloseBtn) drawerCloseBtn.focus();
+            } else {
+                menuDrawer.classList.add('translate-x-full');
+                menuDrawer.setAttribute('aria-hidden', 'true');
+                menuOverlay.classList.add('opacity-0', 'pointer-events-none');
+                menuOverlay.setAttribute('aria-hidden', 'true');
+                menuToggleBtn.setAttribute('aria-expanded', 'false');
+                document.body.classList.remove('overflow-hidden');
+                menuToggleBtn.focus();
+            }
+        }
+
+        // Close on ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (isMenuOpen) toggleMenu();
+                else closeZoomModal();
+            }
+        });
+
+        // SINKRONISASI PEMBATASAN AKSES MENU (RBAC Menu Guard)
+        function syncRoleNavigation() {
+            const role = localStorage.getItem('comithrift_role');
+            const token = localStorage.getItem('comithrift_auth_token');
+            const roleContainer = document.getElementById('role-nav-container');
+            const authActionContainer = document.getElementById('auth-action-container');
+
+            if (!roleContainer) return;
+
+            if (token && role === 'Admin') {
+                roleContainer.innerHTML = `
+                    <a href="../admin/dasboard-admin.html" class="flex items-center justify-between p-3 bg-red-50 text-brandRed neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="shield" class="w-4 h-4"></i>
+                            <span>Panel Admin</span>
+                        </div>
+                        <span class="px-2 py-0.5 bg-brandRed text-white text-[10px] font-black rounded">Admin</span>
+                    </a>
+                    <a href="../volunteer/produk.html" class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="shirt" class="w-4 h-4"></i>
+                            <span>Area Relawan</span>
+                        </div>
+                    </a>
+                `;
+                if (authActionContainer) {
+                    authActionContainer.innerHTML = `
+                        <button type="button" onclick="handleLogout()" class="w-full py-3 bg-surfaceSoft neo-btn rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-brandRed hover:text-white transition-colors min-h-[44px]">
+                            <i data-lucide="log-out" class="w-4 h-4"></i>
+                            <span>Keluar Akun Admin</span>
+                        </button>
+                    `;
+                }
+            } else if (token && role === 'Relawan') {
+                roleContainer.innerHTML = `
+                    <a href="../volunteer/produk.html" class="flex items-center justify-between p-3 bg-emerald-50 text-emerald-900 neo-border-sm rounded-xl hover:bg-accentGreen hover:text-white transition-colors">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="shirt" class="w-4 h-4"></i>
+                            <span>Area Relawan (Unggah Produk)</span>
+                        </div>
+                        <span class="px-2 py-0.5 bg-accentGreen text-white text-[10px] font-black rounded">Relawan</span>
+                    </a>
+                `;
+                if (authActionContainer) {
+                    authActionContainer.innerHTML = `
+                        <button type="button" onclick="handleLogout()" class="w-full py-3 bg-surfaceSoft neo-btn rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-brandRed hover:text-white transition-colors min-h-[44px]">
+                            <i data-lucide="log-out" class="w-4 h-4"></i>
+                            <span>Keluar Akun Relawan</span>
+                        </button>
+                    `;
+                }
+            } else {
+                // Pengguna Publik: Sembunyikan Area Relawan & Admin dari menu
+                roleContainer.innerHTML = ``;
+                if (authActionContainer) {
+                    authActionContainer.innerHTML = `
+                        <a href="../login/login.html" class="w-full py-3 bg-brandRed text-white neo-btn rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 min-h-[44px]">
+                            <i data-lucide="log-in" class="w-4 h-4"></i>
+                            <span>Masuk Relawan / Admin</span>
+                        </a>
+                    `;
+                }
+            }
+            lucide.createIcons();
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('comithrift_auth_token');
+            localStorage.removeItem('comithrift_role');
+            localStorage.removeItem('comithrift_user_name');
+            localStorage.removeItem('comithrift_user_email');
+            showToast('Anda telah keluar akun.', 'info');
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
+        }
+
+        syncRoleNavigation();
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

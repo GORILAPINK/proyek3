@@ -1,0 +1,564 @@
+﻿<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profil — COMITHRIFT & Tebar Cinta</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Custom Font: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Konfigurasi Tailwind Palet Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brandRed: '#B91C1C',       // Primary Red Accent (Accessible & High Contrast)
+                        brandRedDark: '#991B1B',   // Darker red for active states
+                        slateDark: '#1E293B',      // Solid slate for secondary surfaces
+                        neoBlack: '#0F0F11',       // Pure black for Neo-Brutalism borders & shadows
+                        surfaceBg: '#FAF8F5',      // Warm paper background
+                        surfaceSoft: '#F3F4F6',    // Soft grey neutral surface
+                        accentGreen: '#059669',    // Semantic Success Green
+                    },
+                    boxShadow: {
+                        'neo-sm': '2px 2px 0px 0px #0F0F11',
+                        'neo': '4px 4px 0px 0px #0F0F11',
+                        'neo-lg': '6px 6px 0px 0px #0F0F11',
+                        'neo-xl': '8px 8px 0px 0px #0F0F11',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Neo-Brutalism Core Utilities */
+        .neo-border {
+            border: 3px solid #0F0F11;
+        }
+
+        .neo-border-sm {
+            border: 2px solid #0F0F11;
+        }
+
+        /* Tactile Neo-Brutalist Button with Spring Curve */
+        .neo-btn {
+            border: 3px solid #0F0F11;
+            box-shadow: 4px 4px 0px 0px #0F0F11;
+            transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.15s ease;
+            will-change: transform, box-shadow;
+        }
+
+        .neo-btn:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 7px 7px 0px 0px #0F0F11;
+        }
+
+        .neo-btn:active {
+            transform: translate(3px, 3px);
+            box-shadow: 1px 1px 0px 0px #0F0F11;
+        }
+
+        /* High-contrast accessible focus visible */
+        .neo-btn:focus-visible,
+        input:focus-visible,
+        textarea:focus-visible,
+        button:focus-visible {
+            outline: 3px solid #0F0F11;
+            outline-offset: 3px;
+        }
+
+        /* Tactile Input States */
+        .neo-input {
+            border: 3px solid #0F0F11;
+            background-color: #F3F4F6;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+            min-height: 48px;
+        }
+
+        .neo-input:focus {
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0px 0px #0F0F11;
+            background-color: #FFFFFF;
+        }
+
+        /* Modern Form Validation: :user-invalid deferred error states */
+        .neo-input:user-invalid {
+            border-color: #DC2626;
+            background-color: #FEF2F2;
+        }
+
+        .neo-input:user-invalid+.error-msg {
+            display: flex;
+        }
+
+        .error-msg {
+            display: none;
+            color: #B91C1C;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-top: 0.35rem;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        /* Card and Surfaces */
+        .neo-card {
+            border: 3px solid #0F0F11;
+            box-shadow: 8px 8px 0px 0px #0F0F11;
+            transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        /* Accessible Ticker Marquee with Pause support */
+        @keyframes marquee {
+            0% {
+                transform: translateX(0%);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .animate-marquee {
+            display: inline-flex;
+            width: max-content;
+            animation: marquee 24s linear infinite;
+        }
+
+        .marquee-container.is-paused .animate-marquee {
+            animation-play-state: paused;
+        }
+
+        /* Motion Accessibility: Respects prefers-reduced-motion */
+        @media (prefers-reduced-motion: reduce) {
+            .animate-marquee {
+                animation: none;
+            }
+
+            .neo-btn,
+            .neo-input,
+            .neo-card {
+                transition: none !important;
+                transform: none !important;
+                animation: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body
+    class="bg-surfaceBg text-neoBlack font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brandRed selection:text-white overflow-x-hidden">
+
+    <!-- TOP ACCESSIBLE INFORMATION TICKER -->
+    <div
+        class="bg-brandRed text-white neo-border border-t-0 border-x-0 py-2.5 overflow-hidden whitespace-nowrap font-black text-xs sm:text-sm tracking-wider uppercase relative">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
+            <div id="marquee-wrapper" class="marquee-container overflow-hidden flex-1">
+                <div class="animate-marquee flex items-center gap-8">
+                    <span>Pengaturan Akun Relawan COMITHRIFT</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Kelola Profil dan Informasi Kreator Sosial</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Tebar Cinta Inisiatif Solidaritas</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Pengaturan Akun Relawan COMITHRIFT</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Kelola Profil dan Informasi Kreator Sosial</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Tebar Cinta Inisiatif Solidaritas</span>
+                </div>
+            </div>
+            <!-- Pause/Resume Control (WCAG 2.2.2 Compliance) -->
+            <button type="button" id="ticker-toggle-btn"
+                class="ml-4 px-2.5 py-1 bg-white text-neoBlack neo-border-sm rounded-lg text-[10px] font-black uppercase tracking-wider hover:bg-surfaceSoft transition-colors flex items-center gap-1 shrink-0"
+                aria-label="Jeda banner animasi">
+                <i data-lucide="pause" class="w-3.5 h-3.5" aria-hidden="true"></i>
+                <span id="ticker-toggle-label">Jeda</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <header class="sticky top-0 z-40 bg-white neo-border border-x-0 border-t-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3">
+            <a href="profile.html" class="flex items-center gap-2.5 group" aria-label="Katalog Relawan Tebar Cinta">
+                <div class="w-10 h-10 bg-brandRed text-white neo-border rounded-xl flex items-center justify-center font-black transition-transform group-hover:scale-105"
+                    aria-hidden="true">
+                    <i data-lucide="heart" class="w-5 h-5 fill-current"></i>
+                </div>
+                <span class="font-black text-xl sm:text-2xl tracking-tight uppercase">
+                    Tebar<span class="text-brandRed">Cinta</span>
+                </span>
+            </a>
+
+            <div class="flex items-center gap-2 sm:gap-3">
+                <a href="profile.html"
+                    class="px-3.5 sm:px-4 py-2 bg-surfaceSoft text-neoBlack font-black neo-btn rounded-xl text-xs sm:text-sm uppercase tracking-wider flex items-center gap-2 min-h-[44px]"
+                    aria-label="Kembali ke Profil Relawan">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    <span class="hidden xs:inline sm:inline">Kembali</span>
+                </a>
+                <!-- Burger Menu Toggle Button -->
+                <button type="button" onclick="toggleMenu()"
+                    class="p-3 bg-surfaceSoft neo-btn rounded-xl flex items-center justify-center min-h-[44px] min-w-[44px]"
+                    aria-label="Buka Menu Navigasi" aria-expanded="false" id="menu-toggle-btn">
+                    <i data-lucide="menu" class="w-5 h-5" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- SIDEBAR DRAWER MENU -->
+    <div id="menu-overlay" onclick="toggleMenu()"
+        class="fixed inset-0 bg-neoBlack/60 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-300"
+        aria-hidden="true"></div>
+    <aside id="menu-drawer"
+        class="fixed top-0 right-0 w-80 sm:w-96 max-w-[85vw] h-full bg-white z-50 neo-border border-y-0 border-r-0 translate-x-full transition-transform duration-300 ease-in-out p-6 flex flex-col justify-between overflow-y-auto"
+        aria-label="Menu Relawan" aria-hidden="true">
+        <div class="space-y-6">
+            <div class="flex items-center justify-between border-b-2 border-slate-100 pb-4">
+                <div class="flex items-center gap-2">
+                    <div
+                        class="w-8 h-8 bg-brandRed text-white neo-border-sm rounded-lg flex items-center justify-center font-black">
+                        <i data-lucide="heart" class="w-4 h-4 fill-current"></i>
+                    </div>
+                    <span class="font-black text-lg uppercase tracking-tight">Menu Relawan</span>
+                </div>
+                <button type="button" onclick="toggleMenu()"
+                    class="p-2 neo-border-sm rounded-lg hover:bg-surfaceSoft min-h-[44px] min-w-[44px] flex items-center justify-center"
+                    aria-label="Tutup Menu" id="drawer-close-btn">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <nav class="space-y-2.5 font-black text-sm uppercase">
+                <a href="profile.html"
+                    class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="package" class="w-4 h-4"></i>
+                        <span>Katalog Relawan</span>
+                    </div>
+                </a>
+                <a href="produk.html"
+                    class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                        <span>Unggah Produk Baru</span>
+                    </div>
+                </a>
+                <a href="edit profile.html"
+                    class="flex items-center justify-between p-3 bg-brandRed text-white neo-border-sm rounded-xl transition-colors"
+                    aria-current="page">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="user-cog" class="w-4 h-4"></i>
+                        <span>Edit Profil Kreator</span>
+                    </div>
+                    <span
+                        class="px-2 py-0.5 bg-white text-neoBlack text-[10px] font-black rounded neo-border-sm">Aktif</span>
+                </a>
+                <a href="../user/dasboard.html"
+                    class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="store" class="w-4 h-4"></i>
+                        <span>Toko COMITHRIFT</span>
+                    </div>
+                    <i data-lucide="external-link" class="w-3.5 h-3.5 opacity-60"></i>
+                </a>
+                <a href="../user/index.html"
+                    class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="image" class="w-4 h-4"></i>
+                        <span>Galeri Kegiatan</span>
+                    </div>
+                    <i data-lucide="external-link" class="w-3.5 h-3.5 opacity-60"></i>
+                </a>
+            </nav>
+        </div>
+
+        <div class="border-t-2 border-slate-100 pt-4">
+            <a href="../login/login.html"
+                class="w-full py-3 bg-surfaceSoft neo-btn rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-brandRed hover:text-white transition-colors min-h-[44px]">
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+                <span>Keluar Akun</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- TOAST NOTIFICATION CONTAINER (Polite Live Region) -->
+    <div id="toast-region" aria-live="polite" aria-atomic="true"
+        class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- KONTEN UTAMA EDIT PROFIL -->
+    <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex-1 w-full space-y-8">
+
+        <!-- Header Judul -->
+        <header class="border-b-4 border-neoBlack pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+            <div>
+                <p class="text-xs font-black uppercase tracking-wider text-slateDark flex items-center gap-1.5">
+                    <i data-lucide="user-check" class="w-4 h-4 text-brandRed" aria-hidden="true"></i>
+                    Manajemen Akun
+                </p>
+                <h1 class="text-3xl sm:text-4xl font-black uppercase tracking-tight mt-1">
+                    Edit Profil
+                </h1>
+            </div>
+            <p class="text-xs sm:text-sm font-bold text-slate-600">
+                Perbarui identitas profil dan informasi relawan kamu.
+            </p>
+        </header>
+
+        <!-- FORMULIR EDIT PROFIL -->
+        <section class="bg-white neo-card rounded-3xl p-6 sm:p-8 space-y-6" aria-labelledby="profile-form-heading">
+
+            <div class="flex items-center gap-3 border-b-2 border-slate-100 pb-4">
+                <div class="w-10 h-10 bg-surfaceSoft neo-border rounded-xl flex items-center justify-center font-black"
+                    aria-hidden="true">
+                    <i data-lucide="user" class="w-5 h-5 text-neoBlack"></i>
+                </div>
+                <h2 id="profile-form-heading" class="font-black text-lg uppercase tracking-tight">Informasi Akun
+                    Pengguna</h2>
+            </div>
+
+            <form id="edit-profile-page-form" novalidate class="space-y-6 text-xs font-bold text-slate-800">
+
+                <!-- Pratinjau & Unggah Foto Profil -->
+                <div class="flex flex-col sm:flex-row items-center gap-6 p-5 bg-surfaceSoft neo-border rounded-2xl">
+                    <div class="relative w-24 h-24 sm:w-28 sm:h-28 shrink-0">
+                        <img id="preview-avatar"
+                            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400"
+                            alt="Foto Profil Saat Ini" width="112" height="112" loading="eager"
+                            class="w-full h-full rounded-2xl object-cover neo-border shadow-neo">
+                    </div>
+                    <div class="space-y-2 text-center sm:text-left flex-1 w-full">
+                        <label for="avatar-file-input" class="font-black uppercase text-xs tracking-wider block">
+                            Ganti Foto Profil (Maks. 5MB)
+                        </label>
+                        <input type="file" id="avatar-file-input" accept="image/png, image/jpeg, image/webp"
+                            class="neo-input w-full px-3 py-2 rounded-xl font-bold text-xs cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-2 file:border-neoBlack file:text-xs file:font-black file:bg-brandRed file:text-white hover:file:bg-brandRedDark file:cursor-pointer"
+                            aria-describedby="avatar-format-hint">
+                        <input type="hidden" id="p-avatar-url"
+                            value="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400">
+                        <p id="avatar-format-hint" class="text-[11px] text-slate-500 font-semibold">Format yang
+                            didukung: JPG, PNG, atau WebP.</p>
+                    </div>
+                </div>
+
+                <!-- Nama Lengkap -->
+                <div class="space-y-1.5">
+                    <label for="p-fullname" class="font-black uppercase text-xs tracking-wider block">
+                        Nama Lengkap <span class="text-brandRed" aria-hidden="true">*</span>
+                    </label>
+                    <input type="text" id="p-fullname" name="fullname" required minlength="3" maxlength="60"
+                        autocomplete="name" value="Aditya Arya"
+                        class="neo-input w-full px-4 py-3 rounded-xl font-bold text-sm"
+                        aria-describedby="p-fullname-error" data-error="p-fullname-error">
+                    <div id="p-fullname-error" class="error-msg">
+                        <i data-lucide="alert-circle" class="w-3.5 h-3.5 shrink-0" aria-hidden="true"></i>
+                        <span>Nama lengkap wajib diisi (minimal 3 karakter).</span>
+                    </div>
+                </div>
+
+                <!-- Bio Singkat -->
+                <div class="space-y-1.5">
+                    <label for="p-biography" class="font-black uppercase text-xs tracking-wider block">
+                        Bio Singkat / Profesi <span class="text-brandRed" aria-hidden="true">*</span>
+                    </label>
+                    <textarea id="p-biography" name="biography" rows="4" required minlength="5" maxlength="200"
+                        class="neo-input w-full px-4 py-3 rounded-xl font-bold text-sm leading-relaxed"
+                        aria-describedby="p-biography-error"
+                        data-error="p-biography-error">Kreator & Penjual Karya Seni Neo-Brutalism</textarea>
+                    <div id="p-biography-error" class="error-msg">
+                        <i data-lucide="alert-circle" class="w-3.5 h-3.5 shrink-0" aria-hidden="true"></i>
+                        <span>Bio singkat wajib diisi (minimal 5 karakter).</span>
+                    </div>
+                </div>
+
+                <!-- Tombol Aksi -->
+                <div class="pt-4 flex flex-col sm:flex-row gap-3">
+                    <a href="profile.html"
+                        class="w-full sm:w-1/2 py-3.5 text-center bg-surfaceSoft text-neoBlack neo-btn rounded-xl font-black text-sm uppercase tracking-wider flex items-center justify-center min-h-[48px]">
+                        Batal
+                    </a>
+                    <button type="submit" id="submit-profile-btn"
+                        class="w-full sm:w-1/2 py-3.5 bg-brandRed text-white neo-btn rounded-xl font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 min-h-[48px]">
+                        <i data-lucide="check" class="w-4 h-4" aria-hidden="true"></i>
+                        <span>Simpan Perubahan</span>
+                    </button>
+                </div>
+
+            </form>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-neoBlack text-white py-6 neo-border border-b-0 border-x-0 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs font-bold tracking-wider">
+            &copy; 2026 COMITHRIFT & TEBAR CINTA. HAK CIPTA DILINDUNGI.
+        </div>
+    </footer>
+
+    <!-- INTERACTION LOGIC & ACCESSIBILITY SCRIPTS -->
+    <script>
+        // Inisialisasi ikon Lucide
+        lucide.createIcons();
+
+        const form = document.getElementById('edit-profile-page-form');
+        const avatarFileInput = document.getElementById('avatar-file-input');
+        const previewAvatar = document.getElementById('preview-avatar');
+        const hiddenAvatarUrl = document.getElementById('p-avatar-url');
+        const toastRegion = document.getElementById('toast-region');
+
+        // Ticker Marquee Pause / Play Control (WCAG 2.2.2)
+        const marqueeWrapper = document.getElementById('marquee-wrapper');
+        const tickerToggleBtn = document.getElementById('ticker-toggle-btn');
+        const tickerToggleLabel = document.getElementById('ticker-toggle-label');
+        let isMarqueePaused = false;
+
+        tickerToggleBtn.addEventListener('click', function () {
+            isMarqueePaused = !isMarqueePaused;
+            if (isMarqueePaused) {
+                marqueeWrapper.classList.add('is-paused');
+                tickerToggleLabel.textContent = 'Putar';
+                tickerToggleBtn.setAttribute('aria-label', 'Putar banner animasi');
+                tickerToggleBtn.innerHTML = `<i data-lucide="play" class="w-3.5 h-3.5" aria-hidden="true"></i><span>Putar</span>`;
+            } else {
+                marqueeWrapper.classList.remove('is-paused');
+                tickerToggleLabel.textContent = 'Jeda';
+                tickerToggleBtn.setAttribute('aria-label', 'Jeda banner animasi');
+                tickerToggleBtn.innerHTML = `<i data-lucide="pause" class="w-3.5 h-3.5" aria-hidden="true"></i><span>Jeda</span>`;
+            }
+            lucide.createIcons();
+        });
+
+        // Live Avatar File Preview
+        avatarFileInput.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('Ukuran gambar terlalu besar (maksimal 5MB).', 'error');
+                avatarFileInput.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (evt) {
+                previewAvatar.src = evt.target.result;
+                hiddenAvatarUrl.value = evt.target.result;
+                showToast('Foto profil berhasil dimuat.', 'success');
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // Accessible Toast Notifications
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `p-4 neo-border rounded-xl font-bold text-xs shadow-neo pointer-events-auto flex items-center justify-between gap-3 transition-all duration-200 transform translate-y-2 opacity-0 ${type === 'success' ? 'bg-accentGreen text-white' : type === 'error' ? 'bg-brandRed text-white' : 'bg-white text-neoBlack'
+                }`;
+            toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+
+            const iconName = type === 'success' ? 'check-circle' : type === 'error' ? 'alert-triangle' : 'info';
+            toast.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <i data-lucide="${iconName}" class="w-4 h-4 shrink-0" aria-hidden="true"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            toastRegion.appendChild(toast);
+            lucide.createIcons();
+
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 250);
+            }, 3500);
+        }
+
+        // Form Submission with Validation
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            if (!form.checkValidity()) {
+                const firstInvalid = form.querySelector(':invalid');
+                if (firstInvalid) {
+                    firstInvalid.focus();
+                }
+                showToast('Mohon lengkapi seluruh kolom formulir profil dengan benar.', 'error');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submit-profile-btn');
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-75');
+            submitBtn.innerHTML = `
+                <i data-lucide="loader-2" class="w-4 h-4 animate-spin" aria-hidden="true"></i>
+                <span>Menyimpan...</span>
+            `;
+            lucide.createIcons();
+
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-75');
+                submitBtn.innerHTML = `
+                    <i data-lucide="check" class="w-4 h-4" aria-hidden="true"></i>
+                    <span>Simpan Perubahan</span>
+                `;
+                lucide.createIcons();
+                showToast('Profil kamu berhasil diperbarui!', 'success');
+            }, 800);
+        });
+
+        // Drawer Menu Logic
+        const menuDrawer = document.getElementById('menu-drawer');
+        const menuOverlay = document.getElementById('menu-overlay');
+        const menuToggleBtn = document.getElementById('menu-toggle-btn');
+        const drawerCloseBtn = document.getElementById('drawer-close-btn');
+        let isMenuOpen = false;
+
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+            if (isMenuOpen) {
+                menuDrawer.classList.remove('translate-x-full');
+                menuDrawer.setAttribute('aria-hidden', 'false');
+                menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                menuOverlay.setAttribute('aria-hidden', 'false');
+                menuToggleBtn.setAttribute('aria-expanded', 'true');
+                document.body.classList.add('overflow-hidden');
+                if (drawerCloseBtn) drawerCloseBtn.focus();
+            } else {
+                menuDrawer.classList.add('translate-x-full');
+                menuDrawer.setAttribute('aria-hidden', 'true');
+                menuOverlay.classList.add('opacity-0', 'pointer-events-none');
+                menuOverlay.setAttribute('aria-hidden', 'true');
+                menuToggleBtn.setAttribute('aria-expanded', 'false');
+                document.body.classList.remove('overflow-hidden');
+                menuToggleBtn.focus();
+            }
+        }
+
+        // Close drawer on ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isMenuOpen) toggleMenu();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Produk — COMITHRIFT & Tebar Cinta</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Custom Font: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Client-side RBAC Route Guard: Hanya Relawan atau Admin yang diizinkan -->
+    <script>
+        (function() {
+            const token = localStorage.getItem('comithrift_auth_token');
+            const role = localStorage.getItem('comithrift_role');
+            if (!token || (role !== 'Relawan' && role !== 'Admin')) {
+                alert('Akses Terbatas! Anda harus masuk sebagai Relawan atau Admin untuk mengakses panel ini.');
+                window.location.replace('../login/login.html');
+            }
+        })();
+    </script>
+
+    <!-- Konfigurasi Tailwind Palet Neo-Brutalism -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brandRed: '#B91C1C',       // Primary Red Accent (Accessible & High Contrast)
+                        brandRedDark: '#991B1B',   // Darker red for active states
+                        slateDark: '#1E293B',      // Solid slate for secondary surfaces
+                        neoBlack: '#0F0F11',       // Pure black for Neo-Brutalism borders & shadows
+                        surfaceBg: '#FAF8F5',      // Warm paper background
+                        surfaceSoft: '#F3F4F6',    // Soft grey neutral surface
+                        accentBlue: '#2563EB',     // Semantic Blue
+                        accentGreen: '#059669',    // Semantic Success Green
+                    },
+                    boxShadow: {
+                        'neo-sm': '2px 2px 0px 0px #0F0F11',
+                        'neo': '4px 4px 0px 0px #0F0F11',
+                        'neo-lg': '6px 6px 0px 0px #0F0F11',
+                        'neo-xl': '8px 8px 0px 0px #0F0F11',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Neo-Brutalism Core Utilities */
+        .neo-border { border: 3px solid #0F0F11; }
+        .neo-border-sm { border: 2px solid #0F0F11; }
+        
+        /* Tactile Neo-Brutalist Button with Spring Curve */
+        .neo-btn {
+            border: 3px solid #0F0F11;
+            box-shadow: 4px 4px 0px 0px #0F0F11;
+            transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.15s ease;
+            will-change: transform, box-shadow;
+        }
+        .neo-btn:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 7px 7px 0px 0px #0F0F11;
+        }
+        .neo-btn:active {
+            transform: translate(3px, 3px);
+            box-shadow: 1px 1px 0px 0px #0F0F11;
+        }
+
+        /* High-contrast accessible focus visible */
+        .neo-btn:focus-visible,
+        input:focus-visible,
+        textarea:focus-visible,
+        button:focus-visible {
+            outline: 3px solid #0F0F11;
+            outline-offset: 3px;
+        }
+
+        /* Tactile Input States */
+        .neo-input {
+            border: 3px solid #0F0F11;
+            background-color: #F3F4F6;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+            min-height: 48px;
+        }
+        .neo-input:focus {
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0px 0px #0F0F11;
+            background-color: #FFFFFF;
+        }
+
+        /* Custom Branded Neo-Select (modern-web-guidance: branded-select-styling) */
+        .neo-select,
+        .neo-select::picker(select) {
+            appearance: base-select;
+        }
+
+        .neo-select {
+            appearance: none;
+            -webkit-appearance: none;
+            border: 3px solid #0F0F11;
+            background-color: #FFFFFF;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%230F0F11' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: calc(100% - 12px) center;
+            background-size: 16px;
+            padding-right: 2.5rem;
+            min-height: 48px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 800;
+            color: #0F0F11;
+            box-shadow: 3px 3px 0px 0px #0F0F11;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+            cursor: pointer;
+        }
+
+        .neo-select:focus {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0px 0px #0F0F11;
+            outline: none;
+            border-color: #0F0F11;
+            background-color: #FAF8F5;
+        }
+
+        /* Picker List Styling (Chrome 135+ Customizable Select & Modern Dropdowns) */
+        .neo-select::picker(select) {
+            border: 3px solid #0F0F11;
+            box-shadow: 6px 6px 0px 0px #0F0F11;
+            border-radius: 0.85rem;
+            background-color: #FFFFFF;
+            padding: 0.4rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #0F0F11;
+        }
+
+        .neo-select option {
+            padding: 0.65rem 0.85rem;
+            border-radius: 0.5rem;
+            font-weight: 800;
+            font-size: 0.85rem;
+            color: #0F0F11;
+            background-color: #FFFFFF;
+            cursor: pointer;
+            margin-bottom: 2px;
+        }
+
+        .neo-select option:hover,
+        .neo-select option:focus {
+            background-color: #F3F4F6 !important;
+            color: #B91C1C !important;
+        }
+
+        .neo-select option:checked {
+            background-color: #B91C1C !important;
+            color: #FFFFFF !important;
+            font-weight: 900;
+        }
+
+        .neo-select::picker-icon {
+            color: #0F0F11;
+        }
+
+        .neo-select option::checkmark {
+            color: #FFFFFF;
+        }
+
+        /* Modern Form Validation: :user-invalid deferred error states */
+        .neo-input:user-invalid {
+            border-color: #DC2626;
+            background-color: #FEF2F2;
+        }
+        .neo-input:user-invalid + .error-msg {
+            display: flex;
+        }
+        .error-msg {
+            display: none;
+            color: #B91C1C;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-top: 0.35rem;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        /* Card and Surfaces */
+        .neo-card {
+            border: 3px solid #0F0F11;
+            box-shadow: 8px 8px 0px 0px #0F0F11;
+            transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        /* Interactive 3D Perspective Card */
+        .interactive-preview-card {
+            perspective: 1000px;
+        }
+        .interactive-preview-inner {
+            transform-style: preserve-3d;
+            transition: transform 0.2s ease-out;
+        }
+
+        /* Pulse animation for live update confirmation */
+        @keyframes subtle-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.015); }
+            100% { transform: scale(1); }
+        }
+        .preview-updated {
+            animation: subtle-pulse 0.25s ease-out;
+        }
+
+        /* Accessible Ticker Marquee with Pause support */
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: inline-flex;
+            width: max-content;
+            animation: marquee 24s linear infinite;
+        }
+        .marquee-container.is-paused .animate-marquee {
+            animation-play-state: paused;
+        }
+
+        /* Motion Accessibility: Respects prefers-reduced-motion */
+        @media (prefers-reduced-motion: reduce) {
+            .animate-marquee {
+                animation: none;
+            }
+            .neo-btn,
+            .neo-input,
+            .neo-card,
+            .interactive-preview-inner,
+            .preview-updated {
+                transition: none !important;
+                transform: none !important;
+                animation: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-surfaceBg text-neoBlack font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brandRed selection:text-white overflow-x-hidden">
+
+    <!-- TOP ACCESSIBLE INFORMATION TICKER -->
+    <div class="bg-brandRed text-white neo-border border-t-0 border-x-0 py-2.5 overflow-hidden whitespace-nowrap font-black text-xs sm:text-sm tracking-wider uppercase relative">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
+            <div id="marquee-wrapper" class="marquee-container overflow-hidden flex-1">
+                <div class="animate-marquee flex items-center gap-8">
+                    <span>Katalog & Manajemen Karya COMITHRIFT</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Perbarui Informasi Produk Relawan Secara Real-Time</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Tebar Cinta Inisiatif Sosial</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Katalog & Manajemen Karya COMITHRIFT</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Perbarui Informasi Produk Relawan Secara Real-Time</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Tebar Cinta Inisiatif Sosial</span>
+                </div>
+            </div>
+            <!-- Pause/Resume Control (WCAG 2.2.2 Compliance) -->
+            <button type="button" id="ticker-toggle-btn" class="ml-4 px-2.5 py-1 bg-white text-neoBlack neo-border-sm rounded-lg text-[10px] font-black uppercase tracking-wider hover:bg-surfaceSoft transition-colors flex items-center gap-1 shrink-0" aria-label="Jeda banner animasi">
+                <i data-lucide="pause" class="w-3.5 h-3.5" aria-hidden="true"></i>
+                <span id="ticker-toggle-label">Jeda</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <header class="sticky top-0 z-40 bg-white neo-border border-x-0 border-t-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3">
+            <a href="profile.html" class="flex items-center gap-2.5 group" aria-label="Katalog Relawan Tebar Cinta">
+                <div class="w-10 h-10 bg-brandRed text-white neo-border rounded-xl flex items-center justify-center font-black transition-transform group-hover:scale-105" aria-hidden="true">
+                    <i data-lucide="heart" class="w-5 h-5 fill-current"></i>
+                </div>
+                <span class="font-black text-xl sm:text-2xl tracking-tight uppercase">
+                    Tebar<span class="text-brandRed">Cinta</span>
+                </span>
+            </a>
+            <div class="flex items-center gap-2 sm:gap-3">
+                <a href="profile.html" class="px-3.5 sm:px-4 py-2 bg-surfaceSoft text-neoBlack font-black neo-btn rounded-xl text-xs sm:text-sm uppercase tracking-wider flex items-center gap-2 min-h-[44px]" aria-label="Kembali ke Profil Relawan">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    <span class="hidden xs:inline sm:inline">Kembali</span>
+                </a>
+                <!-- Burger Menu Toggle Button -->
+                <button type="button" onclick="toggleMenu()" class="p-3 bg-surfaceSoft neo-btn rounded-xl flex items-center justify-center min-h-[44px] min-w-[44px]" aria-label="Buka Menu Navigasi" aria-expanded="false" id="menu-toggle-btn">
+                    <i data-lucide="menu" class="w-5 h-5" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- SIDEBAR DRAWER MENU -->
+    <div id="menu-overlay" onclick="toggleMenu()" class="fixed inset-0 bg-neoBlack/60 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-300" aria-hidden="true"></div>
+    <aside id="menu-drawer" class="fixed top-0 right-0 w-80 sm:w-96 max-w-[85vw] h-full bg-white z-50 neo-border border-y-0 border-r-0 translate-x-full transition-transform duration-300 ease-in-out p-6 flex flex-col justify-between overflow-y-auto" aria-label="Menu Relawan" aria-hidden="true">
+        <div class="space-y-6">
+            <div class="flex items-center justify-between border-b-2 border-slate-100 pb-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-brandRed text-white neo-border-sm rounded-lg flex items-center justify-center font-black">
+                        <i data-lucide="heart" class="w-4 h-4 fill-current"></i>
+                    </div>
+                    <span class="font-black text-lg uppercase tracking-tight">Menu Relawan</span>
+                </div>
+                <button type="button" onclick="toggleMenu()" class="p-2 neo-border-sm rounded-lg hover:bg-surfaceSoft min-h-[44px] min-w-[44px] flex items-center justify-center" aria-label="Tutup Menu" id="drawer-close-btn">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <nav class="space-y-2.5 font-black text-sm uppercase">
+                <a href="profile.html" class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="package" class="w-4 h-4"></i>
+                        <span>Katalog Relawan</span>
+                    </div>
+                </a>
+                <a href="produk.html" class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                        <span>Unggah Produk Baru</span>
+                    </div>
+                </a>
+                <a href="edit profile.html" class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="user-cog" class="w-4 h-4"></i>
+                        <span>Edit Profil Kreator</span>
+                    </div>
+                </a>
+                <a href="../user/dasboard.html" class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="store" class="w-4 h-4"></i>
+                        <span>Toko COMITHRIFT</span>
+                    </div>
+                    <i data-lucide="external-link" class="w-3.5 h-3.5 opacity-60"></i>
+                </a>
+                <a href="../user/index.html" class="flex items-center justify-between p-3 bg-surfaceSoft neo-border-sm rounded-xl hover:bg-brandRed hover:text-white transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="image" class="w-4 h-4"></i>
+                        <span>Galeri Kegiatan</span>
+                    </div>
+                    <i data-lucide="external-link" class="w-3.5 h-3.5 opacity-60"></i>
+                </a>
+            </nav>
+        </div>
+
+        <div class="border-t-2 border-slate-100 pt-4">
+            <a href="../login/login.html" class="w-full py-3 bg-surfaceSoft neo-btn rounded-xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-brandRed hover:text-white transition-colors min-h-[44px]">
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+                <span>Keluar Akun</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- TOAST NOTIFICATION CONTAINER (Polite Live Region) -->
+    <div id="toast-region" aria-live="polite" aria-atomic="true" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- KONTEN UTAMA EDIT PRODUK -->
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex-1 w-full space-y-8">
+
+        <!-- Header Halaman -->
+        <header class="border-b-4 border-neoBlack pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+            <div>
+                <p class="text-xs font-black uppercase tracking-wider text-slateDark flex items-center gap-1.5">
+                    <i data-lucide="layout-grid" class="w-4 h-4 text-brandRed" aria-hidden="true"></i>
+                    Katalog Relawan
+                </p>
+                <h1 class="text-3xl sm:text-4xl font-black uppercase tracking-tight mt-1">
+                    Edit Detail Produk
+                </h1>
+            </div>
+            <p class="text-xs sm:text-sm font-bold text-slate-600">
+                Perbarui informasi karya atau barang yang kamu tawarkan.
+            </p>
+        </header>
+
+        <!-- FORMULIR EDIT & PRATINJAU LANGSUNG -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+            <!-- SISI KIRI: FORMULIR INPUT -->
+            <section class="lg:col-span-7 bg-white neo-card rounded-3xl p-6 sm:p-8 space-y-6" aria-labelledby="form-heading">
+
+                <div class="flex items-center gap-3 border-b-2 border-slate-100 pb-4">
+                    <div class="w-10 h-10 bg-surfaceSoft neo-border rounded-xl flex items-center justify-center font-black" aria-hidden="true">
+                        <i data-lucide="edit-3" class="w-5 h-5 text-neoBlack"></i>
+                    </div>
+                    <h2 id="form-heading" class="font-black text-lg uppercase tracking-tight">Formulir Informasi Produk</h2>
+                </div>
+
+                <form id="edit-product-form" novalidate class="space-y-5 text-xs font-bold text-slate-800">
+
+                    <!-- Nama Produk -->
+                    <div class="space-y-1.5">
+                        <label for="p-name" class="font-black uppercase text-xs tracking-wider block">
+                            Nama Produk / Karya <span class="text-brandRed" aria-hidden="true">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            id="p-name" 
+                            name="product_name"
+                            required 
+                            minlength="3"
+                            maxlength="80"
+                            autocomplete="off"
+                            value="Hoodie Neo-Brutalism Pink" 
+                            class="neo-input w-full px-4 py-3 rounded-xl font-bold text-sm"
+                            aria-describedby="p-name-error"
+                            data-error="p-name-error"
+                        >
+                        <div id="p-name-error" class="error-msg">
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5 shrink-0" aria-hidden="true"></i>
+                            <span>Nama produk wajib diisi (minimal 3 karakter).</span>
+                        </div>
+                    </div>
+
+                    <!-- Harga Jual -->
+                    <div class="space-y-1.5">
+                        <label for="p-price" class="font-black uppercase text-xs tracking-wider block">
+                            Harga Jual (Rp) <span class="text-brandRed" aria-hidden="true">*</span>
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 font-black text-sm text-slate-500 select-none">Rp</span>
+                            <input 
+                                type="number" 
+                                id="p-price" 
+                                name="product_price"
+                                required 
+                                min="1000" 
+                                step="1000"
+                                inputmode="numeric"
+                                value="250000" 
+                                class="neo-input w-full pl-12 pr-4 py-3 rounded-xl font-bold text-sm"
+                                aria-describedby="p-price-error"
+                                data-error="p-price-error"
+                            >
+                        </div>
+                        <div id="p-price-error" class="error-msg">
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5 shrink-0" aria-hidden="true"></i>
+                            <span>Masukkan harga minimal Rp 1.000.</span>
+                        </div>
+                    </div>
+
+                    <!-- Kategori, Ukuran & Kondisi Pakaian (Modern Branded Select) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div class="space-y-1.5">
+                            <label for="p-category" class="font-black uppercase text-xs tracking-wider block">
+                                Kategori <span class="text-brandRed">*</span>
+                            </label>
+                            <select id="p-category" name="kategori" required class="neo-select w-full rounded-xl px-4 py-2.5 font-black text-xs cursor-pointer">
+                                <option value="Jaket">Jaket (Outer)</option>
+                                <option value="Kemeja">Kemeja Tartan</option>
+                                <option value="Streetwear" selected>Streetwear / Hoodie</option>
+                                <option value="Kaos">Kaos Vintage</option>
+                                <option value="Celana">Celana Corduroy</option>
+                                <option value="Aksesoris">Aksesoris / Topi</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label for="p-size" class="font-black uppercase text-xs tracking-wider block">
+                                Ukuran <span class="text-brandRed">*</span>
+                            </label>
+                            <select id="p-size" name="ukuran" required class="neo-select w-full rounded-xl px-4 py-2.5 font-black text-xs cursor-pointer">
+                                <option value="L">L (Large)</option>
+                                <option value="M">M (Medium)</option>
+                                <option value="XL" selected>XL (Extra Large)</option>
+                                <option value="S">S (Small)</option>
+                                <option value="All Size">All Size</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label for="p-condition" class="font-black uppercase text-xs tracking-wider block">
+                                Kondisi <span class="text-brandRed">*</span>
+                            </label>
+                            <select id="p-condition" name="kondisi" required class="neo-select w-full rounded-xl px-4 py-2.5 font-black text-xs cursor-pointer">
+                                <option value="Sangat Baik" selected>Sangat Baik (9/10)</option>
+                                <option value="Baik">Baik (8/10)</option>
+                                <option value="Layak Pakai">Layak Pakai (7/10)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Unggah File Gambar / URL Foto -->
+                    <div class="space-y-1.5">
+                        <label for="p-image-file" class="font-black uppercase text-xs tracking-wider block">
+                            Ganti Foto Produk (File atau URL)
+                        </label>
+                        <input 
+                            type="file" 
+                            id="p-image-file" 
+                            accept="image/png, image/jpeg, image/webp" 
+                            class="neo-input w-full px-3 py-2 rounded-xl font-bold text-xs cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-2 file:border-neoBlack file:text-xs file:font-black file:bg-brandRed file:text-white hover:file:bg-brandRedDark file:cursor-pointer"
+                            aria-describedby="p-image-hint"
+                        >
+                        <input 
+                            type="url" 
+                            id="p-image-url" 
+                            placeholder="Atau tempel tautan foto baru..."
+                            class="neo-input w-full px-4 py-2.5 rounded-xl font-bold text-xs"
+                        >
+                        <input type="hidden" id="p-image" value="https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&q=80&w=600">
+                        <p id="p-image-hint" class="text-[11px] text-slate-500 font-semibold">Format JPG, PNG, atau WebP.</p>
+                    </div>
+
+                    <!-- Deskripsi Lengkap -->
+                    <div class="space-y-1.5">
+                        <label for="p-desc" class="font-black uppercase text-xs tracking-wider block">
+                            Deskripsi Lengkap Produk <span class="text-brandRed" aria-hidden="true">*</span>
+                        </label>
+                        <textarea 
+                            id="p-desc" 
+                            name="product_description"
+                            rows="4" 
+                            required 
+                            minlength="10"
+                            class="neo-input w-full px-4 py-3 rounded-xl font-bold text-sm leading-relaxed"
+                            aria-describedby="p-desc-error"
+                            data-error="p-desc-error"
+                        >Hoodie katun fleece tebal dengan cetakan desain neo-brutalism eksklusif.</textarea>
+                        <div id="p-desc-error" class="error-msg">
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5 shrink-0" aria-hidden="true"></i>
+                            <span>Deskripsi produk wajib diisi (minimal 10 karakter).</span>
+                        </div>
+                    </div>
+
+                    <!-- Tombol Aksi -->
+                    <div class="pt-4 flex flex-col sm:flex-row gap-3">
+                        <a href="profile.html" class="w-full sm:w-1/2 py-3.5 text-center bg-surfaceSoft text-neoBlack neo-btn rounded-xl font-black text-sm uppercase tracking-wider flex items-center justify-center min-h-[48px]">
+                            Batal
+                        </a>
+                        <button type="submit" id="submit-btn" class="w-full sm:w-1/2 py-3.5 bg-brandRed text-white neo-btn rounded-xl font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 min-h-[48px]">
+                            <i data-lucide="check" class="w-4 h-4" aria-hidden="true"></i>
+                            <span>Simpan Perubahan</span>
+                        </button>
+                    </div>
+
+                </form>
+            </section>
+
+            <!-- SISI KANAN: PRATINJAU LANGSUNG (LIVE PREVIEW) -->
+            <aside class="lg:col-span-5 space-y-4" aria-label="Pratinjau Langsung Kartu Produk">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-black uppercase tracking-wider bg-surfaceSoft px-3 py-1.5 neo-border-sm rounded-lg flex items-center gap-1.5">
+                        <i data-lucide="eye" class="w-3.5 h-3.5 text-brandRed" aria-hidden="true"></i>
+                        Pratinjau Langsung
+                    </span>
+                    <span class="text-[11px] font-bold text-slate-500">Tampilan di Katalog</span>
+                </div>
+
+                <div class="interactive-preview-card">
+                    <div id="preview-card-container" class="interactive-preview-inner bg-white neo-card rounded-3xl p-4 sm:p-5 space-y-4">
+                        
+                        <!-- Kartu Produk Preview -->
+                        <div class="neo-border rounded-2xl overflow-hidden bg-white shadow-neo">
+                            <!-- Image with explicit aspect ratio to prevent Layout Shifts (CLS) -->
+                            <div class="relative w-full aspect-[4/3] bg-slate-100 overflow-hidden neo-border border-t-0 border-x-0">
+                                <img 
+                                    id="preview-img" 
+                                    src="https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&q=80&w=600" 
+                                    alt="Pratinjau Produk Hoodie Neo-Brutalism Pink" 
+                                    width="600" 
+                                    height="450" 
+                                    loading="eager"
+                                    fetchpriority="high"
+                                    class="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                                >
+                            </div>
+                            <div class="p-4 sm:p-5 space-y-3">
+                                <h3 id="preview-name" class="font-black text-base sm:text-lg uppercase line-clamp-1 tracking-tight">
+                                    Hoodie Neo-Brutalism Pink
+                                </h3>
+                                <p id="preview-desc" class="text-xs font-bold text-slate-600 line-clamp-2 leading-relaxed">
+                                    Hoodie katun fleece tebal dengan cetakan desain neo-brutalism eksklusif.
+                                </p>
+                                
+                                <div class="pt-3 border-t-2 border-slate-100 flex items-center justify-between">
+                                    <div>
+                                        <span class="text-[10px] font-black uppercase text-slate-400 block tracking-wider">Harga Jual</span>
+                                        <span id="preview-price" class="font-black text-base sm:text-lg text-brandRed">
+                                            Rp 250.000
+                                        </span>
+                                    </div>
+                                    <span class="px-2.5 py-1 bg-surfaceSoft neo-border-sm rounded-lg text-[10px] font-black uppercase text-slate-700">
+                                        Siap Jual
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Petunjuk Interaktif -->
+                <p class="text-[11px] font-bold text-slate-500 text-center">
+                    Setiap perubahan di formulir otomatis memperbarui kartu pratinjau di atas.
+                </p>
+            </aside>
+
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-neoBlack text-white py-6 neo-border border-b-0 border-x-0 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs font-bold tracking-wider">
+            &copy; 2026 COMITHRIFT & TEBAR CINTA. HAK CIPTA DILINDUNGI.
+        </div>
+    </footer>
+
+    <!-- INTERACTION LOGIC & ACCESSIBILITY SCRIPTS -->
+    <script>
+        // Inisialisasi ikon Lucide
+        lucide.createIcons();
+
+        // Elemen Input & Pratinjau
+        const form = document.getElementById('edit-product-form');
+        const nameInput = document.getElementById('p-name');
+        const priceInput = document.getElementById('p-price');
+        const descInput = document.getElementById('p-desc');
+        const imageFileInput = document.getElementById('p-image-file');
+        const imageHiddenInput = document.getElementById('p-image');
+
+        const previewName = document.getElementById('preview-name');
+        const previewPrice = document.getElementById('preview-price');
+        const previewDesc = document.getElementById('preview-desc');
+        const previewImg = document.getElementById('preview-img');
+        const previewContainer = document.getElementById('preview-card-container');
+        const toastRegion = document.getElementById('toast-region');
+
+        // Fungsi Format Rupiah
+        function formatRupiah(number) {
+            const val = parseInt(number, 10);
+            if (isNaN(val)) return 'Rp 0';
+            return 'Rp ' + val.toLocaleString('id-ID');
+        }
+
+        // Live Preview Update dengan subtle pulse animation
+        function updatePreview() {
+            if (nameInput.value.trim()) {
+                previewName.textContent = nameInput.value;
+                previewImg.alt = 'Pratinjau Produk ' + nameInput.value;
+            } else {
+                previewName.textContent = 'Nama Produk Belum Diisi';
+            }
+
+            if (priceInput.value) {
+                previewPrice.textContent = formatRupiah(priceInput.value);
+            } else {
+                previewPrice.textContent = 'Rp 0';
+            }
+
+            if (descInput.value.trim()) {
+                previewDesc.textContent = descInput.value;
+            } else {
+                previewDesc.textContent = 'Deskripsi produk belum diisi.';
+            }
+
+            // Memicu efek gerak lembut pada kartu pratinjau
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                previewContainer.classList.remove('preview-updated');
+                void previewContainer.offsetWidth; // Trigger reflow
+                previewContainer.classList.add('preview-updated');
+            }
+        }
+
+        // Event listener pembaruan langsung
+        nameInput.addEventListener('input', updatePreview);
+        priceInput.addEventListener('input', updatePreview);
+        descInput.addEventListener('input', updatePreview);
+
+        // Penanganan Unggah Gambar dengan FileReader
+        imageFileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Validasi ukuran (maks 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('Ukuran gambar terlalu besar (maksimal 5MB).', 'error');
+                imageFileInput.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                previewImg.src = evt.target.result;
+                imageHiddenInput.value = evt.target.result;
+                updatePreview();
+                showToast('Foto produk berhasil diperbarui di pratinjau.', 'success');
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // Interactive 3D Tilt Effect on Preview Card
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            const cardWrapper = document.querySelector('.interactive-preview-card');
+            cardWrapper.addEventListener('mousemove', function(e) {
+                const rect = cardWrapper.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = ((y - centerY) / centerY) * -6; // Max 6 deg
+                const rotateY = ((x - centerX) / centerX) * 6;
+                previewContainer.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+
+            cardWrapper.addEventListener('mouseleave', function() {
+                previewContainer.style.transform = 'rotateX(0deg) rotateY(0deg)';
+            });
+        }
+
+        // Ticker Marquee Pause / Play Control (WCAG 2.2.2)
+        const marqueeWrapper = document.getElementById('marquee-wrapper');
+        const tickerToggleBtn = document.getElementById('ticker-toggle-btn');
+        const tickerToggleLabel = document.getElementById('ticker-toggle-label');
+        let isMarqueePaused = false;
+
+        tickerToggleBtn.addEventListener('click', function() {
+            isMarqueePaused = !isMarqueePaused;
+            if (isMarqueePaused) {
+                marqueeWrapper.classList.add('is-paused');
+                tickerToggleLabel.textContent = 'Putar';
+                tickerToggleBtn.setAttribute('aria-label', 'Putar banner animasi');
+                tickerToggleBtn.innerHTML = `<i data-lucide="play" class="w-3.5 h-3.5" aria-hidden="true"></i><span>Putar</span>`;
+            } else {
+                marqueeWrapper.classList.remove('is-paused');
+                tickerToggleLabel.textContent = 'Jeda';
+                tickerToggleBtn.setAttribute('aria-label', 'Jeda banner animasi');
+                tickerToggleBtn.innerHTML = `<i data-lucide="pause" class="w-3.5 h-3.5" aria-hidden="true"></i><span>Jeda</span>`;
+            }
+            lucide.createIcons();
+        });
+
+        // Toast Feedback Generator (Accessible Live Region)
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `p-4 neo-border rounded-xl font-bold text-xs shadow-neo pointer-events-auto flex items-center justify-between gap-3 transition-all duration-200 transform translate-y-2 opacity-0 ${
+                type === 'success' ? 'bg-accentGreen text-white' : type === 'error' ? 'bg-brandRed text-white' : 'bg-white text-neoBlack'
+            }`;
+            toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+            
+            const iconName = type === 'success' ? 'check-circle' : type === 'error' ? 'alert-triangle' : 'info';
+            toast.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <i data-lucide="${iconName}" class="w-4 h-4 shrink-0" aria-hidden="true"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            toastRegion.appendChild(toast);
+            lucide.createIcons();
+
+            // Reveal transition
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+
+            // Dismiss after 3.5s
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 250);
+            }, 3500);
+        }
+
+        const imageUrlInput = document.getElementById('p-image-url');
+        if (imageUrlInput) {
+            imageUrlInput.addEventListener('input', function() {
+                if (imageUrlInput.value.trim()) {
+                    previewImg.src = imageUrlInput.value.trim();
+                    imageHiddenInput.value = imageUrlInput.value.trim();
+                    updatePreview();
+                }
+            });
+        }
+
+        let currentProductId = 1;
+
+        // Ambil data produk yang akan diedit dari backend
+        async function loadProductToEdit() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const idParam = urlParams.get('id');
+
+            try {
+                let targetId = idParam;
+                if (!targetId) {
+                    const listRes = await fetch("http://localhost:8080/api/produk?status=tersedia");
+                    if (listRes.ok) {
+                        const listJson = await listRes.json();
+                        if (listJson.data && listJson.data.length > 0) {
+                            targetId = listJson.data[0].id_produk;
+                        }
+                    }
+                }
+
+                if (!targetId) targetId = 1;
+                currentProductId = targetId;
+
+                const res = await fetch(`http://localhost:8080/api/produk/${targetId}`);
+                if (res.ok) {
+                    const json = await res.json();
+                    const prod = json.data;
+                    if (prod) {
+                        nameInput.value = prod.nama_produk || '';
+                        priceInput.value = prod.harga || '';
+                        descInput.value = prod.deskripsi || '';
+                        if (document.getElementById('p-category') && prod.kategori) document.getElementById('p-category').value = prod.kategori;
+                        if (document.getElementById('p-size') && prod.ukuran) document.getElementById('p-size').value = prod.ukuran;
+                        if (document.getElementById('p-condition') && prod.kondisi) document.getElementById('p-condition').value = prod.kondisi;
+                        if (prod.foto) {
+                            previewImg.src = prod.foto;
+                            imageHiddenInput.value = prod.foto;
+                            if (imageUrlInput) imageUrlInput.value = prod.foto;
+                        }
+                        updatePreview();
+                    }
+                }
+            } catch (err) {
+                console.warn("Gagal memuat produk untuk diedit:", err);
+            }
+        }
+
+        // Form Submit Handler
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Client-side Constraint Validation
+            if (!form.checkValidity()) {
+                const firstInvalid = form.querySelector(':invalid');
+                if (firstInvalid) {
+                    firstInvalid.focus();
+                }
+                showToast('Mohon lengkapi seluruh kolom formulir dengan benar.', 'error');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-75');
+            submitBtn.innerHTML = `
+                <i data-lucide="loader-2" class="w-4 h-4 animate-spin" aria-hidden="true"></i>
+                <span>Menyimpan ke Database...</span>
+            `;
+            lucide.createIcons();
+
+            try {
+                // 1. Ambil token relawan dari localStorage atau dev API
+                let token = localStorage.getItem('comithrift_auth_token');
+                if (!token) {
+                    const tokenRes = await fetch("http://localhost:8080/api/dev/tokens");
+                    if (tokenRes.ok) {
+                        const tokenJson = await tokenRes.json();
+                        token = tokenJson.data.token_relawan;
+                        localStorage.setItem('comithrift_auth_token', token);
+                        localStorage.setItem('comithrift_role', 'Relawan');
+                    }
+                }
+
+                // 2. Tentukan foto produk
+                let fotoUrl = imageHiddenInput.value;
+                if (imageUrlInput && imageUrlInput.value.trim()) {
+                    fotoUrl = imageUrlInput.value.trim();
+                }
+
+                const priceVal = parseInt(priceInput.value, 10);
+                const nameVal = nameInput.value.trim();
+                const descVal = descInput.value.trim();
+                const categoryVal = document.getElementById('p-category').value;
+                const sizeVal = document.getElementById('p-size').value;
+                const conditionVal = document.getElementById('p-condition').value;
+
+                const payload = {
+                    nama_produk: nameVal,
+                    harga: priceVal,
+                    deskripsi: descVal,
+                    ukuran: sizeVal,
+                    kondisi: conditionVal,
+                    kategori: categoryVal,
+                    foto: fotoUrl
+                };
+
+                const res = await fetch(`http://localhost:8080/api/admin/produk/${currentProductId}`, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    showToast('Perubahan produk berhasil disimpan ke database!', 'success');
+                    setTimeout(() => {
+                        window.location.href = '../user/detail produk.html';
+                    }, 1000);
+                } else if (res.status === 401) {
+                    showToast('Autentikasi gagal (401 Unauthorized). Silakan login ulang.', 'error');
+                } else if (res.status === 403) {
+                    showToast('Akses ditolak (403 Forbidden). Token tidak memiliki hak edit produk.', 'error');
+                } else {
+                    showToast(`Gagal: ${data.message || 'Terjadi kesalahan pada backend.'}`, 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast(`Koneksi error: ${err.message}. Pastikan backend aktif di port 8080.`, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-75');
+                submitBtn.innerHTML = `
+                    <i data-lucide="check" class="w-4 h-4" aria-hidden="true"></i>
+                    <span>Simpan Perubahan</span>
+                `;
+                lucide.createIcons();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProductToEdit();
+        });
+
+        // Drawer Menu Logic
+        const menuDrawer = document.getElementById('menu-drawer');
+        const menuOverlay = document.getElementById('menu-overlay');
+        const menuToggleBtn = document.getElementById('menu-toggle-btn');
+        const drawerCloseBtn = document.getElementById('drawer-close-btn');
+        let isMenuOpen = false;
+
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+            if (isMenuOpen) {
+                menuDrawer.classList.remove('translate-x-full');
+                menuDrawer.setAttribute('aria-hidden', 'false');
+                menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                menuOverlay.setAttribute('aria-hidden', 'false');
+                menuToggleBtn.setAttribute('aria-expanded', 'true');
+                document.body.classList.add('overflow-hidden');
+                if (drawerCloseBtn) drawerCloseBtn.focus();
+            } else {
+                menuDrawer.classList.add('translate-x-full');
+                menuDrawer.setAttribute('aria-hidden', 'true');
+                menuOverlay.classList.add('opacity-0', 'pointer-events-none');
+                menuOverlay.setAttribute('aria-hidden', 'true');
+                menuToggleBtn.setAttribute('aria-expanded', 'false');
+                document.body.classList.remove('overflow-hidden');
+                menuToggleBtn.focus();
+            }
+        }
+
+        // Close drawer on ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isMenuOpen) toggleMenu();
+        });
+    </script>
+</body>
+</html>
